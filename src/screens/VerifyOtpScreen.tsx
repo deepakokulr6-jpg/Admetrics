@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,42 +17,45 @@ import OtpInput from '../components/OtpInput';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import InputStatusIcon from '../components/InputStatusIcon';
+import { isValidEmail } from '../utils/validation';
+import type { AuthScreenProps } from '../navigation/types';
 
-type VerifyOtpScreenProps = {
-  onBackToLogin?: () => void;
-  initialEmail?: string;
-};
+const TEST_OTP = '123456';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
-  onBackToLogin,
-  initialEmail = '',
+/**
+ * Dedicated OTP verification screen. The main registration entry point handles
+ * email + OTP on one screen, but this route remains available for flows that
+ * separate the two steps.
+ */
+const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
+  navigation,
+  route,
 }) => {
-  const [email, setEmail] = useState(initialEmail);
+  const [email, setEmail] = useState(route.params.email);
   const [otp, setOtp] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const isEmailValid = EMAIL_PATTERN.test(email.trim());
+  const isEmailValid = isValidEmail(email);
 
   const handleVerify = () => {
-    if (!email.trim() || otp.length !== 6) {
-      Alert.alert(
-        'Missing details',
-        'Enter your email and all six OTP digits.',
-      );
+    setError(null);
+
+    if (!isEmailValid) {
+      setError('Please enter a valid email address.');
       return;
     }
 
-    // Connect your OTP verification API here.
-    Alert.alert('Verify OTP', 'Connect your OTP verification API here.');
-  };
-
-  const handleLogin = () => {
-    if (onBackToLogin) {
-      onBackToLogin();
+    if (otp.length !== 6) {
+      setError('Please enter all six OTP digits.');
       return;
     }
-    Alert.alert('Log In', 'Open the Welcome Back screen here.');
+
+    if (otp !== TEST_OTP) {
+      setError(`Incorrect OTP. Use ${TEST_OTP} in this development build.`);
+      return;
+    }
+
+    navigation.navigate('ConfirmPassword', { email: email.trim() });
   };
 
   return (
@@ -85,9 +87,13 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
                 label="Email ID"
                 placeholder="Enter your email"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={value => {
+                  setEmail(value);
+                  setError(null);
+                }}
                 iconName="email"
                 keyboardType="email-address"
+                textContentType="emailAddress"
                 rightElement={
                   isEmailValid ? (
                     <InputStatusIcon status="success" />
@@ -99,6 +105,8 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
 
               <OtpInput value={otp} onChangeText={setOtp} />
 
+              {error ? <Text style={styles.error}>{error}</Text> : null}
+
               <View style={styles.button}>
                 <GradientButton title="Verify" onPress={handleVerify} />
               </View>
@@ -107,7 +115,7 @@ const VerifyOtpScreen: React.FC<VerifyOtpScreenProps> = ({
                 <AuthFooter
                   text="Already have an account?"
                   highlight="Log In"
-                  onPress={handleLogin}
+                  onPress={() => navigation.navigate('Login')}
                 />
               </View>
             </View>
@@ -158,8 +166,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
+  error: {
+    marginTop: 12,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+    color: '#D93025',
+    textAlign: 'center',
+  },
+
   button: {
-    marginTop: 44,
+    marginTop: 28,
   },
 
   footer: {

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  useWindowDimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -18,7 +12,6 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   title = 'Register Your Clinic',
   onBackPress,
 }) => {
-  const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   return (
@@ -26,7 +19,6 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
       style={[
         styles.container,
         {
-          width,
           paddingTop: Math.max(insets.top, 8),
         },
       ]}
@@ -52,11 +44,9 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 94,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'flex-end',
     paddingHorizontal: 12,
-    paddingBottom: 14,
+    paddingBottom: 12,
 
     shadowColor: '#000000',
     shadowOffset: {

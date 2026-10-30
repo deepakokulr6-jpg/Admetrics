@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar,
   Alert,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,49 +19,90 @@ import OtpInput from '../components/OtpInput';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import InputStatusIcon from '../components/InputStatusIcon';
+import { useAuth } from '../context/AuthContext';
+import { isValidEmail } from '../utils/validation';
+import type { AuthScreenProps } from '../navigation/types';
 
-type CreateAccountScreenProps = {
-  onBackToLogin?: () => void;
-  onGetOtp?: (email: string) => void;
-};
+const TEST_OTP = '123456';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
-  onBackToLogin,
-  onGetOtp,
+const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
+  navigation,
 }) => {
+  const { isEmailRegistered } = useAuth();
+
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const isEmailValid = EMAIL_PATTERN.test(email.trim());
+  const isEmailValid = isValidEmail(email);
 
-  const handleGetOtp = () => {
-    if (!isEmailValid) {
-      Alert.alert('Invalid email', 'Please enter a valid email address.');
-      return;
-    }
-
-    // Connect your send-OTP API here.
-    setSendingOtp(true);
-
-    if (onGetOtp) {
-      setSendingOtp(false);
-      onGetOtp(email.trim());
-      return;
-    }
-
-    Alert.alert('Get OTP', 'Connect your send-OTP API here.');
-    setSendingOtp(false);
+  const showDevelopmentOtp = () => {
+    Alert.alert(
+      'OTP Sent',
+      `This is a development build, so no email was sent. Use ${TEST_OTP} to verify your email.`,
+    );
   };
 
-  const handleLogin = () => {
-    if (onBackToLogin) {
-      onBackToLogin();
+  const handleGetOtp = async () => {
+    const trimmedEmail = email.trim();
+    setError(null);
+
+    if (!isValidEmail(trimmedEmail)) {
+      setError('Please enter a valid email address.');
       return;
     }
-    Alert.alert('Log In', 'Open the Welcome Back screen here.');
+
+    setIsChecking(true);
+
+    try {
+      const alreadyRegistered = await isEmailRegistered(trimmedEmail);
+
+      if (alreadyRegistered) {
+        setError(
+          'An account with this email already exists. Please log in instead.',
+        );
+        return;
+      }
+
+      setOtpSent(true);
+      setOtp('');
+      showDevelopmentOtp();
+    } catch {
+      setError(
+        'Unable to check this email right now. Please try again in a moment.',
+      );
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  const handleVerify = () => {
+    setError(null);
+
+    if (!isEmailValid) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (otp.length !== 6) {
+      setError('Please enter all six OTP digits.');
+      return;
+    }
+
+    if (otp !== TEST_OTP) {
+      setError(`Incorrect OTP. Use ${TEST_OTP} in this development build.`);
+      return;
+    }
+
+    navigation.navigate('ConfirmPassword', { email: email.trim() });
+  };
+
+  const handleResendOtp = () => {
+    setOtp('');
+    setError(null);
+    showDevelopmentOtp();
   };
 
   return (
@@ -92,11 +134,17 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
                 label="Email ID"
                 placeholder="Enter your email"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={value => {
+                  setEmail(value);
+                  setError(null);
+                  setOtpSent(false);
+                  setOtp('');
+                }}
                 iconName="email"
                 keyboardType="email-address"
+                textContentType="emailAddress"
                 rightElement={
-                  sendingOtp ? (
+                  isChecking ? (
                     <InputStatusIcon status="loading" />
                   ) : isEmailValid ? (
                     <InputStatusIcon status="success" />
@@ -104,15 +152,30 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
                 }
               />
 
-              <Text style={styles.otpLabel}>OTP</Text>
+              <View style={styles.otpHeader}>
+                <Text style={styles.otpLabel}>OTP</Text>
+
+                {otpSent ? (
+                  <Pressable
+                    onPress={handleResendOtp}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel="Resend OTP"
+                  >
+                    <Text style={styles.resend}>Resend OTP</Text>
+                  </Pressable>
+                ) : null}
+              </View>
 
               <OtpInput value={otp} onChangeText={setOtp} />
 
+              {error ? <Text style={styles.error}>{error}</Text> : null}
+
               <View style={styles.button}>
                 <GradientButton
-                  title="Get OTP"
-                  onPress={handleGetOtp}
-                  disabled={sendingOtp}
+                  title={otpSent ? 'Verify' : 'Get OTP'}
+                  onPress={otpSent ? handleVerify : handleGetOtp}
+                  loading={isChecking}
                 />
               </View>
 
@@ -120,7 +183,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
                 <AuthFooter
                   text="Already have an account?"
                   highlight="Log In"
-                  onPress={handleLogin}
+                  onPress={() => navigation.navigate('Login')}
                 />
               </View>
             </View>
@@ -164,15 +227,37 @@ const styles = StyleSheet.create({
     marginTop: 28,
   },
 
-  otpLabel: {
-    fontSize: 12,
-    lineHeight: 16,
-    color: '#AAAAAA',
+  otpHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
 
+  otpLabel: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#221E25',
+  },
+
+  resend: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
+    color: '#7B35FF',
+  },
+
+  error: {
+    marginTop: 12,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+    color: '#D93025',
+    textAlign: 'center',
+  },
+
   button: {
-    marginTop: 44,
+    marginTop: 28,
   },
 
   footer: {

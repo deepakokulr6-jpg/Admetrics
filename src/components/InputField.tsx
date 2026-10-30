@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ViewStyle,
   KeyboardTypeOptions,
+  TextInputProps,
 } from 'react-native';
 
 import EmailIcon from '../../assets/images/email.svg';
@@ -13,14 +14,23 @@ import PasswordIcon from '../../assets/images/password.svg';
 
 type InputFieldProps = {
   label: string;
-  placeholder: string;
+  placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
-  iconName: 'email' | 'password';
+  iconName?: 'email' | 'password';
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
   containerStyle?: ViewStyle;
   rightElement?: ReactNode;
+  textContentType?: TextInputProps['textContentType'];
+  autoComplete?: TextInputProps['autoComplete'];
+  autoCapitalize?: TextInputProps['autoCapitalize'];
+  maxLength?: number;
+  editable?: boolean;
+  required?: boolean;
+  error?: string | null;
+  multiline?: boolean;
+  numberOfLines?: number;
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -33,33 +43,71 @@ const InputField: React.FC<InputFieldProps> = ({
   keyboardType = 'default',
   containerStyle,
   rightElement,
+  textContentType,
+  autoComplete,
+  autoCapitalize = 'none',
+  maxLength,
+  editable = true,
+  required = false,
+  error,
+  multiline = false,
+  numberOfLines,
 }) => {
-  const InputIcon = iconName === 'email' ? EmailIcon : PasswordIcon;
+  const InputIcon =
+    iconName === 'email'
+      ? EmailIcon
+      : iconName === 'password'
+      ? PasswordIcon
+      : null;
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
+      {label ? (
+        <Text style={styles.label}>
+          {label}
+          {required ? <Text style={styles.required}> *</Text> : null}
+        </Text>
+      ) : null}
 
-      <View style={styles.inputBox}>
-        <InputIcon width={24} height={24} />
+      <View
+        style={[
+          styles.inputBox,
+          multiline && styles.multilineBox,
+          error ? styles.inputBoxError : null,
+          !editable && styles.inputBoxDisabled,
+        ]}
+      >
+        {InputIcon ? <InputIcon width={20} height={20} /> : null}
 
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            InputIcon ? styles.inputWithIcon : null,
+            multiline && styles.multilineInput,
+          ]}
           placeholder={placeholder}
           placeholderTextColor="#AAAAAA"
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
-          autoCapitalize="none"
+          autoCapitalize={autoCapitalize}
           autoCorrect={false}
           selectionColor="#0265FB"
+          textContentType={textContentType}
+          autoComplete={autoComplete}
+          maxLength={maxLength}
+          editable={editable}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
         />
 
         {rightElement ? (
           <View style={styles.rightElement}>{rightElement}</View>
         ) : null}
       </View>
+
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 };
@@ -67,7 +115,7 @@ const InputField: React.FC<InputFieldProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 14,
   },
 
   label: {
@@ -75,7 +123,11 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontWeight: '400',
     color: '#221E25',
-    marginBottom: 8,
+    marginBottom: 6,
+  },
+
+  required: {
+    color: '#D93025',
   },
 
   inputBox: {
@@ -90,20 +142,50 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
 
+  inputBoxError: {
+    borderColor: '#D93025',
+  },
+
+  inputBoxDisabled: {
+    backgroundColor: '#F7F7F7',
+    borderColor: '#DDDDDD',
+  },
+
   input: {
     flex: 1,
     minHeight: 38,
-    marginLeft: 10,
     paddingVertical: 0,
     fontSize: 14,
     fontWeight: '400',
     color: '#221E25',
   },
 
+  inputWithIcon: {
+    marginLeft: 10,
+  },
+
+  multilineBox: {
+    minHeight: 76,
+    alignItems: 'flex-start',
+    paddingVertical: 10,
+  },
+
+  multilineInput: {
+    minHeight: 54,
+    textAlignVertical: 'top',
+  },
+
   rightElement: {
     marginLeft: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  errorText: {
+    marginTop: 4,
+    fontSize: 11,
+    lineHeight: 15,
+    color: '#D93025',
   },
 });
 

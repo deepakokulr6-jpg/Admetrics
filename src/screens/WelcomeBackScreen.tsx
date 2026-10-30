@@ -8,8 +8,10 @@ import {
   Platform,
   StatusBar,
   Alert,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AppLogo from '../components/AppLogo';
 import AuthHeader from '../components/AuthHeader';
@@ -17,47 +19,56 @@ import InputField from '../components/InputField';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import ForgotPasswordLink from '../components/ForgotPasswordLink';
+import { useAuth } from '../context/AuthContext';
+import { AuthError } from '../services/authService';
+import { isValidEmail } from '../utils/validation';
+import type { AuthScreenProps } from '../navigation/types';
 
-type WelcomeBackScreenProps = {
-  onCreateAccount?: () => void;
-  onForgotPassword?: () => void;
-};
-
-const WelcomeBackScreen: React.FC<WelcomeBackScreenProps> = ({
-  onCreateAccount,
-  onForgotPassword,
+const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
+  navigation,
 }) => {
+  const { signIn } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSignIn = () => {
-    if (!email.trim() || !password) {
-      Alert.alert('Error', 'Please enter your email and password.');
+  const handleSignIn = async () => {
+    const trimmedEmail = email.trim();
+    setError(null);
+
+    if (!trimmedEmail || !password) {
+      setError('Please enter your email and password.');
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      Alert.alert('Error', 'Please enter a valid email address.');
+    if (!isValidEmail(trimmedEmail)) {
+      setError('Please enter a valid email address.');
       return;
     }
 
-    Alert.alert('Sign In', 'Connect your login API here.');
+    setIsSubmitting(true);
+
+    try {
+      await signIn(trimmedEmail, password);
+    } catch (signInError) {
+      setError(
+        signInError instanceof AuthError
+          ? signInError.message
+          : 'Unable to sign in right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleForgotPassword = () => {
-    if (onForgotPassword) {
-      onForgotPassword();
-      return;
-    }
-    Alert.alert('Forgot Password', 'Navigate to your reset screen here.');
-  };
-
-  const handleNewUser = () => {
-    if (onCreateAccount) {
-      onCreateAccount();
-      return;
-    }
-    Alert.alert('Create Account', 'Navigate to registration here.');
+    Alert.alert(
+      'Forgot Password',
+      'Password reset is not connected in this development build. Please sign in with the email and password you registered on this device.',
+    );
   };
 
   return (
@@ -91,31 +102,65 @@ const WelcomeBackScreen: React.FC<WelcomeBackScreenProps> = ({
                 label="Email ID"
                 placeholder="Enter your email"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={value => {
+                  setEmail(value);
+                  setError(null);
+                }}
                 iconName="email"
                 keyboardType="email-address"
+                textContentType="emailAddress"
               />
 
               <InputField
                 label="Password"
                 placeholder="Enter your Password"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={value => {
+                  setPassword(value);
+                  setError(null);
+                }}
                 iconName="password"
-                secureTextEntry
+                secureTextEntry={!showPassword}
+                textContentType="password"
                 containerStyle={styles.lastField}
+                rightElement={
+                  <Pressable
+                    onPress={() => setShowPassword(previous => !previous)}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                  >
+                    <Ionicons
+                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                      size={18}
+                      color="#777777"
+                    />
+                  </Pressable>
+                }
               />
 
               <View style={styles.forgot}>
                 <ForgotPasswordLink onPress={handleForgotPassword} />
               </View>
 
+              {error ? <Text style={styles.error}>{error}</Text> : null}
+
               <View style={styles.button}>
-                <GradientButton title="Sign In" onPress={handleSignIn} />
+                <GradientButton
+                  title="Sign In"
+                  onPress={handleSignIn}
+                  loading={isSubmitting}
+                />
               </View>
 
               <View style={styles.footer}>
-                <AuthFooter text="New User?" accent onPress={handleNewUser} />
+                <AuthFooter
+                  text="New User?"
+                  highlight="Sign Up"
+                  onPress={() => navigation.navigate('CreateAccount')}
+                />
               </View>
             </View>
           </View>
@@ -189,8 +234,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
+  error: {
+    marginTop: 14,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+    color: '#D93025',
+    textAlign: 'center',
+  },
+
   button: {
-    marginTop: 44,
+    marginTop: 28,
   },
 
   footer: {
