@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import DashboardHeader from '../components/DashboardHeader';
 import RegisterClinicCard from '../components/RegisterClinicCard';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import type { AppScreenProps } from '../navigation/types';
 
 const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {

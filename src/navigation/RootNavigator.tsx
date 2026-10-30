@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from '../screens/SplashScreen';
 import AuthNavigator, { navigationTheme } from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Gate for the whole application:

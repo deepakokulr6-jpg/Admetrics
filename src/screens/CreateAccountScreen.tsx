@@ -19,7 +19,7 @@ import OtpInput from '../components/OtpInput';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import InputStatusIcon from '../components/InputStatusIcon';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { isValidEmail } from '../utils/validation';
 import type { AuthScreenProps } from '../navigation/types';
 

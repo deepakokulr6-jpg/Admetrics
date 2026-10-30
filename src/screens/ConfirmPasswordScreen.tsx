@@ -16,7 +16,7 @@ import AppLogo from '../components/AppLogo';
 import AuthHeader from '../components/AuthHeader';
 import InputField from '../components/InputField';
 import GradientButton from '../components/GradientButton';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { AuthError } from '../services/authService';
 import type { AuthScreenProps } from '../navigation/types';
 

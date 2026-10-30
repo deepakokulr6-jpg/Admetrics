@@ -12,7 +12,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import StepProgress from '../components/StepProgress';
 import InputField from '../components/InputField';
 import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../context/ClinicRegistrationContext';
+import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import { PersonalInfo } from '../types/clinic';
 import { isBlank, isValidEmail, isValidMobile } from '../utils/validation';
 import type { AppScreenProps } from '../navigation/types';

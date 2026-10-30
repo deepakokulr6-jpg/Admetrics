@@ -5,7 +5,7 @@ import {
   initialWindowMetrics,
 } from 'react-native-safe-area-context';
 
-import { AuthProvider } from './src/context/AuthContext';
+import { AuthProvider } from './src/contexts/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {

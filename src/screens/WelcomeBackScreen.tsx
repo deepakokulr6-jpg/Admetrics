@@ -19,7 +19,7 @@ import InputField from '../components/InputField';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import ForgotPasswordLink from '../components/ForgotPasswordLink';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { AuthError } from '../services/authService';
 import { isValidEmail } from '../utils/validation';
 import type { AuthScreenProps } from '../navigation/types';

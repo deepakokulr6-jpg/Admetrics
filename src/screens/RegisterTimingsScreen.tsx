@@ -12,7 +12,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import StepProgress from '../components/StepProgress';
 import WorkingHoursRow from '../components/WorkingHoursRow';
 import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../context/ClinicRegistrationContext';
+import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import { isBlank, isValidTime } from '../utils/validation';
 import type { AppScreenProps } from '../navigation/types';
 

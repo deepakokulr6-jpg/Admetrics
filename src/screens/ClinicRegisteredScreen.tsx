@@ -1,7 +1,7 @@
 import React from 'react';
 
 import SuccessScreenLayout from '../components/SuccessScreenLayout';
-import { useClinicRegistration } from '../context/ClinicRegistrationContext';
+import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import type { AppScreenProps } from '../navigation/types';
 
 const ClinicRegisteredScreen: React.FC<

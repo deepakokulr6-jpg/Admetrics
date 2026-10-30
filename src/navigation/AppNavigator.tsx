@@ -7,7 +7,7 @@ import RegisterPersonalScreen from '../screens/RegisterPersonalScreen';
 import RegisterTimingsScreen from '../screens/RegisterTimingsScreen';
 import RegisterPhotoScreen from '../screens/RegisterPhotoScreen';
 import ClinicRegisteredScreen from '../screens/ClinicRegisteredScreen';
-import { ClinicRegistrationProvider } from '../context/ClinicRegistrationContext';
+import { ClinicRegistrationProvider } from '../contexts/ClinicRegistrationContext';
 
 import type { AppStackParamList } from './types';
 
