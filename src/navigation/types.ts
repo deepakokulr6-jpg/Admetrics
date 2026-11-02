@@ -16,6 +16,8 @@ export type AuthStackParamList = {
 
 export type AppStackParamList = {
   Home: undefined;
+  A15Home: undefined;
+  Revenue: undefined;
   RegisterClinic: undefined;
   RegisterPersonal: undefined;
   RegisterTimings: undefined;
