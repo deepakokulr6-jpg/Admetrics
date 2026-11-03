@@ -7,8 +7,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  Alert,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import AppLogo from '../components/AppLogo';
 import AuthHeader from '../components/AuthHeader';
@@ -17,27 +20,78 @@ import OtpInput from '../components/OtpInput';
 import GradientButton from '../components/GradientButton';
 import AuthFooter from '../components/AuthFooter';
 import InputStatusIcon from '../components/InputStatusIcon';
+import { useAuth } from '../contexts/AuthContext';
+import { AuthError, DEVELOPMENT_OTP } from '../services/authService';
 import { isValidEmail } from '../utils/validation';
-import type { AuthScreenProps } from '../navigation/types';
+import type {
+  AuthScreenProps,
+  AuthStackParamList,
+} from '../navigation/types';
 
-const TEST_OTP = '123456';
+type OtpMode = 'signup' | 'reset';
+type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
+
+type OtpVerificationProps<RouteName extends OtpRouteName> = {
+  navigation: NativeStackNavigationProp<AuthStackParamList, RouteName>;
+  mode: OtpMode;
+  initialEmail?: string;
+};
 
 /**
- * Dedicated OTP verification screen. The main registration entry point handles
- * email + OTP on one screen, but this route remains available for flows that
- * separate the two steps.
+ * Shared OTP verification screen.
+ *
+ * The sign-up flow reaches it after the create-account step, while the
+ * forgot-password flow uses the same screen to verify the reset OTP before a
+ * short-lived reset token is handed to the confirm-password screen.
  */
-const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
+function OtpVerification<RouteName extends OtpRouteName>({
   navigation,
-  route,
-}) => {
-  const [email, setEmail] = useState(route.params.email);
+  mode,
+  initialEmail,
+}: OtpVerificationProps<RouteName>) {
+  const { requestPasswordReset, verifyPasswordResetOtp } = useAuth();
+  const isReset = mode === 'reset';
+
+  const [email, setEmail] = useState(initialEmail ?? '');
   const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(!isReset);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isEmailValid = isValidEmail(email);
 
-  const handleVerify = () => {
+  const handleSendOtp = async () => {
+    const trimmedEmail = email.trim();
+    setError(null);
+
+    if (!isEmailValid) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await requestPasswordReset(trimmedEmail);
+      setOtpSent(true);
+      setOtp('');
+      Alert.alert(
+        'OTP Sent',
+        `This is a development build, so no email was sent. Use ${DEVELOPMENT_OTP} to reset your password.`,
+      );
+    } catch (sendError) {
+      setError(
+        sendError instanceof AuthError
+          ? sendError.message
+          : 'Unable to send the OTP right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    const trimmedEmail = email.trim();
     setError(null);
 
     if (!isEmailValid) {
@@ -50,12 +104,54 @@ const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
       return;
     }
 
-    if (otp !== TEST_OTP) {
-      setError(`Incorrect OTP. Use ${TEST_OTP} in this development build.`);
+    if (!isReset && otp !== DEVELOPMENT_OTP) {
+      setError(
+        `Incorrect OTP. Use ${DEVELOPMENT_OTP} in this development build.`,
+      );
       return;
     }
 
-    navigation.navigate('ConfirmPassword', { email: email.trim() });
+    setIsSubmitting(true);
+
+    try {
+      if (isReset) {
+        const resetToken = await verifyPasswordResetOtp(trimmedEmail, otp);
+
+        navigation.navigate('ConfirmPassword', {
+          email: trimmedEmail,
+          mode: 'reset',
+          resetToken,
+        });
+        return;
+      }
+
+      navigation.navigate('ConfirmPassword', {
+        email: trimmedEmail,
+        mode: 'signup',
+      });
+    } catch (verifyError) {
+      setError(
+        verifyError instanceof AuthError
+          ? verifyError.message
+          : 'Unable to verify the OTP right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setError(null);
+
+    if (isReset) {
+      setOtpSent(false);
+      setOtp('');
+    }
+  };
+
+  const handleResendOtp = () => {
+    handleSendOtp();
   };
 
   return (
@@ -78,8 +174,12 @@ const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
             </View>
 
             <AuthHeader
-              title="Create Your Account"
-              subtitle="Enter your email address to get started"
+              title={isReset ? 'Forgot Password' : 'Create Your Account'}
+              subtitle={
+                isReset
+                  ? 'Enter your registered email to reset your password'
+                  : 'Enter your email address to get started'
+              }
             />
 
             <View style={styles.form}>
@@ -87,10 +187,7 @@ const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
                 label="Email ID"
                 placeholder="Enter your email"
                 value={email}
-                onChangeText={value => {
-                  setEmail(value);
-                  setError(null);
-                }}
+                onChangeText={handleEmailChange}
                 iconName="email"
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -101,19 +198,44 @@ const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
                 }
               />
 
-              <Text style={styles.otpLabel}>OTP</Text>
+              {isReset && otpSent ? (
+                <View style={styles.otpHeader}>
+                  <Text style={styles.otpLabel}>OTP</Text>
+
+                  <Pressable
+                    onPress={handleResendOtp}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel="Resend OTP"
+                  >
+                    <Text style={styles.resend}>Resend OTP</Text>
+                  </Pressable>
+                </View>
+              ) : (
+                <Text style={styles.otpLabel}>OTP</Text>
+              )}
 
               <OtpInput value={otp} onChangeText={setOtp} />
 
               {error ? <Text style={styles.error}>{error}</Text> : null}
 
               <View style={styles.button}>
-                <GradientButton title="Verify" onPress={handleVerify} />
+                <GradientButton
+                  title={isReset && !otpSent ? 'Get OTP' : 'Verify'}
+                  onPress={
+                    isReset && !otpSent ? handleSendOtp : handleVerify
+                  }
+                  loading={isSubmitting}
+                />
               </View>
 
               <View style={styles.footer}>
                 <AuthFooter
-                  text="Already have an account?"
+                  text={
+                    isReset
+                      ? 'Remember your password?'
+                      : 'Already have an account?'
+                  }
                   highlight="Log In"
                   onPress={() => navigation.navigate('Login')}
                 />
@@ -124,7 +246,22 @@ const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+}
+
+export const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
+  navigation,
+  route,
+}) => (
+  <OtpVerification
+    navigation={navigation}
+    mode="signup"
+    initialEmail={route.params.email}
+  />
+);
+
+export const ForgotPasswordScreen: React.FC<
+  AuthScreenProps<'ForgotPassword'>
+> = ({ navigation }) => <OtpVerification navigation={navigation} mode="reset" />;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -159,10 +296,25 @@ const styles = StyleSheet.create({
     marginTop: 28,
   },
 
+  otpHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+
   otpLabel: {
     fontSize: 12,
     lineHeight: 16,
     color: '#221E25',
+    marginBottom: 8,
+  },
+
+  resend: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
+    color: '#7B35FF',
     marginBottom: 8,
   },
 

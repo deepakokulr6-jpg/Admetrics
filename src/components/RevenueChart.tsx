@@ -92,7 +92,7 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
           />
         ))}
 
-        {data.days.map((day, index) => (
+        {data.days.map(day => (
           <React.Fragment key={day}>
             <Text />
           </React.Fragment>
