@@ -69,7 +69,6 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
       setOtpSent(true);
       setOtp('');
       showDevelopmentOtp();
-      navigation.navigate('VerifyOtp', { email: trimmedEmail });
     } catch {
       setError(
         'Unable to check this email right now. Please try again in a moment.',

@@ -141,7 +141,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
         title="Register Your Clinic"
         onBackPress={() => navigation.goBack()}
       />
-      <StepProgress currentStep={4} />
+      <StepProgress currentStep={3} />
 
       <ScrollView
         contentContainerStyle={styles.content}

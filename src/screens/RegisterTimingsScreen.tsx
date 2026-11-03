@@ -110,7 +110,9 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
         title="Register Your Clinic"
         onBackPress={() => navigation.goBack()}
       />
-      <StepProgress currentStep={3} />
+      {/* Legacy standalone route: the primary flow skips timings, so this
+          screen stays on the Personal step of the 3-step indicator. */}
+      <StepProgress currentStep={2} />
 
       <ScrollView
         contentContainerStyle={styles.content}
