@@ -13,7 +13,10 @@ import {
   login,
   logout,
   registerAccount,
+  requestPasswordReset as requestReset,
+  resetPassword as resetAccountPassword,
   restoreSession,
+  verifyPasswordResetOtp as verifyResetOtp,
 } from '../services/authService';
 
 type AuthContextValue = {
@@ -23,6 +26,13 @@ type AuthContextValue = {
   signUp: (email: string, password: string) => Promise<AuthUser>;
   signOut: () => Promise<void>;
   isEmailRegistered: (email: string) => Promise<boolean>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  verifyPasswordResetOtp: (email: string, otp: string) => Promise<string>;
+  resetPassword: (
+    email: string,
+    token: string,
+    newPassword: string,
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -80,6 +90,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     [],
   );
 
+  const requestPasswordReset = useCallback(
+    (email: string) => requestReset(email),
+    [],
+  );
+
+  const verifyPasswordResetOtp = useCallback(
+    (email: string, otp: string) => verifyResetOtp(email, otp),
+    [],
+  );
+
+  const resetPassword = useCallback(
+    (email: string, token: string, newPassword: string) =>
+      resetAccountPassword(email, token, newPassword),
+    [],
+  );
+
   const value = useMemo(
     () => ({
       user,
@@ -88,8 +114,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       signUp,
       signOut,
       isEmailRegistered,
+      requestPasswordReset,
+      verifyPasswordResetOtp,
+      resetPassword,
     }),
-    [user, isBootstrapping, signIn, signUp, signOut, isEmailRegistered],
+    [
+      user,
+      isBootstrapping,
+      signIn,
+      signUp,
+      signOut,
+      isEmailRegistered,
+      requestPasswordReset,
+      verifyPasswordResetOtp,
+      resetPassword,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -78,7 +78,9 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
       return;
     }
 
-    navigation.navigate('RegisterTimings');
+    // The required registration flow goes straight from personal details to
+    // photos. The timings screen remains available as a standalone route.
+    navigation.navigate('RegisterPhotos');
   };
 
   return (

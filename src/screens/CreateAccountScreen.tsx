@@ -69,6 +69,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
       setOtpSent(true);
       setOtp('');
       showDevelopmentOtp();
+      navigation.navigate('VerifyOtp', { email: trimmedEmail });
     } catch {
       setError(
         'Unable to check this email right now. Please try again in a moment.',
@@ -96,7 +97,10 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
       return;
     }
 
-    navigation.navigate('ConfirmPassword', { email: email.trim() });
+    navigation.navigate('ConfirmPassword', {
+      email: email.trim(),
+      mode: 'signup',
+    });
   };
 
   const handleResendOtp = () => {

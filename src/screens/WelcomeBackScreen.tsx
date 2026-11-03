@@ -453,14 +453,60 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import AppLogo from '../components/AppLogo';
+import { useAuth } from '../contexts/AuthContext';
+import { AuthError } from '../services/authService';
+import { isValidEmail } from '../utils/validation';
+import type { AuthScreenProps } from '../navigation/types';
 
-export default function LoginScreen() {
+const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
+  navigation,
+}) => {
+  const { signIn } = useAuth();
+
   const [email, setEmail] = useState('sridharokulr@gmail.com');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSignIn = async () => {
+    const trimmedEmail = email.trim();
+    setError(null);
+
+    if (!trimmedEmail || !password) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // A successful sign-in updates AuthContext, which swaps the root
+      // navigator to the authenticated stack. No manual navigation is needed.
+      await signIn(trimmedEmail, password);
+    } catch (signInError) {
+      setError(
+        signInError instanceof AuthError
+          ? signInError.message
+          : 'Unable to sign in right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -494,7 +540,10 @@ export default function LoginScreen() {
               placeholder="Enter your email"
               placeholderTextColor="#a1a1aa"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={value => {
+                setEmail(value);
+                setError(null);
+              }}
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -517,37 +566,64 @@ export default function LoginScreen() {
               placeholderTextColor="#a1a1aa"
               secureTextEntry={true}
               value={password}
-              onChangeText={setPassword}
+              onChangeText={value => {
+                setPassword(value);
+                setError(null);
+              }}
             />
           </View>
-          <TouchableOpacity style={styles.forgotPasswordContainer}>
+          <TouchableOpacity
+            style={styles.forgotPasswordContainer}
+            onPress={handleForgotPassword}
+            accessibilityRole="button"
+            accessibilityLabel="Forgot Password?"
+          >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
 
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
         {/* Gradient Sign In Button */}
-        <TouchableOpacity activeOpacity={0.8} style={styles.buttonWrapper}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.buttonWrapper}
+          onPress={handleSignIn}
+          disabled={isSubmitting}
+          accessibilityRole="button"
+          accessibilityState={{ busy: isSubmitting, disabled: isSubmitting }}
+        >
           <LinearGradient
             colors={['#0265FB', '#B43AFC']}
             start={{ x: 0.0, y: 0.2 }}
             end={{ x: 1.0, y: 0.8 }}
             style={styles.signInButton}
           >
-            <Text style={styles.signInButtonText}>Sign In</Text>
+            {isSubmitting ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.signInButtonText}>Sign In</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
 
         {/* New User Footer Link */}
         <View style={styles.newUserContainer}>
           <Text style={styles.newUserText}>New User? </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CreateAccount')}
+            accessibilityRole="button"
+            accessibilityLabel="Sign Up"
+          >
             <Text style={styles.signUpLinkText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+};
+
+export default WelcomeBackScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -616,6 +692,14 @@ const styles = StyleSheet.create({
     color: '#B43AFC',
     fontSize: 13,
     fontWeight: '500',
+  },
+  error: {
+    marginTop: 14,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+    color: '#D93025',
+    textAlign: 'center',
   },
   buttonWrapper: {
     marginTop: 24,

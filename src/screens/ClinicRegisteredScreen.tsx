@@ -13,7 +13,7 @@ const ClinicRegisteredScreen: React.FC<
     resetDraft();
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Home' }],
+      routes: [{ name: 'A15Home' }],
     });
   };
 

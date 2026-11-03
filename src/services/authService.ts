@@ -16,7 +16,13 @@ import * as Keychain from 'react-native-keychain';
 
 const ACCOUNTS_KEY = '@admetrics/accounts/v1';
 const SESSION_KEY = '@admetrics/session/v1';
+const LOGGED_OUT_KEY = '@admetrics/logged-out/v1';
 const KEYCHAIN_SERVICE = 'com.admetrics.session';
+
+/** Development-only OTP used by the local auth flows. */
+export const DEVELOPMENT_OTP = '123456';
+
+const PASSWORD_RESET_TTL_MS = 10 * 60 * 1000;
 
 export type AuthUser = {
   email: string;
@@ -33,6 +39,18 @@ type StoredSession = {
   token: string;
   createdAt: string;
 };
+
+type PasswordResetTicket = {
+  token: string;
+  expiresAt: number;
+};
+
+/**
+ * Password-reset tickets are intentionally kept in memory: they only need to
+ * survive long enough for the user to move from OTP verification to the
+ * confirm-password screen. A real backend would issue a short-lived token.
+ */
+const passwordResetTickets = new Map<string, PasswordResetTicket>();
 
 export class AuthError extends Error {
   constructor(message: string) {
@@ -119,6 +137,13 @@ const writeAccounts = async (accounts: StoredAccount[]): Promise<void> => {
 };
 
 const persistSession = async (session: StoredSession): Promise<void> => {
+  // A fresh sign-in supersedes any previous logout.
+  try {
+    await AsyncStorage.removeItem(LOGGED_OUT_KEY);
+  } catch (error) {
+    console.warn('[authService] Unable to clear logout marker', error);
+  }
+
   // Keychain is the preferred store on Android/iOS. AsyncStorage keeps a
   // fallback so the app still restores a session on devices where the native
   // keychain module is unavailable.
@@ -138,6 +163,14 @@ const persistSession = async (session: StoredSession): Promise<void> => {
 };
 
 const clearSession = async (): Promise<void> => {
+  // The marker guarantees that a stale keychain entry cannot sign the user
+  // back in if resetGenericPassword fails (for example on some devices).
+  try {
+    await AsyncStorage.setItem(LOGGED_OUT_KEY, '1');
+  } catch (error) {
+    console.warn('[authService] Unable to persist logout marker', error);
+  }
+
   try {
     await Keychain.resetGenericPassword({ service: KEYCHAIN_SERVICE });
   } catch (error) {
@@ -197,6 +230,97 @@ export const isEmailRegistered = async (email: string): Promise<boolean> => {
 };
 
 /**
+ * Starts the local password-reset flow. In this development build no email is
+ * sent; callers show the fixed DEVELOPMENT_OTP instead.
+ */
+export const requestPasswordReset = async (email: string): Promise<void> => {
+  const accounts = await readAccounts();
+
+  if (!findAccount(accounts, email)) {
+    throw new AuthError(
+      'No account found for this email. Please create an account first.',
+    );
+  }
+};
+
+/**
+ * Verifies the development OTP and issues a short-lived reset token. The token
+ * must be supplied when changing the password so the confirm-password screen
+ * cannot be reached without verification.
+ */
+export const verifyPasswordResetOtp = async (
+  email: string,
+  otp: string,
+): Promise<string> => {
+  const normalizedEmail = normalizeEmail(email);
+  const accounts = await readAccounts();
+
+  if (!findAccount(accounts, normalizedEmail)) {
+    throw new AuthError(
+      'No account found for this email. Please create an account first.',
+    );
+  }
+
+  if (otp.trim() !== DEVELOPMENT_OTP) {
+    throw new AuthError('Incorrect OTP. Please try again.');
+  }
+
+  const token = createToken();
+  passwordResetTickets.set(normalizedEmail, {
+    token,
+    expiresAt: Date.now() + PASSWORD_RESET_TTL_MS,
+  });
+
+  return token;
+};
+
+/**
+ * Changes the password for an existing account. It never creates a new
+ * account and requires a token produced by verifyPasswordResetOtp.
+ */
+export const resetPassword = async (
+  email: string,
+  token: string,
+  newPassword: string,
+): Promise<void> => {
+  const normalizedEmail = normalizeEmail(email);
+  const ticket = passwordResetTickets.get(normalizedEmail);
+
+  if (
+    !ticket ||
+    !token ||
+    ticket.token !== token ||
+    ticket.expiresAt <= Date.now()
+  ) {
+    passwordResetTickets.delete(normalizedEmail);
+    throw new AuthError(
+      'Your password reset session has expired. Please start again.',
+    );
+  }
+
+  const accounts = await readAccounts();
+  const accountIndex = accounts.findIndex(
+    account => account.email === normalizedEmail,
+  );
+
+  if (accountIndex === -1) {
+    passwordResetTickets.delete(normalizedEmail);
+    throw new AuthError(
+      'No account found for this email. Please create an account first.',
+    );
+  }
+
+  const updatedAccounts = [...accounts];
+  updatedAccounts[accountIndex] = {
+    ...updatedAccounts[accountIndex],
+    passwordHash: hashPassword(normalizedEmail, newPassword),
+  };
+
+  await writeAccounts(updatedAccounts);
+  passwordResetTickets.delete(normalizedEmail);
+};
+
+/**
  * Validates local credentials and persists the session.
  */
 export const login = async (
@@ -232,6 +356,19 @@ export const login = async (
 export const restoreSession = async (): Promise<AuthUser | null> => {
   let email: string | null = null;
   let token: string | null = null;
+
+  try {
+    const loggedOut = await AsyncStorage.getItem(LOGGED_OUT_KEY);
+
+    if (loggedOut === '1') {
+      // The user explicitly signed out. Clear any keychain entry that could
+      // not be removed earlier and keep the sign-in screen on screen.
+      await clearSession();
+      return null;
+    }
+  } catch (error) {
+    console.warn('[authService] Unable to read logout marker', error);
+  }
 
   try {
     const credentials = await Keychain.getGenericPassword({
@@ -281,10 +418,13 @@ export const restoreSession = async (): Promise<AuthUser | null> => {
 };
 
 export const logout = async (): Promise<void> => {
+  passwordResetTickets.clear();
   await clearSession();
 };
 
 export const resetLocalAuthForTests = async (): Promise<void> => {
   await AsyncStorage.removeItem(ACCOUNTS_KEY);
+  passwordResetTickets.clear();
   await clearSession();
+  await AsyncStorage.removeItem(LOGGED_OUT_KEY);
 };
