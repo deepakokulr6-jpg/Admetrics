@@ -443,6 +443,432 @@
 //=============================================updated for hex code and colors===================================//
 
 // //===================================gradient changes================================//
+// import React, { useState } from 'react';
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   TextInput,
+//   TouchableOpacity,
+//   SafeAreaView,
+//   KeyboardAvoidingView,
+//   Platform,
+// } from 'react-native';
+// import Feather from 'react-native-vector-icons/Feather';
+// import LinearGradient from 'react-native-linear-gradient';
+// import AppLogo from '../components/AppLogo';
+
+// export default function LoginScreen() {
+//   const [email, setEmail] = useState('sridharokulr@gmail.com');
+//   const [password, setPassword] = useState('');
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <KeyboardAvoidingView
+//         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+//         style={styles.innerContainer}
+//       >
+//         {/* Logo Section */}
+//         <View style={styles.logoContainer}>
+//           <AppLogo width={160} />
+//         </View>
+
+//         {/* Header Text */}
+//         <Text style={styles.title}>Welcome Back!</Text>
+//         <Text style={styles.subtitle}>
+//           Sign in to continue to <Text style={styles.brandText}>Admetrics</Text>
+//         </Text>
+
+//         {/* Email Input Group */}
+//         <View style={styles.inputGroup}>
+//           <Text style={styles.label}>Email ID</Text>
+//           <View style={styles.inputContainer}>
+//             <Feather
+//               name="user"
+//               size={20}
+//               color="#71717a"
+//               style={styles.inputIcon}
+//             />
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your email"
+//               placeholderTextColor="#a1a1aa"
+//               value={email}
+//               onChangeText={setEmail}
+//               keyboardType="email-address"
+//               autoCapitalize="none"
+//             />
+//           </View>
+//         </View>
+
+//         {/* Password Input Group */}
+//         <View style={styles.inputGroup}>
+//           <Text style={styles.label}>Password</Text>
+//           <View style={styles.inputContainer}>
+//             <Feather
+//               name="lock"
+//               size={20}
+//               color="#71717a"
+//               style={styles.inputIcon}
+//             />
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your Password"
+//               placeholderTextColor="#a1a1aa"
+//               secureTextEntry={true}
+//               value={password}
+//               onChangeText={setPassword}
+//             />
+//           </View>
+//           <TouchableOpacity style={styles.forgotPasswordContainer}>
+//             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         {/* Gradient Sign In Button */}
+//         <TouchableOpacity activeOpacity={0.8} style={styles.buttonWrapper}>
+//           <LinearGradient
+//             colors={['#0265FB', '#B43AFC']}
+//             start={{ x: 0.0, y: 0.2 }}
+//             end={{ x: 1.0, y: 0.8 }}
+//             style={styles.signInButton}
+//           >
+//             <Text style={styles.signInButtonText}>Sign In</Text>
+//           </LinearGradient>
+//         </TouchableOpacity>
+
+//         {/* New User Footer Link */}
+//         <View style={styles.newUserContainer}>
+//           <Text style={styles.newUserText}>New User? </Text>
+//           <TouchableOpacity>
+//             <Text style={styles.signUpLinkText}>Sign Up</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </KeyboardAvoidingView>
+//     </SafeAreaView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#ffffff',
+//   },
+//   innerContainer: {
+//     flex: 1,
+//     paddingHorizontal: 24,
+//     justifyContent: 'center',
+//   },
+//   logoContainer: {
+//     alignItems: 'center',
+//     marginBottom: 20,
+//   },
+//   title: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     color: '#18181b',
+//     textAlign: 'center',
+//     marginBottom: 6,
+//   },
+//   subtitle: {
+//     fontSize: 14,
+//     color: '#71717a',
+//     textAlign: 'center',
+//     marginBottom: 32,
+//   },
+//   brandText: {
+//     color: '#B43AFC',
+//     fontWeight: '600',
+//   },
+//   inputGroup: {
+//     marginBottom: 18,
+//   },
+//   label: {
+//     fontSize: 13,
+//     color: '#3f3f46',
+//     marginBottom: 6,
+//     fontWeight: '500',
+//   },
+//   inputContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: '#d4d4d8',
+//     borderRadius: 12,
+//     backgroundColor: '#ffffff',
+//     paddingHorizontal: 14,
+//     height: 52,
+//   },
+//   inputIcon: {
+//     marginRight: 10,
+//   },
+//   input: {
+//     flex: 1,
+//     fontSize: 15,
+//     color: '#18181b',
+//     paddingLeft: 4,
+//   },
+//   forgotPasswordContainer: {
+//     alignItems: 'flex-end',
+//     marginTop: 8,
+//   },
+//   forgotPasswordText: {
+//     color: '#B43AFC',
+//     fontSize: 13,
+//     fontWeight: '500',
+//   },
+//   buttonWrapper: {
+//     marginTop: 24,
+//     borderRadius: 28,
+//     overflow: 'hidden',
+//     shadowColor: '#0265FB',
+//     shadowOffset: { width: 0, height: 4 },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 8,
+//     elevation: 4,
+//   },
+//   signInButton: {
+//     height: 52,
+//     borderRadius: 28,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     width: '100%',
+//   },
+//   signInButtonText: {
+//     color: '#ffffff',
+//     fontSize: 16,
+//     fontWeight: '600',
+//   },
+//   newUserContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'center',
+//     marginTop: 20,
+//   },
+//   newUserText: {
+//     color: '#71717a',
+//     fontSize: 14,
+//   },
+//   signUpLinkText: {
+//     color: '#B43AFC',
+//     fontSize: 14,
+//     fontWeight: '600',
+//   },
+// });
+//=============================================updated complete screen ===================================//
+// import React, { useState } from 'react';
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   TextInput,
+//   TouchableOpacity,
+//   SafeAreaView,
+//   KeyboardAvoidingView,
+//   Platform,
+// } from 'react-native';
+// import Feather from 'react-native-vector-icons/Feather';
+// import LinearGradient from 'react-native-linear-gradient';
+// import AppLogo from '../components/AppLogo';
+
+// export default function WelcomeBackScreen() {
+//   const [email, setEmail] = useState('sridharokulr@gmail.com');
+//   const [password, setPassword] = useState('');
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <KeyboardAvoidingView
+//         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+//         style={styles.innerContainer}
+//       >
+//         {/* Logo Section */}
+//         <View style={styles.logoContainer}>
+//           <AppLogo width={160} />
+//         </View>
+
+//         {/* Header Text */}
+//         <Text style={styles.title}>Welcome Back!</Text>
+
+//         {/* Subtitle */}
+//         <Text style={styles.subtitle}>
+//           Sign in to continue to <Text style={styles.brandText}>Admetrics</Text>
+//         </Text>
+
+//         {/* Email Input Group */}
+//         <View style={styles.inputGroup}>
+//           <Text style={styles.label}>Email ID</Text>
+//           <View style={styles.inputContainer}>
+//             <Feather
+//               name="user"
+//               size={18}
+//               color="#71717a"
+//               style={styles.inputIcon}
+//             />
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your email"
+//               placeholderTextColor="#a1a1aa"
+//               value={email}
+//               onChangeText={setEmail}
+//               keyboardType="email-address"
+//               autoCapitalize="none"
+//             />
+//           </View>
+//         </View>
+
+//         {/* Password Input Group */}
+//         <View style={styles.inputGroup}>
+//           <Text style={styles.label}>Password</Text>
+//           <View style={styles.inputContainer}>
+//             <Feather
+//               name="lock"
+//               size={18}
+//               color="#71717a"
+//               style={styles.inputIcon}
+//             />
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your Password"
+//               placeholderTextColor="#a1a1aa"
+//               secureTextEntry={true}
+//               value={password}
+//               onChangeText={setPassword}
+//             />
+//           </View>
+//           <TouchableOpacity style={styles.forgotPasswordContainer}>
+//             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         {/* Gradient Sign In Button */}
+//         <TouchableOpacity activeOpacity={0.8} style={styles.buttonWrapper}>
+//           <LinearGradient
+//             colors={['#0265FB', '#B43AFC']}
+//             start={{ x: 0, y: 0 }}
+//             end={{ x: 1, y: 0 }}
+//             style={styles.signInButton}
+//           >
+//             <Text style={styles.signInButtonText}>Sign In</Text>
+//           </LinearGradient>
+//         </TouchableOpacity>
+
+//         {/* New User Link - Matched to Figma 14px Bold & Brand Gradient Color */}
+//         <TouchableOpacity style={styles.newUserContainer} activeOpacity={0.7}>
+//           <Text style={styles.newUserText}>New User?</Text>
+//         </TouchableOpacity>
+//       </KeyboardAvoidingView>
+//     </SafeAreaView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#ffffff',
+//   },
+//   innerContainer: {
+//     flex: 1,
+//     paddingHorizontal: 24,
+//     justifyContent: 'center',
+//   },
+//   logoContainer: {
+//     alignItems: 'center',
+//     marginBottom: 20,
+//   },
+//   title: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     color: '#221E25',
+//     textAlign: 'center',
+//     marginBottom: 6,
+//   },
+//   subtitle: {
+//     fontSize: 14,
+//     color: '#221E25',
+//     textAlign: 'center',
+//     marginBottom: 32,
+//     alignSelf: 'center',
+//   },
+//   brandText: {
+//     color: '#B43AFC',
+//     fontWeight: '600',
+//   },
+//   inputGroup: {
+//     marginBottom: 18,
+//     width: '100%',
+//     alignSelf: 'center',
+//   },
+//   label: {
+//     fontSize: 12,
+//     color: '#221E25',
+//     marginBottom: 6,
+//     fontWeight: '500',
+//   },
+//   inputContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: '#AAAAAA',
+//     borderRadius: 12,
+//     backgroundColor: '#ffffff',
+//     paddingHorizontal: 14,
+//     height: 40,
+//     width: '100%',
+//   },
+//   inputIcon: {
+//     marginRight: 10,
+//   },
+//   input: {
+//     flex: 1,
+//     fontSize: 14,
+//     color: '#18181b',
+//     paddingLeft: 4,
+//     height: '100%',
+//   },
+//   forgotPasswordContainer: {
+//     alignItems: 'flex-end',
+//     marginTop: 8,
+//   },
+//   forgotPasswordText: {
+//     color: '#B43AFC',
+//     fontSize: 12,
+//     fontWeight: '500',
+//   },
+//   buttonWrapper: {
+//     marginTop: 24,
+//     borderRadius: 30,
+//     overflow: 'hidden',
+//     shadowColor: '#0265FB',
+//     shadowOffset: { width: 0, height: 4 },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 8,
+//     elevation: 4,
+//     alignSelf: 'center',
+//     width: '100%',
+//   },
+//   signInButton: {
+//     height: 48,
+//     borderRadius: 30,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     width: '100%',
+//   },
+//   signInButtonText: {
+//     color: '#ffffff',
+//     fontSize: 16,
+//     fontWeight: '600',
+//   },
+//   newUserContainer: {
+//     alignItems: 'center',
+//     marginTop: 20,
+//   },
+//   newUserText: {
+//     color: '#B43AFC', // Matches Figma gradient color stop
+//     fontSize: 14,     // Matches 14px Figma spec
+//     fontWeight: '700', // Matches Inter Bold from Figma inspector
+//   },
+// });
+//=============================================updated screen with functionality ===================================//
+
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -453,59 +879,22 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import AppLogo from '../components/AppLogo';
-import { useAuth } from '../contexts/AuthContext';
-import { AuthError } from '../services/authService';
-import { isValidEmail } from '../utils/validation';
-import type { AuthScreenProps } from '../navigation/types';
 
-const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
-  navigation,
-}) => {
-  const { signIn } = useAuth();
-
-  const [email, setEmail] = useState('sridharokulr@gmail.com');
+export default function WelcomeBackScreen({ navigation }: any) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSignIn = async () => {
-    const trimmedEmail = email.trim();
-    setError(null);
-
-    if (!trimmedEmail || !password) {
-      setError('Please enter your email and password.');
+  const handleSignIn = () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password.');
       return;
     }
-
-    if (!isValidEmail(trimmedEmail)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // A successful sign-in updates AuthContext, which swaps the root
-      // navigator to the authenticated stack. No manual navigation is needed.
-      await signIn(trimmedEmail, password);
-    } catch (signInError) {
-      setError(
-        signInError instanceof AuthError
-          ? signInError.message
-          : 'Unable to sign in right now. Please try again.',
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+    Alert.alert('Success', `Signing in with ${email}`);
   };
 
   return (
@@ -521,6 +910,8 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
 
         {/* Header Text */}
         <Text style={styles.title}>Welcome Back!</Text>
+
+        {/* Subtitle */}
         <Text style={styles.subtitle}>
           Sign in to continue to <Text style={styles.brandText}>Admetrics</Text>
         </Text>
@@ -531,7 +922,7 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
           <View style={styles.inputContainer}>
             <Feather
               name="user"
-              size={20}
+              size={18}
               color="#71717a"
               style={styles.inputIcon}
             />
@@ -540,10 +931,7 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
               placeholder="Enter your email"
               placeholderTextColor="#a1a1aa"
               value={email}
-              onChangeText={value => {
-                setEmail(value);
-                setError(null);
-              }}
+              onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -556,7 +944,7 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
           <View style={styles.inputContainer}>
             <Feather
               name="lock"
-              size={20}
+              size={18}
               color="#71717a"
               style={styles.inputIcon}
             />
@@ -566,64 +954,51 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
               placeholderTextColor="#a1a1aa"
               secureTextEntry={true}
               value={password}
-              onChangeText={value => {
-                setPassword(value);
-                setError(null);
-              }}
+              onChangeText={setPassword}
             />
           </View>
           <TouchableOpacity
             style={styles.forgotPasswordContainer}
-            onPress={handleForgotPassword}
-            accessibilityRole="button"
-            accessibilityLabel="Forgot Password?"
+            onPress={() =>
+              Alert.alert(
+                'Forgot Password',
+                'Password recovery flow triggered.',
+              )
+            }
           >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-
-        {error ? <Text style={styles.error}>{error}</Text> : null}
 
         {/* Gradient Sign In Button */}
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.buttonWrapper}
           onPress={handleSignIn}
-          disabled={isSubmitting}
-          accessibilityRole="button"
-          accessibilityState={{ busy: isSubmitting, disabled: isSubmitting }}
         >
           <LinearGradient
             colors={['#0265FB', '#B43AFC']}
-            start={{ x: 0.0, y: 0.2 }}
-            end={{ x: 1.0, y: 0.8 }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.signInButton}
+            pointerEvents="none"
           >
-            {isSubmitting ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.signInButtonText}>Sign In</Text>
-            )}
+            <Text style={styles.signInButtonText}>Sign In</Text>
           </LinearGradient>
         </TouchableOpacity>
 
         {/* New User Footer Link */}
-        <View style={styles.newUserContainer}>
-          <Text style={styles.newUserText}>New User? </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CreateAccount')}
-            accessibilityRole="button"
-            accessibilityLabel="Sign Up"
-          >
-            <Text style={styles.signUpLinkText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.newUserContainer}
+          activeOpacity={0.7}
+          onPress={() => navigation?.navigate('CreateAccount')}
+        >
+          <Text style={styles.newUserText}>New User?</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
-
-export default WelcomeBackScreen;
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -640,17 +1015,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#18181b',
+    color: '#221E25',
     textAlign: 'center',
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 14,
-    color: '#71717a',
+    color: '#221E25',
     textAlign: 'center',
     marginBottom: 32,
+    alignSelf: 'center',
   },
   brandText: {
     color: '#B43AFC',
@@ -658,10 +1034,12 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     marginBottom: 18,
+    width: '100%',
+    alignSelf: 'center',
   },
   label: {
-    fontSize: 13,
-    color: '#3f3f46',
+    fontSize: 12,
+    color: '#221E25',
     marginBottom: 6,
     fontWeight: '500',
   },
@@ -669,20 +1047,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#d4d4d8',
+    borderColor: '#AAAAAA',
     borderRadius: 12,
     backgroundColor: '#ffffff',
     paddingHorizontal: 14,
-    height: 52,
+    height: 40,
+    width: '100%',
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 14,
     color: '#18181b',
     paddingLeft: 4,
+    height: '100%',
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',
@@ -690,30 +1070,24 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     color: '#B43AFC',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  error: {
-    marginTop: 14,
     fontSize: 12,
-    lineHeight: 16,
     fontWeight: '500',
-    color: '#D93025',
-    textAlign: 'center',
   },
   buttonWrapper: {
     marginTop: 24,
-    borderRadius: 28,
+    borderRadius: 30,
     overflow: 'hidden',
     shadowColor: '#0265FB',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
+    alignSelf: 'center',
+    width: '100%',
   },
   signInButton: {
-    height: 52,
-    borderRadius: 28,
+    height: 48,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
@@ -724,17 +1098,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   newUserContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 20,
   },
   newUserText: {
-    color: '#71717a',
-    fontSize: 14,
-  },
-  signUpLinkText: {
     color: '#B43AFC',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
