@@ -48,10 +48,7 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"
-      />
+      <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
         <HomeHeader name="Ramkumar" />
