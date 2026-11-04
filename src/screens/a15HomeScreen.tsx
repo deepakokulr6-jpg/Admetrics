@@ -18,7 +18,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getClinicRegistrations } from '../services/clinicService';
 import { ClinicRegistrationRecord } from '../types/clinic';
 
-type TabName = 'Clinics' | 'Logs' | 'Revenue' | 'Receipt';
+type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
 
 type Props = {
   navigation: {
@@ -81,13 +81,13 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
       case 'Clinics':
         // Already on the Clinics screen.
         break;
-      case 'Logs':
+      case 'Statement':
         navigation.navigate('Logs');
         break;
       case 'Revenue':
         navigation.navigate('Revenue');
         break;
-      case 'Receipt':
+      case 'Support':
         navigation.navigate('Receipt');
         break;
     }

@@ -94,11 +94,11 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
             <Feather
               name="user"
               size={20}
-              color="#71717a"
+              color="#221E25"
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, email.length > 0 && styles.inputFilled]}
               placeholder="Enter your email"
               placeholderTextColor="#a1a1aa"
               value={email}
@@ -126,11 +126,11 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
             <Feather
               name="lock"
               size={20}
-              color="#71717a"
+              color="#221E25"
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, password.length > 0 && styles.inputFilled]}
               placeholder="Enter your Password"
               placeholderTextColor="#a1a1aa"
               secureTextEntry={true}
@@ -256,8 +256,13 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: '#18181b',
+    fontWeight: '400',
+    color: '#221E25',
     paddingLeft: 4,
+  },
+
+  inputFilled: {
+    fontWeight: '600',
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',

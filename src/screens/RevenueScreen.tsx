@@ -15,7 +15,7 @@ import RevenueChart from '../components/RevenueChart';
 import RevenuePeriodDropdown from '../components/RevenuePeriodDropdown';
 import TVDisplaysSection from '../components/TVDisplaysSection';
 
-type TabName = 'Clinics' | 'Logs' | 'Revenue' | 'Receipt';
+type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
 
 type Props = {
   navigation: {
@@ -35,9 +35,9 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate('Home');
     } else if (tab === 'Revenue') {
       // Already on the Revenue screen.
-    } else if (tab === 'Logs') {
+    } else if (tab === 'Statement') {
       navigation.navigate('Logs');
-    } else if (tab === 'Receipt') {
+    } else if (tab === 'Support') {
       navigation.navigate('Receipt');
     }
   };

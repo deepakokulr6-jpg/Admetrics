@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -138,40 +146,45 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       />
       <StepProgress currentStep={3} />
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={styles.heading}>Photos</Text>
-        <Text style={styles.instruction}>
-          Only .jpg/.png files with 5mb max.
-        </Text>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.heading}>Photos</Text>
+          <Text style={styles.instruction}>
+            Only .jpg/.png files with 5mb max.
+          </Text>
 
-        <View style={styles.photoRow}>
-          <PhotoUploadItem
-            title="Entrance Photo"
-            imageUri={draft.photos.entrance}
-            onPress={() => handlePhotoPress('entrance', 'Entrance Photo')}
-            onRemove={() => setPhoto('entrance', null)}
-          />
+          <View style={styles.photoRow}>
+            <PhotoUploadItem
+              title="Entrance Photo"
+              imageUri={draft.photos.entrance}
+              onPress={() => handlePhotoPress('entrance', 'Entrance Photo')}
+              onRemove={() => setPhoto('entrance', null)}
+            />
 
-          <PhotoUploadItem
-            title="Reception Photo"
-            imageUri={draft.photos.reception}
-            onPress={() => handlePhotoPress('reception', 'Reception Photo')}
-            onRemove={() => setPhoto('reception', null)}
-          />
-        </View>
+            <PhotoUploadItem
+              title="Reception Photo"
+              imageUri={draft.photos.reception}
+              onPress={() => handlePhotoPress('reception', 'Reception Photo')}
+              onRemove={() => setPhoto('reception', null)}
+            />
+          </View>
 
-        <View style={styles.button}>
-          <GradientButton
-            title="Register"
-            onPress={handleRegister}
-            loading={isSaving}
-          />
-        </View>
-      </ScrollView>
+          <View style={styles.button}>
+            <GradientButton
+              title="Register"
+              onPress={handleRegister}
+              loading={isSaving}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -180,6 +193,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+
+  flex: {
+    flex: 1,
   },
 
   content: {

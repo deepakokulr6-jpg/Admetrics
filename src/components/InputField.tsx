@@ -101,6 +101,7 @@ const InputField: React.FC<InputFieldProps> = ({
             styles.input,
             InputIcon ? styles.inputWithIcon : null,
             multiline && styles.multilineInput,
+            value.length > 0 && styles.inputFilled,
           ]}
           placeholder={placeholder}
           placeholderTextColor="#AAAAAA"
@@ -180,6 +181,11 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     fontSize: 14,
     fontWeight: '400',
+    color: '#221E25',
+  },
+
+  inputFilled: {
+    fontWeight: '600',
     color: '#221E25',
   },
 
