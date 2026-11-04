@@ -23,10 +23,7 @@ import InputStatusIcon from '../components/InputStatusIcon';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthError, DEVELOPMENT_OTP } from '../services/authService';
 import { isValidEmail } from '../utils/validation';
-import type {
-  AuthScreenProps,
-  AuthStackParamList,
-} from '../navigation/types';
+import type { AuthScreenProps, AuthStackParamList } from '../navigation/types';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
@@ -222,9 +219,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
               <View style={styles.button}>
                 <GradientButton
                   title={isReset && !otpSent ? 'Get OTP' : 'Verify'}
-                  onPress={
-                    isReset && !otpSent ? handleSendOtp : handleVerify
-                  }
+                  onPress={isReset && !otpSent ? handleSendOtp : handleVerify}
                   loading={isSubmitting}
                 />
               </View>
@@ -261,7 +256,9 @@ export const VerifyOtpScreen: React.FC<AuthScreenProps<'VerifyOtp'>> = ({
 
 export const ForgotPasswordScreen: React.FC<
   AuthScreenProps<'ForgotPassword'>
-> = ({ navigation }) => <OtpVerification navigation={navigation} mode="reset" />;
+> = ({ navigation }) => (
+  <OtpVerification navigation={navigation} mode="reset" />
+);
 
 const styles = StyleSheet.create({
   safeArea: {

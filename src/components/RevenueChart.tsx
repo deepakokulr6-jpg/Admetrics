@@ -1,20 +1,12 @@
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Svg, {
-  Line,
-  Circle,
-  Polyline,
-} from 'react-native-svg';
+import Svg, { Line, Circle, Polyline } from 'react-native-svg';
 
 type Props = {
   period: string;
 };
 
-const chartData: Record<
-  string,
-  { days: string[]; values: number[] }
-> = {
+const chartData: Record<string, { days: string[]; values: number[] }> = {
   '7 days': {
     days: ['23', '24', '25', '26', '27', '28', '29'],
     values: [3, 4.5, 1.9, 5.2, 2.3, 2.9, 4.7],
@@ -49,13 +41,15 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
     return { x, y };
   });
 
-  const polylinePoints = points
-    .map(point => `${point.x},${point.y}`)
-    .join(' ');
+  const polylinePoints = points.map(point => `${point.x},${point.y}`).join(' ');
 
   return (
     <View style={styles.card}>
-      <Svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
+      <Svg
+        width="100%"
+        height={chartHeight}
+        viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+      >
         {[1, 2, 3, 4, 5, 6].map(value => {
           const y = top + plotHeight - (value / 6) * plotHeight;
 

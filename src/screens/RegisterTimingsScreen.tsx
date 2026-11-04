@@ -16,6 +16,7 @@ import WorkingHoursRow from '../components/WorkingHoursRow';
 import GradientButton from '../components/GradientButton';
 import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import { isBlank, isValidTime } from '../utils/validation';
+import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../navigation/types';
 
 const validateHours = (
@@ -54,6 +55,8 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
 }) => {
   const { draft, updateWorkingHour } = useClinicRegistration();
   const { workingHours } = draft;
+
+  const { scrollRef, onScroll, onLayout } = useKeyboardAutoScroll();
 
   const [errors, setErrors] = useState<Record<number, string>>({});
 
@@ -121,9 +124,12 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
+          ref={scrollRef}
           style={styles.flex}
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
+          onScroll={onScroll}
+          onLayout={onLayout}
           showsVerticalScrollIndicator={false}
         >
           <Text style={styles.heading}>Working Hours</Text>

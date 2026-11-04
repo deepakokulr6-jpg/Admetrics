@@ -18,7 +18,7 @@ const tabs: { name: TabName; label: string; icon: string }[] = [
 
 const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => (
   <View style={styles.container}>
-    {tabs.map((t) => {
+    {tabs.map(t => {
       const isActive = activeTab === t.name;
       return (
         <TouchableOpacity
