@@ -5,6 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,9 +17,14 @@ import GradientButton from '../components/GradientButton';
 import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import { PersonalInfo } from '../types/clinic';
 import { isBlank, isValidEmail, isValidMobile } from '../utils/validation';
+import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../navigation/types';
 
 type PersonalErrors = Partial<Record<keyof PersonalInfo, string>>;
+
+// The last fields sit right above the Next button, so the form scrolls to its
+// end when one of them is focused to keep the button above the keyboard.
+const BOTTOM_FIELDS: (keyof PersonalInfo)[] = ['mobile', 'email'];
 
 const validatePersonal = (personal: PersonalInfo): PersonalErrors => {
   const errors: PersonalErrors = {};
@@ -51,7 +58,14 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
   const { draft, updatePersonalInfo } = useClinicRegistration();
   const { personal } = draft;
 
+  const { scrollRef, onScroll, onLayout, setAutoScroll } =
+    useKeyboardAutoScroll();
+
   const [errors, setErrors] = useState<PersonalErrors>({});
+
+  const focusProps = (field: keyof PersonalInfo) => ({
+    onFocus: () => setAutoScroll(BOTTOM_FIELDS.includes(field)),
+  });
 
   const update = (key: keyof PersonalInfo, value: string) => {
     updatePersonalInfo({ [key]: value });
@@ -91,59 +105,75 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
       />
       <StepProgress currentStep={2} />
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={styles.heading}>Personal Information</Text>
+        <ScrollView
+          ref={scrollRef}
+          style={styles.flex}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          onScroll={onScroll}
+          onLayout={onLayout}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.heading}>Personal Information</Text>
 
-        <InputField
-          label="Contact Person Number"
-          placeholder="Enter contact person name or number"
-          value={personal.contactPerson}
-          onChangeText={value => update('contactPerson', value)}
-          required
-          autoCapitalize="words"
-          error={errors.contactPerson}
-        />
+          <InputField
+            label="Contact Person Number"
+            placeholder="Enter contact person name or number"
+            value={personal.contactPerson}
+            onChangeText={value => update('contactPerson', value)}
+            {...focusProps('contactPerson')}
+            required
+            autoCapitalize="words"
+            error={errors.contactPerson}
+          />
 
-        <InputField
-          label="Designation"
-          placeholder="Enter designation"
-          value={personal.designation}
-          onChangeText={value => update('designation', value)}
-          required
-          autoCapitalize="words"
-          error={errors.designation}
-        />
+          <InputField
+            label="Designation"
+            placeholder="Enter designation"
+            value={personal.designation}
+            onChangeText={value => update('designation', value)}
+            {...focusProps('designation')}
+            required
+            autoCapitalize="words"
+            error={errors.designation}
+          />
 
-        <InputField
-          label="Mobile Number"
-          placeholder="Enter mobile number"
-          value={personal.mobile}
-          onChangeText={value => update('mobile', value.replace(/[^\d+\s-]/g, ''))}
-          required
-          keyboardType="phone-pad"
-          maxLength={15}
-          error={errors.mobile}
-        />
+          <InputField
+            label="Mobile Number"
+            placeholder="Enter mobile number"
+            value={personal.mobile}
+            onChangeText={value =>
+              update('mobile', value.replace(/[^\d+\s-]/g, ''))
+            }
+            {...focusProps('mobile')}
+            required
+            keyboardType="phone-pad"
+            maxLength={15}
+            error={errors.mobile}
+          />
 
-        <InputField
-          label="Email ID"
-          placeholder="Enter email address"
-          value={personal.email}
-          onChangeText={value => update('email', value.trim())}
-          required
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          error={errors.email}
-        />
+          <InputField
+            label="Email ID"
+            placeholder="Enter email address"
+            value={personal.email}
+            onChangeText={value => update('email', value.trim())}
+            {...focusProps('email')}
+            required
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            error={errors.email}
+          />
 
-        <View style={styles.button}>
-          <GradientButton title="Next" onPress={handleNext} />
-        </View>
-      </ScrollView>
+          <View style={styles.button}>
+            <GradientButton title="Next" onPress={handleNext} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -152,6 +182,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+
+  flex: {
+    flex: 1,
   },
 
   content: {

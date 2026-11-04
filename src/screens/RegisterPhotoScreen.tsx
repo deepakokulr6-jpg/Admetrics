@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -28,7 +22,7 @@ type PhotoSlot = keyof ClinicPhotos;
 const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   navigation,
 }) => {
-  const { draft, setPhoto } = useClinicRegistration();
+  const { draft, resetDraft, setPhoto } = useClinicRegistration();
   const { user } = useAuth();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -121,6 +115,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
     try {
       await saveClinicRegistration(user.email, draft);
+      resetDraft();
       navigation.reset({
         index: 1,
         routes: [{ name: 'Home' }, { name: 'ClinicRegistered' }],

@@ -66,6 +66,19 @@ const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
             title="Register Your Clinic"
             onPress={() => navigation.navigate('RegisterClinic')}
           />
+
+          <Pressable
+            onPress={() => navigation.navigate('A15Home')}
+            style={({ pressed }) => [
+              styles.homeButton,
+              pressed && styles.pressed,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Go to Clinic Home"
+          >
+            <Ionicons name="home-outline" size={18} color="#0265FB" />
+            <Text style={styles.homeButtonText}>Go to Clinic Home</Text>
+          </Pressable>
         </View>
 
         <View style={styles.logoutRow}>
@@ -100,6 +113,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
+    gap: 24,
+  },
+
+  homeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#EAEAEA',
+    borderRadius: 24,
+  },
+
+  pressed: {
+    opacity: 0.7,
+  },
+
+  homeButtonText: {
+    marginLeft: 6,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '600',
+    color: '#0265FB',
   },
 
   logoutRow: {
