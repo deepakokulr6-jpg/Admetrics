@@ -868,7 +868,10 @@
 //   },
 // });
 //=============================================updated screen with functionality ===================================//
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -890,11 +893,19 @@ export default function WelcomeBackScreen({ navigation }: any) {
   const [password, setPassword] = useState('');
 
   const handleSignIn = () => {
+<<<<<<< Updated upstream
+=======
+    // Add your actual authentication login logic here
+>>>>>>> Stashed changes
     if (!email || !password) {
       Alert.alert('Error', 'Please enter both email and password.');
       return;
     }
     Alert.alert('Success', `Signing in with ${email}`);
+<<<<<<< Updated upstream
+=======
+    // Example: navigation.replace('Home');
+>>>>>>> Stashed changes
   };
 
   return (
@@ -959,12 +970,22 @@ export default function WelcomeBackScreen({ navigation }: any) {
           </View>
           <TouchableOpacity
             style={styles.forgotPasswordContainer}
+<<<<<<< Updated upstream
             onPress={() =>
               Alert.alert(
                 'Forgot Password',
                 'Password recovery flow triggered.',
               )
             }
+=======
+            onPress={() => {
+              // Handle Forgot Password navigation or action here
+              Alert.alert(
+                'Forgot Password',
+                'Password recovery flow triggered.',
+              );
+            }}
+>>>>>>> Stashed changes
           >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
@@ -987,7 +1008,11 @@ export default function WelcomeBackScreen({ navigation }: any) {
           </LinearGradient>
         </TouchableOpacity>
 
+<<<<<<< Updated upstream
         {/* New User Footer Link */}
+=======
+        {/* New User Link - Navigates to CreateAccount screen */}
+>>>>>>> Stashed changes
         <TouchableOpacity
           style={styles.newUserContainer}
           activeOpacity={0.7}
