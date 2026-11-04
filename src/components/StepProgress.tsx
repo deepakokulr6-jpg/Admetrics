@@ -7,7 +7,24 @@ interface StepProgressProps {
   currentStep: number;
 }
 
-const STEPS = ['Clinic', 'Personal', 'Timings', 'Photos'];
+const STEPS = ['Clinic', 'Personal', 'Photos'];
+
+// Completed steps follow the brand gradient across the row, so the first
+// check is blue and the last one is purple (matching the registration design).
+const GRADIENT_START = [2, 101, 251]; // #0265FB
+const GRADIENT_END = [180, 58, 252]; // #B43AFC
+
+const mixChannel = (start: number, end: number, ratio: number): number =>
+  Math.round(start + (end - start) * ratio);
+
+const stepColor = (index: number): string => {
+  const ratio = STEPS.length > 1 ? index / (STEPS.length - 1) : 0;
+  const [r, g, b] = GRADIENT_START.map((channel, channelIndex) =>
+    mixChannel(channel, GRADIENT_END[channelIndex], ratio),
+  );
+
+  return `rgb(${r}, ${g}, ${b})`;
+};
 
 const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
   const { width } = useWindowDimensions();
@@ -19,26 +36,22 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
         {STEPS.map((step, index) => {
           const stepNumber = index + 1;
           const completed = stepNumber < currentStep;
-          const active = stepNumber === currentStep;
           const reached = stepNumber <= currentStep;
+          const nextStepCompleted = stepNumber + 1 < currentStep;
 
           return (
             <React.Fragment key={step}>
               <View style={styles.step}>
                 <View style={styles.indicator}>
                   {completed ? (
-                    <View style={styles.completedCircle}>
+                    <View
+                      style={[
+                        styles.completedCircle,
+                        { backgroundColor: stepColor(index) },
+                      ]}
+                    >
                       <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                     </View>
-                  ) : active ? (
-                    <LinearGradient
-                      colors={['#0265FB', '#B43AFC']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.activeCircle}
-                    >
-                      <View style={styles.activeInnerCircle} />
-                    </LinearGradient>
                   ) : (
                     <View style={styles.inactiveCircle} />
                   )}
@@ -54,9 +67,16 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
 
               {index < STEPS.length - 1 && (
                 <View style={styles.lineContainer}>
-                  <View
-                    style={[styles.line, completed && styles.completedLine]}
-                  />
+                  {nextStepCompleted ? (
+                    <LinearGradient
+                      colors={[stepColor(index), stepColor(index + 1)]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.line}
+                    />
+                  ) : (
+                    <View style={[styles.line, styles.inactiveLine]} />
+                  )}
                 </View>
               )}
             </React.Fragment>
@@ -92,22 +112,8 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#0265FB',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  activeCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activeInnerCircle: {
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: '#FFFFFF',
   },
   inactiveCircle: {
     width: 10,
@@ -125,10 +131,9 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 2,
-    backgroundColor: '#DDDDDD',
   },
-  completedLine: {
-    backgroundColor: '#6250FF',
+  inactiveLine: {
+    backgroundColor: '#DDDDDD',
   },
   stepLabel: {
     fontSize: 10,
