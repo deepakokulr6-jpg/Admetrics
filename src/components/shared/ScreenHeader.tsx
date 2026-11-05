@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface ScreenHeaderProps {
   title?: string;
@@ -19,7 +20,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
       style={[
         styles.container,
         {
-          paddingTop: Math.max(insets.top, 8),
+          paddingTop: Math.max(insets.top, verticalScale(8)),
         },
       ]}
     >
@@ -31,7 +32,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Go back"
         >
-          <Ionicons name="chevron-back" size={22} color="#221E25" />
+          <Ionicons name="chevron-back" size={scale(22)} color="#221E25" />
         </Pressable>
 
         <Text style={styles.title} numberOfLines={1}>
@@ -45,8 +46,8 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 12,
-    paddingBottom: 12,
+    paddingHorizontal: scale(12),
+    paddingBottom: verticalScale(12),
 
     shadowColor: '#000000',
     shadowOffset: {
@@ -61,19 +62,19 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 32,
+    height: verticalScale(32),
   },
   backButton: {
-    width: 24,
-    height: 32,
+    width: scale(24),
+    height: verticalScale(32),
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginRight: 8,
+    marginRight: scale(8),
   },
   title: {
     flex: 1,
     color: '#221E25',
-    fontSize: 14,
+    fontSize: normalizeFont(14),
     fontWeight: '700',
   },
 });

@@ -14,6 +14,7 @@ import DashboardHeader from '../../components/home/DashboardHeader';
 import RegisterClinicCard from '../../components/clinic/RegisterClinicCard';
 import { useAuth } from '../../contexts/AuthContext';
 import type { AppScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
   const { user, signOut } = useAuth();
@@ -76,7 +77,7 @@ const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
             accessibilityRole="button"
             accessibilityLabel="Go to Clinic Home"
           >
-            <Ionicons name="home-outline" size={18} color="#0265FB" />
+            <Ionicons name="home-outline" size={scale(18)} color="#0265FB" />
             <Text style={styles.homeButtonText}>Go to Clinic Home</Text>
           </Pressable>
         </View>
@@ -88,7 +89,7 @@ const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
             accessibilityRole="button"
             accessibilityLabel="Log out"
           >
-            <Ionicons name="log-out-outline" size={18} color="#7B35FF" />
+            <Ionicons name="log-out-outline" size={scale(18)} color="#7B35FF" />
             <Text style={styles.logoutText}>Log Out</Text>
           </Pressable>
         </View>
@@ -112,18 +113,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    gap: 24,
+    paddingHorizontal: scale(16),
+    gap: scale(24),
   },
 
   homeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(10),
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    borderRadius: 24,
+    borderRadius: scale(24),
   },
 
   pressed: {
@@ -131,29 +132,29 @@ const styles = StyleSheet.create({
   },
 
   homeButtonText: {
-    marginLeft: 6,
-    fontSize: 13,
-    lineHeight: 18,
+    marginLeft: scale(6),
+    fontSize: normalizeFont(13),
+    lineHeight: normalizeFont(18),
     fontWeight: '600',
     color: '#0265FB',
   },
 
   logoutRow: {
     alignItems: 'center',
-    paddingBottom: 16,
+    paddingBottom: verticalScale(16),
   },
 
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(8),
   },
 
   logoutText: {
-    marginLeft: 6,
-    fontSize: 13,
-    lineHeight: 18,
+    marginLeft: scale(6),
+    fontSize: normalizeFont(13),
+    lineHeight: normalizeFont(18),
     fontWeight: '600',
     color: '#7B35FF',
   },

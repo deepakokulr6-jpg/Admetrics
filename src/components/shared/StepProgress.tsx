@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface StepProgressProps {
   currentStep: number;
@@ -28,7 +29,7 @@ const stepColor = (index: number): string => {
 
 const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
   const { width } = useWindowDimensions();
-  const contentWidth = Math.min(width - 48, 328);
+  const contentWidth = Math.min(width - scale(48), scale(328));
 
   return (
     <View style={[styles.container, { width: contentWidth }]}>
@@ -50,7 +51,11 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
                         { backgroundColor: stepColor(index) },
                       ]}
                     >
-                      <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+                      <Ionicons
+                        name="checkmark"
+                        size={scale(12)}
+                        color="#FFFFFF"
+                      />
                     </View>
                   ) : (
                     <View style={styles.inactiveCircle} />
@@ -90,8 +95,8 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    paddingTop: 12,
-    paddingBottom: 16,
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(16),
   },
   progressRow: {
     flexDirection: 'row',
@@ -99,46 +104,46 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   step: {
-    width: 44,
+    width: scale(44),
     alignItems: 'center',
     zIndex: 1,
   },
   indicator: {
-    height: 16,
+    height: verticalScale(16),
     justifyContent: 'center',
     alignItems: 'center',
   },
   completedCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: scale(12),
+    height: scale(12),
+    borderRadius: scale(6),
     justifyContent: 'center',
     alignItems: 'center',
   },
   inactiveCircle: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: scale(10),
+    height: scale(10),
+    borderRadius: scale(5),
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
     borderColor: '#D8D8D8',
   },
   lineContainer: {
     flex: 1,
-    height: 16,
+    height: verticalScale(16),
     justifyContent: 'center',
-    marginHorizontal: -2,
+    marginHorizontal: scale(-2),
   },
   line: {
-    height: 2,
+    height: verticalScale(2),
   },
   inactiveLine: {
     backgroundColor: '#DDDDDD',
   },
   stepLabel: {
-    fontSize: 10,
+    fontSize: normalizeFont(10),
     color: '#777777',
-    marginTop: 4,
+    marginTop: verticalScale(4),
     textAlign: 'center',
   },
   reachedLabel: {

@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   StatusBar,
-  useWindowDimensions,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,19 +19,20 @@ import BottomNavigation, {
 import { useAuth } from '../../contexts/AuthContext';
 import { getClinicRegistrations } from '../../services/clinicService';
 import { ClinicRegistrationRecord } from '../../types/clinic';
+import type { AppScreenProps } from '../../navigation/types';
+import {
+  normalizeFont,
+  verticalScale,
+  wp,
+} from '../../utils/responsive';
 
-type Props = {
-  navigation: {
-    navigate: (screen: string) => void;
-  };
-};
-
-const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
+const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({
+  navigation,
+}) => {
   const [activeTab, setActiveTab] = useState<TabName>('Clinics');
   const [clinics, setClinics] = useState<ClinicRegistrationRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { width } = useWindowDimensions();
   const { user } = useAuth();
   const ownerEmail = user?.email;
 
@@ -86,19 +86,19 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
         // Already on the Clinics screen.
         break;
       case 'Statement':
-        navigation.navigate('Logs');
+        navigation.navigate('Statement');
         break;
       case 'Revenue':
         navigation.navigate('Revenue');
         break;
       case 'Support':
-        navigation.navigate('Receipt');
+        navigation.navigate('Support');
         break;
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
@@ -108,7 +108,7 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.scrollView}
           contentContainerStyle={[
             styles.content,
-            { paddingHorizontal: width * 0.04 },
+            { paddingHorizontal: wp(4) },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -187,23 +187,23 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    paddingTop: 14,
-    paddingBottom: 20,
+    paddingTop: verticalScale(14),
+    paddingBottom: verticalScale(20),
   },
   clinicList: {
-    gap: 14,
+    gap: verticalScale(14),
   },
   registerContainer: {
     flex: 1,
-    minHeight: 220,
+    minHeight: verticalScale(220),
     alignItems: 'center',
     justifyContent: 'center',
   },
   tabMessage: {
     textAlign: 'center',
     color: '#666666',
-    fontSize: 13,
-    paddingVertical: 15,
+    fontSize: normalizeFont(13),
+    paddingVertical: verticalScale(15),
   },
 });
 

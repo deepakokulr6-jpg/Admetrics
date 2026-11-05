@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { normalizeFont, verticalScale } from '../../utils/responsive';
 
 type ForgotPasswordLinkProps = {
   onPress: () => void;
@@ -22,12 +23,12 @@ const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({ onPress }) => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'flex-end',
-    paddingVertical: 2,
+    paddingVertical: verticalScale(2),
   },
 
   text: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '500',
     color: '#7B35FF',
   },

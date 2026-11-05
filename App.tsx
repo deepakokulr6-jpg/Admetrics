@@ -7,6 +7,9 @@ import {
 
 import { AuthProvider } from './src/contexts/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import { lockFontScaling } from './src/utils/lockFontScaling';
+
+lockFontScaling();
 
 export default function App() {
   return (

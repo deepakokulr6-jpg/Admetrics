@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Switch, TextInput, StyleSheet } from 'react-native';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface WorkingHoursRowProps {
   day: string;
@@ -70,18 +71,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    gap: 12,
-    marginBottom: 10,
+    gap: scale(12),
+    marginBottom: verticalScale(10),
   },
   dayColumn: {
-    width: 58,
+    width: scale(58),
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
   dayText: {
-    fontSize: 12,
+    fontSize: normalizeFont(12),
     color: '#221E25',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   disabledText: {
     color: '#AAAAAA',
@@ -93,14 +94,14 @@ const styles = StyleSheet.create({
   timeInput: {
     flex: 1,
     minWidth: 0,
-    height: 40,
+    height: verticalScale(40),
     borderWidth: 1,
     borderColor: '#AAAAAA',
-    borderRadius: 6,
-    paddingHorizontal: 3,
+    borderRadius: scale(6),
+    paddingHorizontal: scale(3),
     paddingVertical: 0,
     color: '#221E25',
-    fontSize: 14,
+    fontSize: normalizeFont(14),
     fontWeight: '600',
     backgroundColor: '#FFFFFF',
   },

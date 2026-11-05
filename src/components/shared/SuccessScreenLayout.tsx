@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppLogo from './AppLogo';
 import GradientButton from './GradientButton';
 import SuccessMessage from './SuccessMessage';
+import { scale, verticalScale } from '../../utils/responsive';
 
 type SuccessScreenLayoutProps = {
   title: string;
@@ -32,7 +33,7 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
       >
         <View style={styles.content}>
           <View style={styles.logo}>
-            <AppLogo width={160} />
+            <AppLogo width={scale(160)} />
           </View>
 
           <LinearGradient
@@ -41,7 +42,7 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
             end={{ x: 1, y: 1 }}
             style={styles.iconCircle}
           >
-            <Ionicons name="checkmark-sharp" size={34} color="#FFFFFF" />
+            <Ionicons name="checkmark-sharp" size={scale(34)} color="#FFFFFF" />
           </LinearGradient>
 
           <SuccessMessage title={title} description={description} />
@@ -69,32 +70,32 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(32),
   },
 
   content: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: scale(360),
     alignItems: 'center',
   },
 
   logo: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: verticalScale(32),
   },
 
   iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: scale(72),
+    height: scale(72),
+    borderRadius: scale(36),
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
 
   button: {
-    marginTop: 36,
+    marginTop: verticalScale(36),
   },
 });
 

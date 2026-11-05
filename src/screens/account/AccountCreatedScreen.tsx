@@ -5,6 +5,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 
 import GradientButton from '../../components/shared/GradientButton';
 import type { AuthScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const DRAW_DURATION_MS = 800;
 const PATH_LENGTH = 40;
@@ -51,7 +52,7 @@ const AccountCreatedScreen: React.FC<AuthScreenProps<'AccountCreated'>> = ({
 
       <View style={styles.container}>
         <View style={styles.iconWrapper}>
-          <Svg width={48} height={48}>
+          <Svg width={scale(48)} height={scale(48)} viewBox="0 0 48 48">
             <Circle
               cx={24}
               cy={24}
@@ -107,32 +108,32 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
 
   iconWrapper: {
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
 
   title: {
-    fontSize: 18,
+    fontSize: normalizeFont(18),
     fontWeight: '700',
     color: '#221E25',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   description: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: normalizeFont(14),
+    lineHeight: normalizeFont(20),
     color: '#666666',
     textAlign: 'center',
-    paddingHorizontal: 8,
-    marginBottom: 32,
+    paddingHorizontal: scale(8),
+    marginBottom: verticalScale(32),
   },
 
   buttonContainer: {
-    marginBottom: 40,
+    marginBottom: verticalScale(40),
   },
 });
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
   onPress: () => void;
@@ -25,16 +26,16 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    borderRadius: 30,
+    paddingVertical: verticalScale(14),
+    paddingHorizontal: scale(28),
+    borderRadius: scale(30),
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
     color: '#FFFFFF',
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: normalizeFont(14),
   },
 });
 

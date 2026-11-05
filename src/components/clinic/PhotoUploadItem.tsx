@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface PhotoUploadProps {
   title: string;
@@ -36,7 +37,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
             />
           ) : (
             <View style={styles.placeholder}>
-              <Ionicons name="add" size={44} color="#AAAAAA" />
+              <Ionicons name="add" size={scale(44)} color="#AAAAAA" />
             </View>
           )}
         </Pressable>
@@ -49,7 +50,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
             accessibilityRole="button"
             accessibilityLabel={`Remove ${title} photo`}
           >
-            <Ionicons name="close" size={14} color="#FFFFFF" />
+            <Ionicons name="close" size={scale(14)} color="#FFFFFF" />
           </Pressable>
         ) : null}
       </View>
@@ -64,11 +65,11 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '400',
     color: '#221E25',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   uploadWrapper: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   uploadBox: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: 10,
+    borderRadius: scale(10),
     overflow: 'hidden',
     backgroundColor: '#EEEEEE',
     borderWidth: 1,
@@ -99,11 +100,11 @@ const styles = StyleSheet.create({
 
   removeButton: {
     position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    top: scale(6),
+    right: scale(6),
+    width: scale(24),
+    height: scale(24),
+    borderRadius: scale(12),
     backgroundColor: 'rgba(0, 0, 0, 0.65)',
     alignItems: 'center',
     justifyContent: 'center',

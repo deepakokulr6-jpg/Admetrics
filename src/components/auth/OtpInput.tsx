@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type OtpInputProps = {
   value: string;
@@ -92,19 +93,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: scale(8),
   },
 
   otpBox: {
     flex: 1,
-    maxWidth: 40,
-    height: 40,
+    maxWidth: scale(40),
+    height: verticalScale(40),
     borderWidth: 1,
     borderColor: '#DDDDDD',
-    borderRadius: 6,
+    borderRadius: scale(6),
     backgroundColor: '#FFFFFF',
     padding: 0,
-    fontSize: 14,
+    fontSize: normalizeFont(14),
     fontWeight: '400',
     color: '#221E25',
   },

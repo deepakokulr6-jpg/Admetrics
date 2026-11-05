@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   StatusBar,
-  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,35 +16,35 @@ import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
 import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
+import {
+  normalizeFont,
+  verticalScale,
+  wp,
+} from '../../utils/responsive';
+import type { AppScreenProps } from '../../navigation/types';
 
-type Props = {
-  navigation: {
-    navigate: (screen: string) => void;
-  };
-};
-
-const RevenueScreen: React.FC<Props> = ({ navigation }) => {
+const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({
+  navigation,
+}) => {
   const [period, setPeriod] = useState('7 days');
   const [activeTab, setActiveTab] = useState<TabName>('Revenue');
-
-  const { width } = useWindowDimensions();
 
   const handleTabPress = (tab: TabName) => {
     setActiveTab(tab);
 
     if (tab === 'Clinics') {
-      navigation.navigate('Home');
+      navigation.navigate('A15Home');
     } else if (tab === 'Revenue') {
       // Already on the Revenue screen.
     } else if (tab === 'Statement') {
-      navigation.navigate('Logs');
+      navigation.navigate('Statement');
     } else if (tab === 'Support') {
-      navigation.navigate('Receipt');
+      navigation.navigate('Support');
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
@@ -55,7 +54,7 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.scrollView}
           contentContainerStyle={[
             styles.content,
-            { paddingHorizontal: width * 0.04 },
+            { paddingHorizontal: wp(4) },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -76,9 +75,7 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
 
           <RevenueChart period={period} />
 
-          <TVDisplaysSection
-            onViewAll={() => navigation.navigate('TVDisplays')}
-          />
+          <TVDisplaysSection />
         </ScrollView>
 
         <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
@@ -100,19 +97,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingTop: 14,
-    paddingBottom: 16,
+    paddingTop: verticalScale(14),
+    paddingBottom: verticalScale(16),
     flexGrow: 1,
   },
   chartHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 18,
+    marginTop: verticalScale(18),
   },
   chartTitle: {
     color: '#221E25',
-    fontSize: 12,
+    fontSize: normalizeFont(12),
     fontWeight: '700',
   },
 });

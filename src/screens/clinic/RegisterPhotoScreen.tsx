@@ -20,6 +20,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { saveClinicRegistration } from '../../services/clinicService';
 import { ClinicPhotos } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -201,37 +202,37 @@ const styles = StyleSheet.create({
 
   content: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 4,
-    paddingBottom: 32,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(4),
+    paddingBottom: verticalScale(32),
   },
 
   heading: {
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: normalizeFont(16),
+    lineHeight: normalizeFont(22),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
   },
 
   instruction: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     color: '#777777',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
 
   photoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 16,
-    marginBottom: 28,
+    gap: scale(16),
+    marginBottom: verticalScale(28),
   },
 
   button: {
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
 });
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { normalizeFont, verticalScale } from '../../utils/responsive';
 
 type AuthHeaderProps = {
   title: string;
@@ -23,20 +24,20 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 20,
-    lineHeight: 24,
+    fontSize: normalizeFont(20),
+    lineHeight: normalizeFont(24),
     fontWeight: '700',
     color: '#221E25',
     textAlign: 'center',
   },
 
   subtitle: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: normalizeFont(14),
+    lineHeight: normalizeFont(20),
     fontWeight: '400',
     color: '#221E25',
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: verticalScale(8),
   },
 });
 

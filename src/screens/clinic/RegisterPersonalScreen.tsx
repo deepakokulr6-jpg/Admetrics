@@ -19,6 +19,7 @@ import { PersonalInfo } from '../../types/clinic';
 import { isBlank, isValidEmail, isValidMobile } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type PersonalErrors = Partial<Record<keyof PersonalInfo, string>>;
 
@@ -190,23 +191,23 @@ const styles = StyleSheet.create({
 
   content: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 4,
-    paddingBottom: 32,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(4),
+    paddingBottom: verticalScale(32),
   },
 
   heading: {
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: normalizeFont(16),
+    lineHeight: normalizeFont(22),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: 14,
+    marginBottom: verticalScale(14),
   },
 
   button: {
-    marginTop: 22,
+    marginTop: verticalScale(22),
   },
 });
 

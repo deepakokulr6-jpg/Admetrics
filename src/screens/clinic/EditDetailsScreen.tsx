@@ -16,6 +16,7 @@ import StepProgress from '../../components/shared/StepProgress';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
 import type { AppScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
   navigation,
@@ -195,7 +196,7 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           <Text style={styles.mapLabel}>Locate on Map</Text>
 
           <View style={styles.mapCard}>
-            <Ionicons name="location-outline" size={34} color="#7B35FF" />
+            <Ionicons name="location-outline" size={scale(34)} color="#7B35FF" />
             <Text style={styles.mapTitle}>Open clinic location</Text>
             <Text style={styles.mapSubtitle} numberOfLines={2}>
               {address}, {city}, {pincode}
@@ -224,66 +225,66 @@ const styles = StyleSheet.create({
 
   content: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 4,
-    paddingBottom: 32,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(4),
+    paddingBottom: verticalScale(32),
   },
 
   heading: {
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: normalizeFont(16),
+    lineHeight: normalizeFont(22),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: 14,
+    marginBottom: verticalScale(14),
   },
 
   mapLabel: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     color: '#221E25',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
   },
 
   mapCard: {
-    minHeight: 120,
+    minHeight: verticalScale(120),
     borderWidth: 1,
     borderColor: '#DDDDDD',
-    borderRadius: 8,
+    borderRadius: scale(8),
     backgroundColor: '#F7F9FC',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 14,
-    marginBottom: 24,
+    padding: scale(14),
+    marginBottom: verticalScale(24),
   },
 
   mapTitle: {
-    marginTop: 4,
-    fontSize: 13,
-    lineHeight: 18,
+    marginTop: verticalScale(4),
+    fontSize: normalizeFont(13),
+    lineHeight: normalizeFont(18),
     fontWeight: '600',
     color: '#221E25',
   },
 
   mapSubtitle: {
-    marginTop: 2,
-    fontSize: 11,
-    lineHeight: 15,
+    marginTop: verticalScale(2),
+    fontSize: normalizeFont(11),
+    lineHeight: normalizeFont(15),
     color: '#777777',
     textAlign: 'center',
   },
 
   mapLink: {
-    marginTop: 6,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: verticalScale(6),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '600',
     color: '#7B35FF',
   },
 
   button: {
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
 });
 

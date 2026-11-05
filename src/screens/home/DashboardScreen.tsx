@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
 import RegisterClinicCard from '../../components/clinic/RegisterClinicCard';
+import { scale } from '../../utils/responsive';
 
 const DashboardScreen: React.FC = () => {
   const handleRegisterClinic = () => {
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: scale(16),
   },
 });
 

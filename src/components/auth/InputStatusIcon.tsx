@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { scale } from '../../utils/responsive';
 
 type Props = {
   status: 'loading' | 'success' | 'error' | 'none';
@@ -29,21 +30,21 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
         isSuccess ? styles.success : styles.error,
       ]}
     >
-      <Icon name={isSuccess ? 'check' : 'x'} size={12} color="#FFFFFF" />
+      <Icon name={isSuccess ? 'check' : 'x'} size={scale(12)} color="#FFFFFF" />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 20,
-    height: 20,
+    width: scale(20),
+    height: scale(20),
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   circle: {
-    borderRadius: 10,
+    borderRadius: scale(10),
   },
 
   success: {

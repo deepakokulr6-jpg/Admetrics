@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
+import { normalizeFont, verticalScale } from '../../utils/responsive';
 
 type AuthFooterProps = {
   text: string;
@@ -34,12 +35,12 @@ const AuthFooter: React.FC<AuthFooterProps> = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    paddingVertical: 2,
+    paddingVertical: verticalScale(2),
   },
 
   text: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: normalizeFont(14),
+    lineHeight: normalizeFont(20),
     fontWeight: '400',
     color: '#221E25',
     textAlign: 'center',

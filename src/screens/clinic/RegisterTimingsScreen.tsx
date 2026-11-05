@@ -18,6 +18,7 @@ import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext'
 import { isBlank, isValidTime } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const validateHours = (
   hours: ReturnType<typeof useClinicRegistration>['draft']['workingHours'],
@@ -177,19 +178,19 @@ const styles = StyleSheet.create({
 
   content: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 4,
-    paddingBottom: 32,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(4),
+    paddingBottom: verticalScale(32),
   },
 
   heading: {
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: normalizeFont(16),
+    lineHeight: normalizeFont(22),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: 14,
+    marginBottom: verticalScale(14),
   },
 
   rowWrapper: {
@@ -197,16 +198,16 @@ const styles = StyleSheet.create({
   },
 
   errorText: {
-    marginTop: -6,
-    marginBottom: 8,
-    marginLeft: 70,
-    fontSize: 11,
-    lineHeight: 15,
+    marginTop: verticalScale(-6),
+    marginBottom: verticalScale(8),
+    marginLeft: scale(70),
+    fontSize: normalizeFont(11),
+    lineHeight: normalizeFont(15),
     color: '#D93025',
   },
 
   button: {
-    marginTop: 14,
+    marginTop: verticalScale(14),
   },
 });
 

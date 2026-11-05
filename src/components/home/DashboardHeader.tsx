@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 import ProfileAvatar from '../shared/ProfileAvatar';
 import AppLogo from '../shared/AppLogo';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
   userName: string;
@@ -15,7 +16,8 @@ const DashboardHeader: React.FC<Props> = ({
   onProfilePress,
   onLogoPress,
 }) => {
-  const logo = <AppLogo width={40} height={40} />;
+  const logoSize = scale(40);
+  const logo = <AppLogo width={logoSize} height={logoSize} />;
 
   return (
     <View style={styles.container}>
@@ -26,7 +28,7 @@ const DashboardHeader: React.FC<Props> = ({
           accessibilityRole="button"
           accessibilityLabel="Open profile"
         >
-          <ProfileAvatar size={40} />
+          <ProfileAvatar size={logoSize} />
 
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
@@ -37,7 +39,7 @@ const DashboardHeader: React.FC<Props> = ({
         </Pressable>
       ) : (
         <View style={styles.profileSection}>
-          <ProfileAvatar size={40} />
+          <ProfileAvatar size={logoSize} />
 
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
@@ -69,9 +71,9 @@ const DashboardHeader: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingHorizontal: scale(16),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(12),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -85,25 +87,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: scale(12),
   },
 
   textContainer: {
     flex: 1,
-    marginLeft: 14,
+    marginLeft: scale(14),
   },
 
   greeting: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '500',
     color: '#666666',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
 
   userName: {
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: normalizeFont(18),
+    lineHeight: normalizeFont(22),
     fontWeight: '700',
     color: '#111111',
   },

@@ -27,6 +27,7 @@ import type {
   AuthScreenProps,
   AuthStackParamList,
 } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
@@ -170,7 +171,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
         >
           <View style={styles.content}>
             <View style={styles.logo}>
-              <AppLogo />
+              <AppLogo width={scale(160)} />
             </View>
 
             <AuthHeader
@@ -277,62 +278,62 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(32),
   },
 
   content: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: scale(360),
     alignSelf: 'center',
   },
 
   logo: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: verticalScale(24),
   },
 
   form: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
 
   otpHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   otpLabel: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     color: '#221E25',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   resend: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '600',
     color: '#7B35FF',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   error: {
-    marginTop: 12,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: verticalScale(12),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '500',
     color: '#D93025',
     textAlign: 'center',
   },
 
   button: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
 
   footer: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
   },
 });
 

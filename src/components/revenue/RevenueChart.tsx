@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Path, Circle, Line } from 'react-native-svg';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
   period: string;
@@ -59,7 +60,7 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 
         <View style={styles.svgWrapper}>
           <Svg
-            height={chartHeight}
+            height={verticalScale(chartHeight)}
             width="100%"
             viewBox={`0 0 ${chartWidth} ${chartHeight}`}
           >
@@ -117,29 +118,29 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 305,
+    minHeight: verticalScale(305),
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: scale(16),
+    padding: scale(16),
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
-    marginTop: 12,
+    marginTop: verticalScale(12),
   },
 
   chartContainer: {
     flexDirection: 'row',
-    height: 220,
+    height: verticalScale(220),
     alignItems: 'center',
   },
 
   yAxis: {
-    width: 32,
+    width: scale(32),
     height: '100%',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: verticalScale(10),
   },
 
   yAxisRow: {
@@ -148,10 +149,10 @@ const styles = StyleSheet.create({
   },
 
   axisText: {
-    fontSize: 10,
+    fontSize: normalizeFont(10),
     fontWeight: '500',
     color: '#000000',
-    width: 24,
+    width: scale(24),
   },
 
   svgWrapper: {
@@ -163,12 +164,12 @@ const styles = StyleSheet.create({
   xAxis: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 28,
-    marginTop: 4,
+    paddingHorizontal: scale(28),
+    marginTop: verticalScale(4),
   },
 
   xAxisText: {
-    fontSize: 10,
+    fontSize: normalizeFont(10),
     fontWeight: '500',
     color: '#000000',
     textAlign: 'center',

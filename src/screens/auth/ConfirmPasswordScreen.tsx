@@ -20,6 +20,7 @@ import GradientButton from '../../components/shared/GradientButton';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
@@ -113,7 +114,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         >
           <View style={styles.content}>
             <View style={styles.logo}>
-              <AppLogo />
+              <AppLogo width={scale(160)} />
             </View>
 
             <AuthHeader
@@ -154,7 +155,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
                   >
                     <Ionicons
                       name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                      size={18}
+                      size={scale(18)}
                       color="#777777"
                     />
                   </Pressable>
@@ -190,7 +191,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
                       name={
                         showConfirmPassword ? 'eye-off-outline' : 'eye-outline'
                       }
-                      size={18}
+                      size={scale(18)}
                       color="#777777"
                     />
                   </Pressable>
@@ -228,32 +229,32 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(32),
   },
 
   content: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: scale(360),
     alignSelf: 'center',
   },
 
   logo: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: verticalScale(24),
   },
 
   emailHint: {
-    marginTop: 8,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: verticalScale(8),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '600',
     color: '#7B35FF',
     textAlign: 'center',
   },
 
   form: {
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
 
   lastField: {
@@ -261,16 +262,16 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    marginTop: 12,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: verticalScale(12),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
     fontWeight: '500',
     color: '#D93025',
     textAlign: 'center',
   },
 
   button: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
 });
 

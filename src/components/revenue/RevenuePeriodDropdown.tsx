@@ -8,6 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
   value: string;
@@ -57,7 +58,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({ value, onChange }) => {
         onPress={handleOpen}
       >
         <Text style={styles.buttonText}>{value}</Text>
-        <Icon name="chevron-down" size={14} color="#221E25" />
+        <Icon name="chevron-down" size={scale(14)} color="#221E25" />
       </Pressable>
 
       <Modal
@@ -110,20 +111,20 @@ const RevenuePeriodDropdown: React.FC<Props> = ({ value, onChange }) => {
 
 const styles = StyleSheet.create({
   button: {
-    minWidth: 76,
-    height: 25,
+    minWidth: scale(76),
+    height: verticalScale(25),
     borderWidth: 1,
     borderColor: '#777777',
-    borderRadius: 6,
+    borderRadius: scale(6),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 6,
-    gap: 4,
+    paddingHorizontal: scale(6),
+    gap: scale(4),
   },
 
   buttonText: {
-    fontSize: 11,
+    fontSize: normalizeFont(11),
     color: '#221E25',
   },
 
@@ -134,12 +135,12 @@ const styles = StyleSheet.create({
 
   menu: {
     position: 'absolute',
-    width: 150,
+    width: scale(150),
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: scale(8),
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    paddingVertical: 5,
+    paddingVertical: verticalScale(5),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.15,
@@ -148,8 +149,8 @@ const styles = StyleSheet.create({
   },
 
   option: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
   },
 
   selectedOption: {
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
 
   optionText: {
     color: '#221E25',
-    fontSize: 14,
+    fontSize: normalizeFont(14),
   },
 
   selected: {

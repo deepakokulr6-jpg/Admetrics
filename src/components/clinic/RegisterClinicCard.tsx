@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
 import RegisterIcon from '../../../assets/images/register.svg';
+import { scale } from '../../utils/responsive';
 
 type Props = {
   onPress: () => void;
@@ -24,7 +25,7 @@ const RegisterClinicCard: React.FC<Props> = ({
       accessibilityLabel={title}
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
     >
-      <RegisterIcon width={140} height={94} />
+      <RegisterIcon width={scale(140)} height={scale(94)} />
     </Pressable>
   );
 };
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    padding: 8,
+    padding: scale(8),
   },
 
   pressed: {
