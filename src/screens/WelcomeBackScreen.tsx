@@ -13,16 +13,13 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import AppLogo from '../components/AppLogo';
+import { useAuth } from '../contexts/AuthContext';
+import { AuthError } from '../services/authService';
+import type { AuthScreenProps } from '../navigation/types';
 
-<<<<<<< HEAD
-export default function WelcomeBackScreen({ navigation }: any) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-=======
-const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
+export default function WelcomeBackScreen({
   navigation,
-}) => {
+}: AuthScreenProps<'Login'>) {
   const { signIn } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -31,15 +28,30 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
->>>>>>> origin/admetrics-Deepak
+  const [showPassword, setShowPassword] = useState(true);
 
-  const handleSignIn = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password.');
+  const handleSignIn = async () => {
+    const trimmedEmail = email.trim();
+    setError(null);
+
+    if (!trimmedEmail || !password) {
+      setError('Please enter your email and password.');
       return;
     }
-    Alert.alert('Success', `Signing in with ${email}`);
-    // Example: navigation.replace('Home');
+
+    setIsSubmitting(true);
+
+    try {
+      await signIn(trimmedEmail, password);
+    } catch (signInError) {
+      setError(
+        signInError instanceof AuthError
+          ? signInError.message
+          : 'Unable to sign in right now. Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,13 +84,8 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
           >
             <Feather
               name="user"
-<<<<<<< HEAD
-              size={18}
-              color="#71717a"
-=======
               size={20}
               color="#221E25"
->>>>>>> origin/admetrics-Deepak
               style={styles.inputIcon}
             />
             <TextInput
@@ -106,13 +113,8 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
           >
             <Feather
               name="lock"
-<<<<<<< HEAD
-              size={18}
-              color="#71717a"
-=======
               size={20}
               color="#221E25"
->>>>>>> origin/admetrics-Deepak
               style={styles.inputIcon}
             />
             <TextInput
@@ -121,16 +123,12 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
               placeholderTextColor="#a1a1aa"
               secureTextEntry={!showPassword}
               value={password}
-<<<<<<< HEAD
-              onChangeText={setPassword}
-=======
               onChangeText={value => {
                 setPassword(value);
                 setError(null);
               }}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
->>>>>>> origin/admetrics-Deepak
             />
             <TouchableOpacity
               onPress={() => setShowPassword(previous => !previous)}
@@ -156,11 +154,14 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
           </TouchableOpacity>
         </View>
 
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
         {/* Gradient Sign In Button */}
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.buttonWrapper}
           onPress={handleSignIn}
+          disabled={isSubmitting}
         >
           <LinearGradient
             colors={['#0265FB', '#B43AFC']}
@@ -169,7 +170,11 @@ const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
             style={styles.signInButton}
             pointerEvents="none"
           >
-            <Text style={styles.signInButtonText}>Sign In</Text>
+            {isSubmitting ? (
+              <Text style={styles.signInButtonText}>Signing in...</Text>
+            ) : (
+              <Text style={styles.signInButtonText}>Sign In</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
 
@@ -249,14 +254,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-<<<<<<< HEAD
-    fontSize: 14,
-    color: '#18181b',
-=======
     fontSize: 15,
     fontWeight: '400',
     color: '#221E25',
->>>>>>> origin/admetrics-Deepak
     paddingLeft: 4,
     height: '100%',
   },
@@ -272,6 +272,12 @@ const styles = StyleSheet.create({
     color: '#B43AFC',
     fontSize: 12,
     fontWeight: '500',
+  },
+  errorText: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#D93025',
+    textAlign: 'center',
   },
   buttonWrapper: {
     marginTop: 24,

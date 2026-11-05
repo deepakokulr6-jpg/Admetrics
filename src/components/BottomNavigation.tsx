@@ -2,11 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-<<<<<<< HEAD
 export type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
-=======
-type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
->>>>>>> origin/admetrics-Deepak
 
 type Props = {
   activeTab: TabName;

@@ -16,11 +16,6 @@ import RevenueChart from '../components/RevenueChart';
 import RevenuePeriodDropdown from '../components/RevenuePeriodDropdown';
 import TVDisplaysSection from '../components/TVDisplaysSection';
 
-<<<<<<< HEAD
-=======
-type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
-
->>>>>>> origin/admetrics-Deepak
 type Props = {
   navigation: {
     navigate: (screen: string) => void;

@@ -19,11 +19,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { getClinicRegistrations } from '../services/clinicService';
 import { ClinicRegistrationRecord } from '../types/clinic';
 
-<<<<<<< HEAD
-=======
-type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
-
->>>>>>> origin/admetrics-Deepak
 type Props = {
   navigation: {
     navigate: (screen: string) => void;

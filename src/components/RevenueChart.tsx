@@ -1,10 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-<<<<<<< HEAD
 import Svg, { Path, Circle, Line } from 'react-native-svg';
-=======
-import Svg, { Line, Circle, Polyline } from 'react-native-svg';
->>>>>>> origin/admetrics-Deepak
 
 type Props = {
   period: string;
@@ -46,7 +42,6 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
     return { x, y };
   });
 
-<<<<<<< HEAD
   const pathData = points
     .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
     .join(' ');
@@ -61,19 +56,6 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
             </View>
           ))}
         </View>
-=======
-  const polylinePoints = points.map(point => `${point.x},${point.y}`).join(' ');
-
-  return (
-    <View style={styles.card}>
-      <Svg
-        width="100%"
-        height={chartHeight}
-        viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-      >
-        {[1, 2, 3, 4, 5, 6].map(value => {
-          const y = top + plotHeight - (value / 6) * plotHeight;
->>>>>>> origin/admetrics-Deepak
 
         <View style={styles.svgWrapper}>
           <Svg
