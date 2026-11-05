@@ -31,6 +31,8 @@ type InputFieldProps = {
   error?: string | null;
   multiline?: boolean;
   numberOfLines?: number;
+  onFocus?: TextInputProps['onFocus'];
+  onBlur?: TextInputProps['onBlur'];
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -52,6 +54,8 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
   multiline = false,
   numberOfLines,
+  onFocus,
+  onBlur,
 }) => {
   const InputIcon =
     iconName === 'email'
@@ -100,6 +104,8 @@ const InputField: React.FC<InputFieldProps> = ({
           editable={editable}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
 
         {rightElement ? (

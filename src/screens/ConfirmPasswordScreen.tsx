@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar,
   Pressable,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,8 +25,9 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
   route,
 }) => {
-  const { signUp } = useAuth();
-  const { email } = route.params;
+  const { signUp, resetPassword } = useAuth();
+  const { email, mode = 'signup', resetToken } = route.params;
+  const isPasswordReset = mode === 'reset';
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -52,9 +54,31 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
       return;
     }
 
+    if (isPasswordReset && !resetToken) {
+      setError(
+        'Your password reset session has expired. Please start the reset flow again.',
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      if (isPasswordReset) {
+        await resetPassword(email, resetToken as string, password);
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+
+        Alert.alert(
+          'Password Updated',
+          'Your password has been changed. Please sign in with your new password.',
+        );
+        return;
+      }
+
       await signUp(email, password);
       navigation.reset({
         index: 1,
@@ -64,6 +88,8 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
       setError(
         signUpError instanceof AuthError
           ? signUpError.message
+          : isPasswordReset
+          ? 'Unable to reset your password right now. Please try again.'
           : 'Unable to create your account right now. Please try again.',
       );
     } finally {
@@ -91,8 +117,14 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
             </View>
 
             <AuthHeader
-              title="Create Your Account"
-              subtitle="Enter your email address to get started"
+              title={
+                isPasswordReset ? 'Reset Your Password' : 'Create Your Account'
+              }
+              subtitle={
+                isPasswordReset
+                  ? 'Choose a new password for your account'
+                  : 'Enter your email address to get started'
+              }
             />
 
             <Text style={styles.emailHint} numberOfLines={1}>

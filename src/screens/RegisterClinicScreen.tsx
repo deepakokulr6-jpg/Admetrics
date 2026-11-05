@@ -7,6 +7,8 @@ import {
   Alert,
   Pressable,
   Linking,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,9 +26,14 @@ import {
   isValidYear,
   PAN_PATTERN,
 } from '../utils/validation';
+import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../navigation/types';
 
 type ClinicErrors = Partial<Record<keyof ClinicInfo, string>>;
+
+// These fields sit right above the map and Next button, so the form scrolls
+// to its end when one of them is focused to keep the footer above the keyboard.
+const BOTTOM_FIELDS: (keyof ClinicInfo)[] = ['city', 'state', 'pincode'];
 
 const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
   const errors: ClinicErrors = {};
@@ -36,7 +43,8 @@ const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
   }
 
   if (isBlank(clinic.medicalRegistrationNumber)) {
-    errors.medicalRegistrationNumber = 'Medical registration number is required.';
+    errors.medicalRegistrationNumber =
+      'Medical registration number is required.';
   }
 
   if (isBlank(clinic.establishmentYear)) {
@@ -55,7 +63,10 @@ const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
     errors.gstNumber = 'Enter a valid 15-character GST number.';
   }
 
-  if (!isBlank(clinic.panNumber) && !PAN_PATTERN.test(clinic.panNumber.trim())) {
+  if (
+    !isBlank(clinic.panNumber) &&
+    !PAN_PATTERN.test(clinic.panNumber.trim())
+  ) {
     errors.panNumber = 'Enter a valid 10-character PAN.';
   }
 
@@ -90,7 +101,14 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
   const { draft, updateClinicInfo } = useClinicRegistration();
   const { clinic } = draft;
 
+  const { scrollRef, onScroll, onLayout, setAutoScroll } =
+    useKeyboardAutoScroll();
+
   const [errors, setErrors] = useState<ClinicErrors>({});
+
+  const focusProps = (field: keyof ClinicInfo) => ({
+    onFocus: () => setAutoScroll(BOTTOM_FIELDS.includes(field)),
+  });
 
   const update = (key: keyof ClinicInfo, value: string) => {
     updateClinicInfo({ [key]: value });
@@ -162,150 +180,171 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
       />
       <StepProgress currentStep={1} />
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={styles.heading}>Clinic Information</Text>
-
-        <InputField
-          label="Clinic Name"
-          placeholder="Enter clinic name"
-          value={clinic.clinicName}
-          onChangeText={value => update('clinicName', value)}
-          required
-          autoCapitalize="words"
-          error={errors.clinicName}
-        />
-
-        <InputField
-          label="Medical Registration Number"
-          placeholder="Enter medical registration number"
-          value={clinic.medicalRegistrationNumber}
-          onChangeText={value => update('medicalRegistrationNumber', value)}
-          required
-          error={errors.medicalRegistrationNumber}
-        />
-
-        <InputField
-          label="Establishment Year"
-          placeholder="e.g. 2023"
-          value={clinic.establishmentYear}
-          onChangeText={value => update('establishmentYear', value)}
-          required
-          keyboardType="number-pad"
-          maxLength={4}
-          error={errors.establishmentYear}
-        />
-
-        <InputField
-          label="Registration/Licence Number"
-          placeholder="Enter registration or licence number"
-          value={clinic.licenceNumber}
-          onChangeText={value => update('licenceNumber', value)}
-          required
-          autoCapitalize="characters"
-          error={errors.licenceNumber}
-        />
-
-        <InputField
-          label="GST Number"
-          placeholder="Enter GST number"
-          value={clinic.gstNumber}
-          onChangeText={value => update('gstNumber', value.toUpperCase())}
-          required
-          autoCapitalize="characters"
-          maxLength={15}
-          error={errors.gstNumber}
-        />
-
-        <InputField
-          label="PAN Number"
-          placeholder="Enter PAN number"
-          value={clinic.panNumber}
-          onChangeText={value => update('panNumber', value.toUpperCase())}
-          autoCapitalize="characters"
-          maxLength={10}
-          error={errors.panNumber}
-        />
-
-        <InputField
-          label="Address"
-          placeholder="Enter clinic address"
-          value={clinic.address}
-          onChangeText={value => update('address', value)}
-          required
-          autoCapitalize="sentences"
-          multiline
-          numberOfLines={2}
-          error={errors.address}
-        />
-
-        <InputField
-          label="Street"
-          placeholder="Enter street"
-          value={clinic.street}
-          onChangeText={value => update('street', value)}
-          required
-          autoCapitalize="sentences"
-          error={errors.street}
-        />
-
-        <InputField
-          label="City"
-          placeholder="Enter city"
-          value={clinic.city}
-          onChangeText={value => update('city', value)}
-          required
-          autoCapitalize="words"
-          error={errors.city}
-        />
-
-        <InputField
-          label="State"
-          placeholder="Enter state"
-          value={clinic.state}
-          onChangeText={value => update('state', value)}
-          required
-          autoCapitalize="words"
-          error={errors.state}
-        />
-
-        <InputField
-          label="Pincode"
-          placeholder="Enter pincode"
-          value={clinic.pincode}
-          onChangeText={value => update('pincode', value)}
-          required
-          keyboardType="number-pad"
-          maxLength={6}
-          error={errors.pincode}
-        />
-
-        <Text style={styles.mapLabel}>Locate on Map</Text>
-
-        <Pressable
-          onPress={handleOpenMap}
-          style={styles.mapCard}
-          accessibilityRole="button"
-          accessibilityLabel="Open clinic address in Google Maps"
+        <ScrollView
+          ref={scrollRef}
+          style={styles.flex}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          onScroll={onScroll}
+          onLayout={onLayout}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
         >
-          <Ionicons name="location-outline" size={34} color="#7B35FF" />
-          <Text style={styles.mapTitle}>Open clinic location</Text>
-          <Text style={styles.mapSubtitle} numberOfLines={2}>
-            {[clinic.address, clinic.city, clinic.pincode]
-              .map(part => part.trim())
-              .filter(Boolean)
-              .join(', ') || 'Address will appear here'}
-          </Text>
-          <Text style={styles.mapLink}>Open in Google Maps</Text>
-        </Pressable>
+          <Text style={styles.heading}>Clinic Information</Text>
 
-        <View style={styles.button}>
-          <GradientButton title="Next" onPress={handleNext} />
-        </View>
-      </ScrollView>
+          <InputField
+            label="Clinic Name"
+            placeholder="Enter clinic name"
+            value={clinic.clinicName}
+            onChangeText={value => update('clinicName', value)}
+            {...focusProps('clinicName')}
+            required
+            autoCapitalize="words"
+            error={errors.clinicName}
+          />
+
+          <InputField
+            label="Medical Registration Number"
+            placeholder="Enter medical registration number"
+            value={clinic.medicalRegistrationNumber}
+            onChangeText={value => update('medicalRegistrationNumber', value)}
+            {...focusProps('medicalRegistrationNumber')}
+            required
+            error={errors.medicalRegistrationNumber}
+          />
+
+          <InputField
+            label="Establishment Year"
+            placeholder="e.g. 2023"
+            value={clinic.establishmentYear}
+            onChangeText={value => update('establishmentYear', value)}
+            {...focusProps('establishmentYear')}
+            required
+            keyboardType="number-pad"
+            maxLength={4}
+            error={errors.establishmentYear}
+          />
+
+          <InputField
+            label="Registration/Licence Number"
+            placeholder="Enter registration or licence number"
+            value={clinic.licenceNumber}
+            onChangeText={value => update('licenceNumber', value)}
+            {...focusProps('licenceNumber')}
+            required
+            autoCapitalize="characters"
+            error={errors.licenceNumber}
+          />
+
+          <InputField
+            label="GST Number"
+            placeholder="Enter GST number"
+            value={clinic.gstNumber}
+            onChangeText={value => update('gstNumber', value.toUpperCase())}
+            {...focusProps('gstNumber')}
+            required
+            autoCapitalize="characters"
+            maxLength={15}
+            error={errors.gstNumber}
+          />
+
+          <InputField
+            label="PAN Number"
+            placeholder="Enter PAN number"
+            value={clinic.panNumber}
+            onChangeText={value => update('panNumber', value.toUpperCase())}
+            {...focusProps('panNumber')}
+            autoCapitalize="characters"
+            maxLength={10}
+            error={errors.panNumber}
+          />
+
+          <InputField
+            label="Address"
+            placeholder="Enter clinic address"
+            value={clinic.address}
+            onChangeText={value => update('address', value)}
+            {...focusProps('address')}
+            required
+            autoCapitalize="sentences"
+            multiline
+            numberOfLines={2}
+            error={errors.address}
+          />
+
+          <InputField
+            label="Street"
+            placeholder="Enter street"
+            value={clinic.street}
+            onChangeText={value => update('street', value)}
+            {...focusProps('street')}
+            required
+            autoCapitalize="sentences"
+            error={errors.street}
+          />
+
+          <InputField
+            label="City"
+            placeholder="Enter city"
+            value={clinic.city}
+            onChangeText={value => update('city', value)}
+            {...focusProps('city')}
+            required
+            autoCapitalize="words"
+            error={errors.city}
+          />
+
+          <InputField
+            label="State"
+            placeholder="Enter state"
+            value={clinic.state}
+            onChangeText={value => update('state', value)}
+            {...focusProps('state')}
+            required
+            autoCapitalize="words"
+            error={errors.state}
+          />
+
+          <InputField
+            label="Pincode"
+            placeholder="Enter pincode"
+            value={clinic.pincode}
+            onChangeText={value => update('pincode', value)}
+            {...focusProps('pincode')}
+            required
+            keyboardType="number-pad"
+            maxLength={6}
+            error={errors.pincode}
+          />
+
+          <Text style={styles.mapLabel}>Locate on Map</Text>
+
+          <Pressable
+            onPress={handleOpenMap}
+            style={styles.mapCard}
+            accessibilityRole="button"
+            accessibilityLabel="Open clinic address in Google Maps"
+          >
+            <Ionicons name="location-outline" size={34} color="#7B35FF" />
+            <Text style={styles.mapTitle}>Open clinic location</Text>
+            <Text style={styles.mapSubtitle} numberOfLines={2}>
+              {[clinic.address, clinic.city, clinic.pincode]
+                .map(part => part.trim())
+                .filter(Boolean)
+                .join(', ') || 'Address will appear here'}
+            </Text>
+            <Text style={styles.mapLink}>Open in Google Maps</Text>
+          </Pressable>
+
+          <View style={styles.button}>
+            <GradientButton title="Next" onPress={handleNext} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -314,6 +353,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+
+  flex: {
+    flex: 1,
   },
 
   content: {

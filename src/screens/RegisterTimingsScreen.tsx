@@ -5,6 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -110,41 +112,49 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
         title="Register Your Clinic"
         onBackPress={() => navigation.goBack()}
       />
-      <StepProgress currentStep={3} />
+      {/* Legacy standalone route: the primary flow skips timings, so this
+          screen stays on the Personal step of the 3-step indicator. */}
+      <StepProgress currentStep={2} />
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={styles.heading}>Working Hours</Text>
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.heading}>Working Hours</Text>
 
-        {workingHours.map((item, index) => (
-          <View key={item.day} style={styles.rowWrapper}>
-            <WorkingHoursRow
-              day={item.day}
-              enabled={item.enabled}
-              startTime={item.startTime}
-              endTime={item.endTime}
-              onToggle={value => handleToggle(index, value)}
-              onStartTimeChange={value =>
-                handleTimeChange(index, 'startTime', value)
-              }
-              onEndTimeChange={value =>
-                handleTimeChange(index, 'endTime', value)
-              }
-            />
+          {workingHours.map((item, index) => (
+            <View key={item.day} style={styles.rowWrapper}>
+              <WorkingHoursRow
+                day={item.day}
+                enabled={item.enabled}
+                startTime={item.startTime}
+                endTime={item.endTime}
+                onToggle={value => handleToggle(index, value)}
+                onStartTimeChange={value =>
+                  handleTimeChange(index, 'startTime', value)
+                }
+                onEndTimeChange={value =>
+                  handleTimeChange(index, 'endTime', value)
+                }
+              />
 
-            {errors[index] ? (
-              <Text style={styles.errorText}>{errors[index]}</Text>
-            ) : null}
+              {errors[index] ? (
+                <Text style={styles.errorText}>{errors[index]}</Text>
+              ) : null}
+            </View>
+          ))}
+
+          <View style={styles.button}>
+            <GradientButton title="Next" onPress={handleNext} />
           </View>
-        ))}
-
-        <View style={styles.button}>
-          <GradientButton title="Next" onPress={handleNext} />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -153,6 +163,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+
+  flex: {
+    flex: 1,
   },
 
   content: {

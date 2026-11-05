@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import {
   View,
+  Text,
   ScrollView,
   StyleSheet,
-  useWindowDimensions,
   StatusBar,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import HomeHeader from '../components/HomeHeader';
-import BottomNavigation from '../components/BottomNavigation';
+import BottomNavigation, { TabName } from '../components/BottomNavigation';
 import RevenueSummaryCard from '../components/RevenueSummaryCard';
 import RevenueChart from '../components/RevenueChart';
 import RevenuePeriodDropdown from '../components/RevenuePeriodDropdown';
 import TVDisplaysSection from '../components/TVDisplaysSection';
-
-type TabName = 'Clinics' | 'Logs' | 'Revenue' | 'Receipt';
 
 type Props = {
   navigation: {
@@ -26,6 +25,7 @@ type Props = {
 const RevenueScreen: React.FC<Props> = ({ navigation }) => {
   const [period, setPeriod] = useState('7 days');
   const [activeTab, setActiveTab] = useState<TabName>('Revenue');
+
   const { width } = useWindowDimensions();
 
   const handleTabPress = (tab: TabName) => {
@@ -35,15 +35,15 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate('Home');
     } else if (tab === 'Revenue') {
       // Already on the Revenue screen.
-    } else if (tab === 'Logs') {
+    } else if (tab === 'Statement') {
       navigation.navigate('Logs');
-    } else if (tab === 'Receipt') {
+    } else if (tab === 'Support') {
       navigation.navigate('Receipt');
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
@@ -66,7 +66,7 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
 
           <View style={styles.chartHeader}>
             <View>
-              <HomeSectionTitle />
+              <Text style={styles.chartTitle}>Revenue overview</Text>
             </View>
 
             <RevenuePeriodDropdown value={period} onChange={setPeriod} />
@@ -83,12 +83,6 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
       </View>
     </SafeAreaView>
   );
-};
-
-const HomeSectionTitle = () => {
-  const { Text } = require('react-native');
-
-  return <Text style={styles.chartTitle}>Revenue overview</Text>;
 };
 
 const styles = StyleSheet.create({

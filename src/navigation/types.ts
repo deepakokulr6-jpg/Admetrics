@@ -10,7 +10,12 @@ export type AuthStackParamList = {
   Login: undefined;
   CreateAccount: undefined;
   VerifyOtp: { email: string };
-  ConfirmPassword: { email: string };
+  ForgotPassword: undefined;
+  ConfirmPassword: {
+    email: string;
+    mode?: 'signup' | 'reset';
+    resetToken?: string;
+  };
   AccountCreated: undefined;
 };
 

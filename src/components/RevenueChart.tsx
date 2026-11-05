@@ -1,20 +1,12 @@
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Svg, {
-  Line,
-  Circle,
-  Polyline,
-} from 'react-native-svg';
+import Svg, { Path, Circle, Line } from 'react-native-svg';
 
 type Props = {
   period: string;
 };
 
-const chartData: Record<
-  string,
-  { days: string[]; values: number[] }
-> = {
+const chartData: Record<string, { days: string[]; values: number[] }> = {
   '7 days': {
     days: ['23', '24', '25', '26', '27', '28', '29'],
     values: [3, 4.5, 1.9, 5.2, 2.3, 2.9, 4.7],
@@ -32,76 +24,88 @@ const chartData: Record<
 const RevenueChart: React.FC<Props> = ({ period }) => {
   const data = chartData[period] ?? chartData['7 days'];
 
-  const chartWidth = 270;
+  const chartWidth = 280;
   const chartHeight = 190;
-  const left = 27;
-  const right = 8;
-  const top = 12;
-  const bottom = 25;
+  const top = 8;
+  const bottom = 12;
+  const left = 0;
+  const right = 0;
 
   const plotWidth = chartWidth - left - right;
   const plotHeight = chartHeight - top - bottom;
 
   const points = data.values.map((value, index) => {
     const x = left + (index * plotWidth) / (data.values.length - 1);
+
     const y = top + plotHeight - (value / 6) * plotHeight;
 
     return { x, y };
   });
 
-  const polylinePoints = points
-    .map(point => `${point.x},${point.y}`)
+  const pathData = points
+    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
     .join(' ');
 
   return (
     <View style={styles.card}>
-      <Svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
-        {[1, 2, 3, 4, 5, 6].map(value => {
-          const y = top + plotHeight - (value / 6) * plotHeight;
+      <View style={styles.chartContainer}>
+        <View style={styles.yAxis}>
+          {['6K', '5K', '4K', '3K', '2K', '1K'].map((label, index) => (
+            <View key={index} style={styles.yAxisRow}>
+              <Text style={styles.axisText}>{label}</Text>
+            </View>
+          ))}
+        </View>
 
-          return (
-            <React.Fragment key={value}>
-              <Line
-                x1={left}
-                y1={y}
-                x2={chartWidth - right}
-                y2={y}
-                stroke="#EEEEEE"
-                strokeWidth={1}
+        <View style={styles.svgWrapper}>
+          <Svg
+            height={chartHeight}
+            width="100%"
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          >
+            {[1, 2, 3, 4, 5, 6].map(value => {
+              const y = top + plotHeight - (value / 6) * plotHeight;
+
+              return (
+                <Line
+                  key={value}
+                  x1={0}
+                  y1={y}
+                  x2={chartWidth}
+                  y2={y}
+                  stroke="#F3F4F6"
+                  strokeWidth={1}
+                />
+              );
+            })}
+
+            <Path
+              d={pathData}
+              fill="none"
+              stroke="#6366F1"
+              strokeWidth={2.5}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+
+            {points.map((point, index) => (
+              <Circle
+                key={index}
+                cx={point.x}
+                cy={point.y}
+                r={4.5}
+                fill="#1E1B4B"
+                stroke="#FFFFFF"
+                strokeWidth={2}
               />
-            </React.Fragment>
-          );
-        })}
+            ))}
+          </Svg>
+        </View>
+      </View>
 
-        <Polyline
-          points={polylinePoints}
-          fill="none"
-          stroke="#6247FF"
-          strokeWidth={1.6}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-
-        {points.map((point, index) => (
-          <Circle
-            key={index}
-            cx={point.x}
-            cy={point.y}
-            r={3.5}
-            fill="#111111"
-          />
-        ))}
-
+      <View style={styles.xAxis}>
         {data.days.map((day, index) => (
-          <React.Fragment key={day}>
-            <Text />
-          </React.Fragment>
-        ))}
-      </Svg>
-
-      <View style={styles.labelsRow}>
-        {data.days.map(day => (
-          <Text key={day} style={styles.dayLabel}>
+          <Text key={index} style={styles.xAxisText}>
             {day}
           </Text>
         ))}
@@ -112,23 +116,61 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 
 const styles = StyleSheet.create({
   card: {
+    width: '100%',
+    height: 305,
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingTop: 6,
-    paddingBottom: 10,
-    marginTop: 10,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    marginTop: 12,
   },
-  labelsRow: {
+
+  chartContainer: {
+    flexDirection: 'row',
+    height: 220,
+    alignItems: 'center',
+  },
+
+  yAxis: {
+    width: 32,
+    height: '100%',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+
+  yAxisRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  axisText: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#000000',
+    width: 24,
+  },
+
+  svgWrapper: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+  },
+
+  xAxis: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 25,
-    paddingRight: 8,
-    marginTop: -20,
+    paddingHorizontal: 28,
+    marginTop: 4,
   },
-  dayLabel: {
-    color: '#221E25',
-    fontSize: 9,
+
+  xAxisText: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#000000',
     textAlign: 'center',
   },
 });
