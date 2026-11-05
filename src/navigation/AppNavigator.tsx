@@ -29,10 +29,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="A15Home" component={A15HomeScreen} />
         <Stack.Screen name="Revenue" component={RevenueScreen} />
-        <Stack.Screen
-          name="RegisterClinic"
-          component={RegisterClinicScreen}
-        />
+        <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
         <Stack.Screen
           name="RegisterPersonal"
           component={RegisterPersonalScreen}
@@ -41,10 +38,7 @@ const AppNavigator = () => {
           name="RegisterTimings"
           component={RegisterTimingsScreen}
         />
-        <Stack.Screen
-          name="RegisterPhotos"
-          component={RegisterPhotoScreen}
-        />
+        <Stack.Screen name="RegisterPhotos" component={RegisterPhotoScreen} />
         <Stack.Screen
           name="ClinicRegistered"
           component={ClinicRegisteredScreen}

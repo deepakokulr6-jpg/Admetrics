@@ -14,10 +14,24 @@ import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import AppLogo from '../components/AppLogo';
 
+<<<<<<< HEAD
 export default function WelcomeBackScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+=======
+const WelcomeBackScreen: React.FC<AuthScreenProps<'Login'>> = ({
+  navigation,
+}) => {
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+>>>>>>> origin/admetrics-Deepak
 
   const handleSignIn = () => {
     if (!email || !password) {
@@ -50,21 +64,33 @@ export default function WelcomeBackScreen({ navigation }: any) {
         {/* Email Input Group */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Email ID</Text>
-          <View style={styles.inputContainer}>
+          <View
+            style={[
+              styles.inputContainer,
+              emailFocused ? styles.inputContainerFocused : null,
+            ]}
+          >
             <Feather
               name="user"
+<<<<<<< HEAD
               size={18}
               color="#71717a"
+=======
+              size={20}
+              color="#221E25"
+>>>>>>> origin/admetrics-Deepak
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, email.length > 0 && styles.inputFilled]}
               placeholder="Enter your email"
               placeholderTextColor="#a1a1aa"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              onFocus={() => setEmailFocused(true)}
+              onBlur={() => setEmailFocused(false)}
             />
           </View>
         </View>
@@ -72,20 +98,39 @@ export default function WelcomeBackScreen({ navigation }: any) {
         {/* Password Input Group */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Password</Text>
-          <View style={styles.inputContainer}>
+          <View
+            style={[
+              styles.inputContainer,
+              passwordFocused ? styles.inputContainerFocused : null,
+            ]}
+          >
             <Feather
               name="lock"
+<<<<<<< HEAD
               size={18}
               color="#71717a"
+=======
+              size={20}
+              color="#221E25"
+>>>>>>> origin/admetrics-Deepak
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, password.length > 0 && styles.inputFilled]}
               placeholder="Enter your Password"
               placeholderTextColor="#a1a1aa"
               secureTextEntry={!showPassword}
               value={password}
+<<<<<<< HEAD
               onChangeText={setPassword}
+=======
+              onChangeText={value => {
+                setPassword(value);
+                setError(null);
+              }}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+>>>>>>> origin/admetrics-Deepak
             />
             <TouchableOpacity
               onPress={() => setShowPassword(previous => !previous)}
@@ -195,15 +240,29 @@ const styles = StyleSheet.create({
     height: 40,
     width: '100%',
   },
+
+  inputContainerFocused: {
+    borderColor: '#221E25',
+  },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
+<<<<<<< HEAD
     fontSize: 14,
     color: '#18181b',
+=======
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#221E25',
+>>>>>>> origin/admetrics-Deepak
     paddingLeft: 4,
     height: '100%',
+  },
+
+  inputFilled: {
+    fontWeight: '600',
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',

@@ -66,6 +66,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
           style={[
             styles.otpBox,
             focusedIndex === index && styles.otpBoxFocused,
+            value[index] ? styles.otpBoxFilled : null,
           ]}
           value={value[index] || ''}
           onChangeText={text => handleChange(text, index)}
@@ -110,6 +111,10 @@ const styles = StyleSheet.create({
 
   otpBoxFocused: {
     borderColor: '#0265FB',
+  },
+
+  otpBoxFilled: {
+    fontWeight: '600',
   },
 });
 

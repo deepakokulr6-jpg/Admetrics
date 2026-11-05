@@ -7,7 +7,11 @@ type Props = {
 };
 
 const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
-  <TouchableOpacity onPress={onPress} activeOpacity={0.8} accessibilityRole="button">
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.8}
+    accessibilityRole="button"
+  >
     <LinearGradient
       colors={['#0265FB', '#B43AFC']}
       start={{ x: 0, y: 0 }}

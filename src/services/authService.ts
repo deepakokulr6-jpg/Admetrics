@@ -104,9 +104,7 @@ const hashPassword = (email: string, password: string): string => {
 };
 
 const createToken = (): string =>
-  `dev_${Date.now().toString(36)}_${Math.random()
-    .toString(36)
-    .slice(2, 12)}`;
+  `dev_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
 
 const readAccounts = async (): Promise<StoredAccount[]> => {
   try {
@@ -152,7 +150,10 @@ const persistSession = async (session: StoredSession): Promise<void> => {
       service: KEYCHAIN_SERVICE,
     });
   } catch (error) {
-    console.warn('[authService] Keychain unavailable, using AsyncStorage', error);
+    console.warn(
+      '[authService] Keychain unavailable, using AsyncStorage',
+      error,
+    );
   }
 
   try {

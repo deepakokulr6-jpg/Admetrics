@@ -4,9 +4,9 @@ import SuccessScreenLayout from '../components/SuccessScreenLayout';
 import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
 import type { AppScreenProps } from '../navigation/types';
 
-const ClinicRegisteredScreen: React.FC<
-  AppScreenProps<'ClinicRegistered'>
-> = ({ navigation }) => {
+const ClinicRegisteredScreen: React.FC<AppScreenProps<'ClinicRegistered'>> = ({
+  navigation,
+}) => {
   const { resetDraft } = useClinicRegistration();
 
   const handleOkay = () => {

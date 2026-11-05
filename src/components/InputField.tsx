@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   View,
   Text,
@@ -57,12 +57,24 @@ const InputField: React.FC<InputFieldProps> = ({
   onFocus,
   onBlur,
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
   const InputIcon =
     iconName === 'email'
       ? EmailIcon
       : iconName === 'password'
       ? PasswordIcon
       : null;
+
+  const handleFocus: TextInputProps['onFocus'] = event => {
+    setIsFocused(true);
+    onFocus?.(event);
+  };
+
+  const handleBlur: TextInputProps['onBlur'] = event => {
+    setIsFocused(false);
+    onBlur?.(event);
+  };
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -77,6 +89,7 @@ const InputField: React.FC<InputFieldProps> = ({
         style={[
           styles.inputBox,
           multiline && styles.multilineBox,
+          isFocused ? styles.inputBoxFocused : null,
           error ? styles.inputBoxError : null,
           !editable && styles.inputBoxDisabled,
         ]}
@@ -88,6 +101,7 @@ const InputField: React.FC<InputFieldProps> = ({
             styles.input,
             InputIcon ? styles.inputWithIcon : null,
             multiline && styles.multilineInput,
+            value.length > 0 && styles.inputFilled,
           ]}
           placeholder={placeholder}
           placeholderTextColor="#AAAAAA"
@@ -104,8 +118,8 @@ const InputField: React.FC<InputFieldProps> = ({
           editable={editable}
           multiline={multiline}
           numberOfLines={numberOfLines}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
 
         {rightElement ? (
@@ -152,6 +166,10 @@ const styles = StyleSheet.create({
     borderColor: '#D93025',
   },
 
+  inputBoxFocused: {
+    borderColor: '#221E25',
+  },
+
   inputBoxDisabled: {
     backgroundColor: '#F7F7F7',
     borderColor: '#DDDDDD',
@@ -163,6 +181,11 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     fontSize: 14,
     fontWeight: '400',
+    color: '#221E25',
+  },
+
+  inputFilled: {
+    fontWeight: '600',
     color: '#221E25',
   },
 
