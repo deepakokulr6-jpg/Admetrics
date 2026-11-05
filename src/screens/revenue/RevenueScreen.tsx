@@ -10,9 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import HomeHeader from '../../components/home/HomeHeader';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
+import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
@@ -45,7 +43,7 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>

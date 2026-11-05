@@ -23,6 +23,9 @@ export type AppStackParamList = {
   Home: undefined;
   A15Home: undefined;
   Revenue: undefined;
+  Statement: undefined;
+  Support: undefined;
+  Receipt: undefined;
   RegisterClinic: undefined;
   RegisterPersonal: undefined;
   RegisterTimings: undefined;

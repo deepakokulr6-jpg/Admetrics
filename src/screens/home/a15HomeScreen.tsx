@@ -13,9 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeHeader from '../../components/home/HomeHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
+import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { getClinicRegistrations } from '../../services/clinicService';
@@ -98,7 +96,7 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
