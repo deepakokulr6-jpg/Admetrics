@@ -10,14 +10,16 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import HomeHeader from '../components/HomeHeader';
-import ClinicCard from '../components/ClinicCard';
-import RegisterClinicButton from '../components/RegisterClinicButton';
-import BottomNavigation, { TabName } from '../components/BottomNavigation';
+import HomeHeader from '../../components/home/HomeHeader';
+import ClinicCard from '../../components/clinic/ClinicCard';
+import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
+import BottomNavigation, {
+  TabName,
+} from '../../components/shared/BottomNavigation';
 
-import { useAuth } from '../contexts/AuthContext';
-import { getClinicRegistrations } from '../services/clinicService';
-import { ClinicRegistrationRecord } from '../types/clinic';
+import { useAuth } from '../../contexts/AuthContext';
+import { getClinicRegistrations } from '../../services/clinicService';
+import { ClinicRegistrationRecord } from '../../types/clinic';
 
 type Props = {
   navigation: {

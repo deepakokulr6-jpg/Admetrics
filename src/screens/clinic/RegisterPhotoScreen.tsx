@@ -11,15 +11,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchImageLibrary } from 'react-native-image-picker';
 
-import ScreenHeader from '../components/ScreenHeader';
-import StepProgress from '../components/StepProgress';
-import PhotoUploadItem from '../components/PhotoUploadItem';
-import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
-import { useAuth } from '../contexts/AuthContext';
-import { saveClinicRegistration } from '../services/clinicService';
-import { ClinicPhotos } from '../types/clinic';
-import type { AppScreenProps } from '../navigation/types';
+import ScreenHeader from '../../components/shared/ScreenHeader';
+import StepProgress from '../../components/shared/StepProgress';
+import PhotoUploadItem from '../../components/clinic/PhotoUploadItem';
+import GradientButton from '../../components/shared/GradientButton';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { saveClinicRegistration } from '../../services/clinicService';
+import { ClinicPhotos } from '../../types/clinic';
+import type { AppScreenProps } from '../../navigation/types';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];

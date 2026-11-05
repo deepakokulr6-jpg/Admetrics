@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import Logo1 from '../../assets/images/logo1.svg';
-import Logo2 from '../../assets/images/logo2.svg';
-import Logo3 from '../../assets/images/logo3.svg';
-import Logo4 from '../../assets/images/logo4.svg';
+import Logo1 from '../../../assets/images/logo1.svg';
+import Logo2 from '../../../assets/images/logo2.svg';
+import Logo3 from '../../../assets/images/logo3.svg';
+import Logo4 from '../../../assets/images/logo4.svg';
 
-import colors from '../theme/colors';
+import colors from '../../theme/colors';
 
 const logos = [Logo1, Logo2, Logo3, Logo4];
 

@@ -9,8 +9,8 @@ import {
   TextInputProps,
 } from 'react-native';
 
-import EmailIcon from '../../assets/images/email.svg';
-import PasswordIcon from '../../assets/images/password.svg';
+import EmailIcon from '../../../assets/images/email.svg';
+import PasswordIcon from '../../../assets/images/password.svg';
 
 type InputFieldProps = {
   label: string;

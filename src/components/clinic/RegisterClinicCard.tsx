@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
-import RegisterIcon from '../../assets/images/register.svg';
+import RegisterIcon from '../../../assets/images/register.svg';
 
 type Props = {
   onPress: () => void;

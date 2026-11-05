@@ -13,17 +13,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import AppLogo from '../components/AppLogo';
-import AuthHeader from '../components/AuthHeader';
-import InputField from '../components/InputField';
-import OtpInput from '../components/OtpInput';
-import GradientButton from '../components/GradientButton';
-import AuthFooter from '../components/AuthFooter';
-import InputStatusIcon from '../components/InputStatusIcon';
-import { useAuth } from '../contexts/AuthContext';
-import { AuthError, DEVELOPMENT_OTP } from '../services/authService';
-import { isValidEmail } from '../utils/validation';
-import type { AuthScreenProps, AuthStackParamList } from '../navigation/types';
+import AppLogo from '../../components/shared/AppLogo';
+import AuthHeader from '../../components/auth/AuthHeader';
+import InputField from '../../components/shared/InputField';
+import OtpInput from '../../components/auth/OtpInput';
+import GradientButton from '../../components/shared/GradientButton';
+import AuthFooter from '../../components/auth/AuthFooter';
+import InputStatusIcon from '../../components/auth/InputStatusIcon';
+import { useAuth } from '../../contexts/AuthContext';
+import { AuthError, DEVELOPMENT_OTP } from '../../services/authService';
+import { isValidEmail } from '../../utils/validation';
+import type {
+  AuthScreenProps,
+  AuthStackParamList,
+} from '../../navigation/types';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';

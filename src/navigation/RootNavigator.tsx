@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
-import SplashScreen from '../screens/SplashScreen';
+import SplashScreen from '../screens/auth/SplashScreen';
 import AuthNavigator, { navigationTheme } from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import { useAuth } from '../contexts/AuthContext';

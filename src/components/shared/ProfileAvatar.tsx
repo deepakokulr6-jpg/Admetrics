@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import ProfilePic from '../../assets/images/profile_pic.svg';
+import ProfilePic from '../../../assets/images/profile_pic.svg';
 
 type Props = {
   size?: number;

@@ -13,13 +13,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import AppLogo from '../components/AppLogo';
-import AuthHeader from '../components/AuthHeader';
-import InputField from '../components/InputField';
-import GradientButton from '../components/GradientButton';
-import { useAuth } from '../contexts/AuthContext';
-import { AuthError } from '../services/authService';
-import type { AuthScreenProps } from '../navigation/types';
+import AppLogo from '../../components/shared/AppLogo';
+import AuthHeader from '../../components/auth/AuthHeader';
+import InputField from '../../components/shared/InputField';
+import GradientButton from '../../components/shared/GradientButton';
+import { useAuth } from '../../contexts/AuthContext';
+import { AuthError } from '../../services/authService';
+import type { AuthScreenProps } from '../../navigation/types';
 
 const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,

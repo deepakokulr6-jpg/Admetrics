@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Logo from '../../../assets/images/logo5.svg';
+import ProfilePic from '../../../assets/images/profile_pic.svg';
 
 type Props = {
   name: string;
@@ -9,17 +10,20 @@ type Props = {
 
 const HomeHeader: React.FC<Props> = ({ name, onProfilePress }) => (
   <View style={styles.container}>
-    <View>
-      <Text style={styles.greeting}>Hello,</Text>
+    <View style={styles.avatarContainer}>
+      <ProfilePic width={40} height={40} />
+    </View>
+    <View style={styles.info}>
+      <Text style={styles.greeting}>Good Morning!</Text>
       <Text style={styles.name}>{name}</Text>
     </View>
     <TouchableOpacity
       onPress={onProfilePress}
       accessibilityRole="button"
-      accessibilityLabel="Profile"
-      style={styles.iconButton}
+      accessibilityLabel="Logo"
+      style={styles.logoContainer}
     >
-      <Ionicons name="person-circle-outline" size={36} color="#0265FB" />
+      <Logo width={40} height={40} />
     </TouchableOpacity>
   </View>
 );
@@ -33,16 +37,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     backgroundColor: '#FFFFFF',
   },
+  avatarContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  info: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
   greeting: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#777777',
+    marginBottom: 2,
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: '#221E25',
   },
-  iconButton: {
+  logoContainer: {
     padding: 4,
   },
 });

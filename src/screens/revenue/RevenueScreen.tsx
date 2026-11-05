@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import HomeHeader from '../components/HomeHeader';
-import BottomNavigation, { TabName } from '../components/BottomNavigation';
-import RevenueSummaryCard from '../components/RevenueSummaryCard';
-import RevenueChart from '../components/RevenueChart';
-import RevenuePeriodDropdown from '../components/RevenuePeriodDropdown';
-import TVDisplaysSection from '../components/TVDisplaysSection';
+import HomeHeader from '../../components/home/HomeHeader';
+import BottomNavigation, {
+  TabName,
+} from '../../components/shared/BottomNavigation';
+import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
+import RevenueChart from '../../components/revenue/RevenueChart';
+import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
+import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
 
 type Props = {
   navigation: {

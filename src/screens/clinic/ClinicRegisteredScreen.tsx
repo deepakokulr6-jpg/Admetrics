@@ -1,8 +1,8 @@
 import React from 'react';
 
-import SuccessScreenLayout from '../components/SuccessScreenLayout';
-import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
-import type { AppScreenProps } from '../navigation/types';
+import SuccessScreenLayout from '../../components/shared/SuccessScreenLayout';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import type { AppScreenProps } from '../../navigation/types';
 
 const ClinicRegisteredScreen: React.FC<AppScreenProps<'ClinicRegistered'>> = ({
   navigation,

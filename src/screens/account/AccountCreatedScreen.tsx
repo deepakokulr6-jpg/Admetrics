@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 
-import GradientButton from '../components/GradientButton';
-import type { AuthScreenProps } from '../navigation/types';
+import GradientButton from '../../components/shared/GradientButton';
+import type { AuthScreenProps } from '../../navigation/types';
 
 const DRAW_DURATION_MS = 800;
 const PATH_LENGTH = 40;

@@ -10,10 +10,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import DashboardHeader from '../components/DashboardHeader';
-import RegisterClinicCard from '../components/RegisterClinicCard';
-import { useAuth } from '../contexts/AuthContext';
-import type { AppScreenProps } from '../navigation/types';
+import DashboardHeader from '../../components/home/DashboardHeader';
+import RegisterClinicCard from '../../components/clinic/RegisterClinicCard';
+import { useAuth } from '../../contexts/AuthContext';
+import type { AppScreenProps } from '../../navigation/types';
 
 const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
   const { user, signOut } = useAuth();

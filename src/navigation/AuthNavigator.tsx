@@ -2,13 +2,13 @@ import React from 'react';
 import { DefaultTheme, Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import WelcomeBackScreen from '../screens/WelcomeBackScreen';
-import CreateAccountScreen from '../screens/CreateAccountScreen';
+import WelcomeBackScreen from '../screens/auth/WelcomeBackScreen';
+import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import VerifyOtpScreen, {
   ForgotPasswordScreen,
-} from '../screens/VerifyOtpScreen';
-import ConfirmPasswordScreen from '../screens/ConfirmPasswordScreen';
-import AccountCreatedScreen from '../screens/AccountCreatedScreen';
+} from '../screens/auth/VerifyOtpScreen';
+import ConfirmPasswordScreen from '../screens/auth/ConfirmPasswordScreen';
+import AccountCreatedScreen from '../screens/account/AccountCreatedScreen';
 
 import type { AuthStackParamList } from './types';
 

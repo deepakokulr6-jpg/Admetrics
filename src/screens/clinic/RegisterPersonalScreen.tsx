@@ -10,15 +10,15 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ScreenHeader from '../components/ScreenHeader';
-import StepProgress from '../components/StepProgress';
-import InputField from '../components/InputField';
-import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
-import { PersonalInfo } from '../types/clinic';
-import { isBlank, isValidEmail, isValidMobile } from '../utils/validation';
-import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
-import type { AppScreenProps } from '../navigation/types';
+import ScreenHeader from '../../components/shared/ScreenHeader';
+import StepProgress from '../../components/shared/StepProgress';
+import InputField from '../../components/shared/InputField';
+import GradientButton from '../../components/shared/GradientButton';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { PersonalInfo } from '../../types/clinic';
+import { isBlank, isValidEmail, isValidMobile } from '../../utils/validation';
+import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
+import type { AppScreenProps } from '../../navigation/types';
 
 type PersonalErrors = Partial<Record<keyof PersonalInfo, string>>;
 

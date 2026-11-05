@@ -13,21 +13,21 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import ScreenHeader from '../components/ScreenHeader';
-import StepProgress from '../components/StepProgress';
-import InputField from '../components/InputField';
-import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
-import { ClinicInfo } from '../types/clinic';
+import ScreenHeader from '../../components/shared/ScreenHeader';
+import StepProgress from '../../components/shared/StepProgress';
+import InputField from '../../components/shared/InputField';
+import GradientButton from '../../components/shared/GradientButton';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { ClinicInfo } from '../../types/clinic';
 import {
   GST_PATTERN,
   isBlank,
   isValidPincode,
   isValidYear,
   PAN_PATTERN,
-} from '../utils/validation';
-import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
-import type { AppScreenProps } from '../navigation/types';
+} from '../../utils/validation';
+import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
+import type { AppScreenProps } from '../../navigation/types';
 
 type ClinicErrors = Partial<Record<keyof ClinicInfo, string>>;
 

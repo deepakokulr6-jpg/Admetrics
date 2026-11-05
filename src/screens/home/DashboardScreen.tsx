@@ -3,8 +3,8 @@ import { View, StyleSheet, StatusBar, Alert } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import DashboardHeader from '../components/DashboardHeader';
-import RegisterClinicCard from '../components/RegisterClinicCard';
+import DashboardHeader from '../../components/home/DashboardHeader';
+import RegisterClinicCard from '../../components/clinic/RegisterClinicCard';
 
 const DashboardScreen: React.FC = () => {
   const handleRegisterClinic = () => {

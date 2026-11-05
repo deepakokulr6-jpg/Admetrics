@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
 
   topPerformingCard: {
-    width: 345,
+    width: 390,
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,

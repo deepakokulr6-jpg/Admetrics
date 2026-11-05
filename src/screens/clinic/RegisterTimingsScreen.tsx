@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ScreenHeader from '../components/ScreenHeader';
-import StepProgress from '../components/StepProgress';
-import WorkingHoursRow from '../components/WorkingHoursRow';
-import GradientButton from '../components/GradientButton';
-import { useClinicRegistration } from '../contexts/ClinicRegistrationContext';
-import { isBlank, isValidTime } from '../utils/validation';
-import { useKeyboardAutoScroll } from '../utils/useKeyboardAutoScroll';
-import type { AppScreenProps } from '../navigation/types';
+import ScreenHeader from '../../components/shared/ScreenHeader';
+import StepProgress from '../../components/shared/StepProgress';
+import WorkingHoursRow from '../../components/shared/WorkingHoursRow';
+import GradientButton from '../../components/shared/GradientButton';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { isBlank, isValidTime } from '../../utils/validation';
+import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
+import type { AppScreenProps } from '../../navigation/types';
 
 const validateHours = (
   hours: ReturnType<typeof useClinicRegistration>['draft']['workingHours'],

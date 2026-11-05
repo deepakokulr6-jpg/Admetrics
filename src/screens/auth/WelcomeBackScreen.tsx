@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import AppLogo from '../components/AppLogo';
-import { useAuth } from '../contexts/AuthContext';
-import { AuthError } from '../services/authService';
-import type { AuthScreenProps } from '../navigation/types';
+import AppLogo from '../../components/shared/AppLogo';
+import { useAuth } from '../../contexts/AuthContext';
+import { AuthError } from '../../services/authService';
+import type { AuthScreenProps } from '../../navigation/types';
 
 export default function WelcomeBackScreen({
   navigation,
