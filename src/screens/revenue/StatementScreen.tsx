@@ -17,7 +17,16 @@ const StatementScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleTabPress = (tab: TabName) => {
     setActiveTab(tab);
-    navigation.navigate(tab);
+
+    if (tab === 'Clinics') {
+      navigation.navigate('Home');
+    } else if (tab === 'Statement') {
+      // Already on the Statement screen.
+    } else if (tab === 'Revenue') {
+      navigation.navigate('Revenue');
+    } else if (tab === 'Support') {
+      navigation.navigate('Support');
+    }
   };
 
   return (

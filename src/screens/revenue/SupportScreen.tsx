@@ -24,7 +24,16 @@ const SupportScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleTabPress = (tab: TabName) => {
     setActiveTab(tab);
-    navigation.navigate(tab);
+
+    if (tab === 'Clinics') {
+      navigation.navigate('Home');
+    } else if (tab === 'Statement') {
+      navigation.navigate('Statement');
+    } else if (tab === 'Revenue') {
+      navigation.navigate('Revenue');
+    } else if (tab === 'Support') {
+      // Already on the Support screen.
+    }
   };
 
   return (

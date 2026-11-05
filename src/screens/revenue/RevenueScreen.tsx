@@ -36,9 +36,9 @@ const RevenueScreen: React.FC<Props> = ({ navigation }) => {
     } else if (tab === 'Revenue') {
       // Already on the Revenue screen.
     } else if (tab === 'Statement') {
-      navigation.navigate('Logs');
+      navigation.navigate('Statement');
     } else if (tab === 'Support') {
-      navigation.navigate('Receipt');
+      navigation.navigate('Support');
     }
   };
 
