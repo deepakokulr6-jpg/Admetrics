@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import A15HomeScreen from '../screens/a15HomeScreen';
 import RevenueScreen from '../screens/RevenueScreen';
+import SupportScreen from '../screens/SupportScreen';
+import StatementScreen from '../screens/StatementScreen';
 import RegisterClinicScreen from '../screens/RegisterClinicScreen';
 import RegisterPersonalScreen from '../screens/RegisterPersonalScreen';
 import RegisterTimingsScreen from '../screens/RegisterTimingsScreen';
@@ -29,6 +31,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="A15Home" component={A15HomeScreen} />
         <Stack.Screen name="Revenue" component={RevenueScreen} />
+        <Stack.Screen name="Statement" component={StatementScreen} />
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
         <Stack.Screen
           name="RegisterPersonal"
@@ -44,6 +47,7 @@ const AppNavigator = () => {
           component={ClinicRegisteredScreen}
           options={{ animation: 'fade' }}
         />
+        <Stack.Screen name="Support" component={SupportScreen} />
       </Stack.Navigator>
     </ClinicRegistrationProvider>
   );

@@ -23,11 +23,14 @@ export type AppStackParamList = {
   Home: undefined;
   A15Home: undefined;
   Revenue: undefined;
+  Statement: undefined;
   RegisterClinic: undefined;
   RegisterPersonal: undefined;
   RegisterTimings: undefined;
   RegisterPhotos: undefined;
   ClinicRegistered: undefined;
+  Receipt: undefined;
+  Support: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

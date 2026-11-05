@@ -84,13 +84,13 @@ const A15HomeScreen: React.FC<Props> = ({ navigation }) => {
         // Already on the Clinics screen.
         break;
       case 'Statement':
-        navigation.navigate('Logs');
+        navigation.navigate('Statement');
         break;
       case 'Revenue':
         navigation.navigate('Revenue');
         break;
       case 'Support':
-        navigation.navigate('Receipt');
+        navigation.navigate('Receipt' as any);
         break;
     }
   };
