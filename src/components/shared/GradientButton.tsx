@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type GradientButtonProps = {
   title: string;
@@ -52,24 +53,24 @@ const GradientButton: React.FC<GradientButtonProps> = ({
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: 160,
+    width: scale(160),
     maxWidth: '100%',
-    height: 36,
+    height: verticalScale(36),
     alignSelf: 'center',
   },
 
   button: {
     flex: 1,
     width: '100%',
-    height: 36,
-    borderRadius: 30,
+    height: verticalScale(36),
+    borderRadius: moderateScale(30),
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   buttonText: {
-    fontSize: 14,
-    lineHeight: 18,
+    fontSize: moderateScale(14),
+    lineHeight: verticalScale(18),
     fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'center',

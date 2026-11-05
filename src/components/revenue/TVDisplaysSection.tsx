@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import TvDisplayCard from './TvDisplayCard';
 import Icon from 'react-native-vector-icons/Feather';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   onViewAll?: () => void;
@@ -65,41 +66,43 @@ const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => {
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    marginTop: 20,
+    marginTop: verticalScale(20),
     width: '100%',
-    paddingBottom: 16,
+    paddingBottom: verticalScale(16),
   },
 
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-    width: 345,
+    marginBottom: verticalScale(12),
+    width: '100%',
+    maxWidth: scale(345),
     alignSelf: 'center',
   },
 
   sectionTitle: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '700',
     color: '#1F2937',
   },
 
   viewAllText: {
-    fontSize: 13,
+    fontSize: moderateScale(13),
     fontWeight: '600',
     color: '#2563EB',
   },
 
   topPerformingCard: {
-    width: 390,
+    width: '100%',
+    maxWidth: scale(390),
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    padding: 16,
-    marginTop: 4,
+    padding: scale(16),
+    marginTop: verticalScale(4),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
@@ -109,26 +112,26 @@ const styles = StyleSheet.create({
 
   starsRow: {
     flexDirection: 'row',
-    gap: 4,
-    marginBottom: 6,
+    gap: scale(4),
+    marginBottom: verticalScale(6),
   },
 
   topPerformingTitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '700',
     color: '#1F2937',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
 
   topPerformingSubtitle: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#6B7280',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
 
   progressBarBg: {
     width: '100%',
-    height: 4,
+    height: verticalScale(4),
     backgroundColor: '#F3F4F6',
     borderRadius: 2,
     overflow: 'hidden',

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   status?: string;
@@ -67,10 +68,10 @@ const ClinicCard: React.FC<Props> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: moderateScale(16),
+    padding: scale(16),
     flexDirection: 'row',
-    gap: 12,
+    gap: scale(12),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -84,36 +85,36 @@ const styles = StyleSheet.create({
   },
 
   circle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
+    width: scale(50),
+    height: scale(50),
+    borderRadius: moderateScale(25),
+    borderWidth: moderateScale(2),
     borderColor: '#FFFFFF',
-    marginLeft: -12,
+    marginLeft: -scale(12),
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
 
   photo: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    width: scale(46),
+    height: scale(46),
+    borderRadius: moderateScale(23),
   },
 
   countBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: scale(32),
+    height: scale(32),
+    borderRadius: moderateScale(16),
     backgroundColor: '#221E25',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 4,
+    marginLeft: scale(4),
   },
 
   countText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '600',
   },
 
@@ -122,26 +123,26 @@ const styles = StyleSheet.create({
   },
 
   clinicName: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '700',
     color: '#221E25',
   },
 
   contact: {
-    fontSize: 13,
+    fontSize: moderateScale(13),
     color: '#777777',
-    marginTop: 2,
+    marginTop: verticalScale(2),
   },
 
   detail: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#555555',
-    marginTop: 1,
+    marginTop: verticalScale(1),
   },
 
   status: {
-    marginTop: 6,
-    fontSize: 12,
+    marginTop: verticalScale(6),
+    fontSize: moderateScale(12),
     color: '#B43AFC',
     fontWeight: '600',
   },

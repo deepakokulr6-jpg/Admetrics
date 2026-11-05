@@ -15,6 +15,7 @@ import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
 import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
+import { verticalScale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   navigation: {
@@ -98,19 +99,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingTop: 14,
-    paddingBottom: 16,
+    paddingTop: verticalScale(14),
+    paddingBottom: verticalScale(16),
     flexGrow: 1,
   },
   chartHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 18,
+    marginTop: verticalScale(18),
   },
   chartTitle: {
     color: '#221E25',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '700',
   },
 });

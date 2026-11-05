@@ -16,6 +16,7 @@ import AppLogo from '../../components/shared/AppLogo';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 export default function WelcomeBackScreen({
   navigation,
@@ -198,25 +199,25 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
     justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   title: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#221E25',
     textAlign: 'center',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#221E25',
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: verticalScale(32),
     alignSelf: 'center',
   },
   brandText: {
@@ -224,14 +225,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   inputGroup: {
-    marginBottom: 18,
+    marginBottom: verticalScale(18),
     width: '100%',
     alignSelf: 'center',
   },
   label: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#221E25',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
     fontWeight: '500',
   },
   inputContainer: {
@@ -239,10 +240,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#AAAAAA',
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     backgroundColor: '#ffffff',
-    paddingHorizontal: 14,
-    height: 40,
+    paddingHorizontal: scale(14),
+    height: verticalScale(40),
     width: '100%',
   },
 
@@ -250,14 +251,14 @@ const styles = StyleSheet.create({
     borderColor: '#221E25',
   },
   inputIcon: {
-    marginRight: 10,
+    marginRight: scale(10),
   },
   input: {
     flex: 1,
-    fontSize: 15,
+    fontSize: moderateScale(15),
     fontWeight: '400',
     color: '#221E25',
-    paddingLeft: 4,
+    paddingLeft: scale(4),
     height: '100%',
   },
 
@@ -266,22 +267,22 @@ const styles = StyleSheet.create({
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',
-    marginTop: 8,
+    marginTop: verticalScale(8),
   },
   forgotPasswordText: {
     color: '#B43AFC',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontWeight: '500',
   },
   errorText: {
-    marginTop: 8,
-    fontSize: 12,
+    marginTop: verticalScale(8),
+    fontSize: moderateScale(12),
     color: '#D93025',
     textAlign: 'center',
   },
   buttonWrapper: {
-    marginTop: 24,
-    borderRadius: 30,
+    marginTop: verticalScale(24),
+    borderRadius: moderateScale(30),
     overflow: 'hidden',
     shadowColor: '#0265FB',
     shadowOffset: { width: 0, height: 4 },
@@ -292,24 +293,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   signInButton: {
-    height: 48,
-    borderRadius: 30,
+    height: verticalScale(48),
+    borderRadius: moderateScale(30),
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
   signInButtonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: '600',
   },
   newUserContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
   newUserText: {
     color: '#B43AFC',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '700',
   },
 });

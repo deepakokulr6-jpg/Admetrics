@@ -22,6 +22,7 @@ import InputStatusIcon from '../../components/auth/InputStatusIcon';
 import { useAuth } from '../../contexts/AuthContext';
 import { isValidEmail } from '../../utils/validation';
 import type { AuthScreenProps } from '../../navigation/types';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 const TEST_OTP = '123456';
 
@@ -212,60 +213,60 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(32),
   },
 
   content: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: scale(360),
     alignSelf: 'center',
   },
 
   logo: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: verticalScale(24),
   },
 
   form: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
 
   otpHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
   },
 
   otpLabel: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: moderateScale(12),
+    lineHeight: verticalScale(16),
     color: '#221E25',
   },
 
   resend: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: moderateScale(12),
+    lineHeight: verticalScale(16),
     fontWeight: '600',
     color: '#7B35FF',
   },
 
   error: {
-    marginTop: 12,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: verticalScale(12),
+    fontSize: moderateScale(12),
+    lineHeight: verticalScale(16),
     fontWeight: '500',
     color: '#D93025',
     textAlign: 'center',
   },
 
   button: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
 
   footer: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
   },
 });
 

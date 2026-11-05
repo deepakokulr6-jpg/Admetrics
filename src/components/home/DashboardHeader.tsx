@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 import ProfileAvatar from '../shared/ProfileAvatar';
 import AppLogo from '../shared/AppLogo';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   userName: string;
@@ -15,7 +16,7 @@ const DashboardHeader: React.FC<Props> = ({
   onProfilePress,
   onLogoPress,
 }) => {
-  const logo = <AppLogo width={40} height={40} />;
+  const logo = <AppLogo width={scale(40)} height={verticalScale(40)} />;
 
   return (
     <View style={styles.container}>
@@ -26,7 +27,7 @@ const DashboardHeader: React.FC<Props> = ({
           accessibilityRole="button"
           accessibilityLabel="Open profile"
         >
-          <ProfileAvatar size={40} />
+          <ProfileAvatar size={moderateScale(40)} />
 
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
@@ -37,7 +38,7 @@ const DashboardHeader: React.FC<Props> = ({
         </Pressable>
       ) : (
         <View style={styles.profileSection}>
-          <ProfileAvatar size={40} />
+          <ProfileAvatar size={moderateScale(40)} />
 
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
@@ -53,7 +54,7 @@ const DashboardHeader: React.FC<Props> = ({
           onPress={onLogoPress}
           accessibilityRole="button"
           accessibilityLabel="Admetrics home"
-          hitSlop={8}
+          hitSlop={scale(8)}
         >
           {logo}
         </Pressable>
@@ -69,9 +70,9 @@ const DashboardHeader: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingHorizontal: scale(16),
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(12),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -85,25 +86,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: scale(12),
   },
 
   textContainer: {
     flex: 1,
-    marginLeft: 14,
+    marginLeft: scale(14),
   },
 
   greeting: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: moderateScale(12),
+    lineHeight: verticalScale(16),
     fontWeight: '500',
     color: '#666666',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
 
   userName: {
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: moderateScale(18),
+    lineHeight: verticalScale(22),
     fontWeight: '700',
     color: '#111111',
   },

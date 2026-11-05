@@ -14,6 +14,7 @@ import DashboardHeader from '../../components/home/DashboardHeader';
 import RegisterClinicCard from '../../components/clinic/RegisterClinicCard';
 import { useAuth } from '../../contexts/AuthContext';
 import type { AppScreenProps } from '../../navigation/types';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 const HomeScreen: React.FC<AppScreenProps<'Home'>> = ({ navigation }) => {
   const { user, signOut } = useAuth();
@@ -112,18 +113,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    gap: 24,
+    paddingHorizontal: scale(16),
+    gap: verticalScale(24),
   },
 
   homeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(10),
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    borderRadius: 24,
+    borderRadius: moderateScale(24),
   },
 
   pressed: {
@@ -131,29 +132,29 @@ const styles = StyleSheet.create({
   },
 
   homeButtonText: {
-    marginLeft: 6,
-    fontSize: 13,
-    lineHeight: 18,
+    marginLeft: scale(6),
+    fontSize: moderateScale(13),
+    lineHeight: verticalScale(18),
     fontWeight: '600',
     color: '#0265FB',
   },
 
   logoutRow: {
     alignItems: 'center',
-    paddingBottom: 16,
+    paddingBottom: verticalScale(16),
   },
 
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(8),
   },
 
   logoutText: {
-    marginLeft: 6,
-    fontSize: 13,
-    lineHeight: 18,
+    marginLeft: scale(6),
+    fontSize: moderateScale(13),
+    lineHeight: verticalScale(18),
     fontWeight: '600',
     color: '#7B35FF',
   },

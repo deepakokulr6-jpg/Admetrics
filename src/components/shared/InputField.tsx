@@ -11,6 +11,7 @@ import {
 
 import EmailIcon from '../../../assets/images/email.svg';
 import PasswordIcon from '../../../assets/images/password.svg';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type InputFieldProps = {
   label: string;
@@ -135,15 +136,15 @@ const InputField: React.FC<InputFieldProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 14,
+    marginBottom: verticalScale(14),
   },
 
   label: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: moderateScale(12),
+    lineHeight: verticalScale(16),
     fontWeight: '400',
     color: '#221E25',
-    marginBottom: 6,
+    marginBottom: verticalScale(6),
   },
 
   required: {
@@ -152,14 +153,14 @@ const styles = StyleSheet.create({
 
   inputBox: {
     width: '100%',
-    minHeight: 40,
+    minHeight: verticalScale(40),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#AAAAAA',
-    borderRadius: 6,
+    borderRadius: moderateScale(6),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: scale(12),
   },
 
   inputBoxError: {
@@ -177,9 +178,9 @@ const styles = StyleSheet.create({
 
   input: {
     flex: 1,
-    minHeight: 38,
+    minHeight: verticalScale(38),
     paddingVertical: 0,
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '400',
     color: '#221E25',
   },
@@ -190,30 +191,30 @@ const styles = StyleSheet.create({
   },
 
   inputWithIcon: {
-    marginLeft: 10,
+    marginLeft: scale(10),
   },
 
   multilineBox: {
-    minHeight: 76,
+    minHeight: verticalScale(76),
     alignItems: 'flex-start',
-    paddingVertical: 10,
+    paddingVertical: verticalScale(10),
   },
 
   multilineInput: {
-    minHeight: 54,
+    minHeight: verticalScale(54),
     textAlignVertical: 'top',
   },
 
   rightElement: {
-    marginLeft: 8,
+    marginLeft: scale(8),
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   errorText: {
-    marginTop: 4,
-    fontSize: 11,
-    lineHeight: 15,
+    marginTop: verticalScale(4),
+    fontSize: moderateScale(11),
+    lineHeight: verticalScale(15),
     color: '#D93025',
   },
 });

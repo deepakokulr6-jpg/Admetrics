@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import Svg, { Path, Circle, Line } from 'react-native-svg';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   period: string;
@@ -23,11 +24,12 @@ const chartData: Record<string, { days: string[]; values: number[] }> = {
 
 const RevenueChart: React.FC<Props> = ({ period }) => {
   const data = chartData[period] ?? chartData['7 days'];
+  const { width: screenWidth } = useWindowDimensions();
 
-  const chartWidth = 280;
-  const chartHeight = 190;
-  const top = 8;
-  const bottom = 12;
+  const chartWidth = Math.min(scale(280), screenWidth * 0.9);
+  const chartHeight = moderateScale(190);
+  const top = moderateScale(8);
+  const bottom = moderateScale(12);
   const left = 0;
   const right = 0;
 
@@ -117,29 +119,29 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 305,
+    height: verticalScale(305),
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: moderateScale(16),
+    padding: scale(16),
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
-    marginTop: 12,
+    marginTop: verticalScale(12),
   },
 
   chartContainer: {
     flexDirection: 'row',
-    height: 220,
+    height: verticalScale(220),
     alignItems: 'center',
   },
 
   yAxis: {
-    width: 32,
+    width: scale(32),
     height: '100%',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: verticalScale(10),
   },
 
   yAxisRow: {
@@ -148,10 +150,10 @@ const styles = StyleSheet.create({
   },
 
   axisText: {
-    fontSize: 10,
+    fontSize: moderateScale(10),
     fontWeight: '500',
     color: '#000000',
-    width: 24,
+    width: scale(24),
   },
 
   svgWrapper: {
@@ -163,12 +165,12 @@ const styles = StyleSheet.create({
   xAxis: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 28,
-    marginTop: 4,
+    paddingHorizontal: scale(28),
+    marginTop: verticalScale(4),
   },
 
   xAxisText: {
-    fontSize: 10,
+    fontSize: moderateScale(10),
     fontWeight: '500',
     color: '#000000',
     textAlign: 'center',

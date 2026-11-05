@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { scale, moderateScale } from '../../utils/responsive';
 
 type Props = {
   title: string;
@@ -31,7 +32,7 @@ const TvDisplayCard: React.FC<Props> = ({
       >
         <Icon
           name="monitor"
-          size={18}
+          size={moderateScale(18)}
           color={isOnline ? '#16A34A' : '#DC2626'}
         />
       </View>
@@ -68,18 +69,19 @@ const TvDisplayCard: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 390, // Exact width matching the last banner/card
-    height: 80, // Exact Figma height specification
-    alignSelf: 'center', // Centers the card perfectly on the screen
+    width: '100%',
+    maxWidth: scale(390),
+    height: moderateScale(80),
+    alignSelf: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: scale(12),
+    paddingVertical: moderateScale(10),
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: moderateScale(10),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
@@ -87,12 +89,12 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
+    width: scale(40),
+    height: scale(40),
+    borderRadius: moderateScale(10),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: scale(10),
   },
   onlineIconBox: {
     backgroundColor: '#DCFCE7',
@@ -105,10 +107,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleText: {
-    fontSize: 13,
+    fontSize: moderateScale(13),
     fontWeight: '700',
     color: '#1F2937',
-    marginBottom: 2,
+    marginBottom: moderateScale(2),
   },
   subtextRow: {
     flexDirection: 'row',
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   statusText: {
-    fontSize: 11,
+    fontSize: moderateScale(11),
     fontWeight: '600',
   },
   onlineText: {
@@ -127,23 +129,23 @@ const styles = StyleSheet.create({
   },
   dotText: {
     color: '#9CA3AF',
-    fontSize: 10,
+    fontSize: moderateScale(10),
   },
   displayIdText: {
-    fontSize: 11,
+    fontSize: moderateScale(11),
     color: '#6B7280',
   },
   uptimeText: {
-    fontSize: 10,
+    fontSize: moderateScale(10),
     color: '#9CA3AF',
   },
   rightContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingLeft: 8,
+    paddingLeft: scale(8),
   },
   revenueText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '700',
     color: '#1F2937',
   },
