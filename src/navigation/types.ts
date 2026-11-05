@@ -28,6 +28,7 @@ export type AppStackParamList = {
   RegisterTimings: undefined;
   RegisterPhotos: undefined;
   ClinicRegistered: undefined;
+  EditDetails: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =
