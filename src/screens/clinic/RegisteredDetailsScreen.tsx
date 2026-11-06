@@ -14,9 +14,9 @@ import ScreenHeader from '../../components/shared/ScreenHeader';
 import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
 
-const RegisteredDetailsScreen: React.FC<AppScreenProps<'RegisteredDetails'>> = ({
-  navigation,
-}) => {
+const RegisteredDetailsScreen: React.FC<
+  AppScreenProps<'RegisteredDetails'>
+> = ({ navigation }) => {
   const clinicName = 'Sai Shree Clinic';
   const contactPerson = 'Shivan';
   const designation = 'Doctor';
