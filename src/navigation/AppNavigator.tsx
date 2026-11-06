@@ -8,11 +8,12 @@ import StatementScreen from '../screens/revenue/StatementScreen';
 import SupportScreen from '../screens/revenue/SupportScreen';
 import RegisterClinicScreen from '../screens/clinic/RegisterClinicScreen';
 import EditDetailsScreen from '../screens/clinic/EditDetailsScreen';
+import RegisteredDetailsScreen from '../screens/clinic/RegisteredDetailsScreen';
+import PaymentDetailsScreen from '../screens/revenue/PaymentDetailsScreen';
 import RegisterPersonalScreen from '../screens/clinic/RegisterPersonalScreen';
 import RegisterTimingsScreen from '../screens/clinic/RegisterTimingsScreen';
 import RegisterPhotoScreen from '../screens/clinic/RegisterPhotoScreen';
 import ClinicRegisteredScreen from '../screens/clinic/ClinicRegisteredScreen';
-import RegisteredDetailsScreen from '../screens/clinic/RegisteredDetailsScreen';
 import { ClinicRegistrationProvider } from '../contexts/ClinicRegistrationContext';
 import type { AppStackParamList } from './types';
 
@@ -38,6 +39,11 @@ const AppNavigator = () => {
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
         <Stack.Screen name="EditDetails" component={EditDetailsScreen} />
         <Stack.Screen
+          name="RegisteredDetails"
+          component={RegisteredDetailsScreen}
+        />
+        <Stack.Screen name="PaymentDetails" component={PaymentDetailsScreen} />
+        <Stack.Screen
           name="RegisterPersonal"
           component={RegisterPersonalScreen}
         />
@@ -50,10 +56,6 @@ const AppNavigator = () => {
           name="ClinicRegistered"
           component={ClinicRegisteredScreen}
           options={{ animation: 'fade' }}
-        />
-        <Stack.Screen
-          name="RegisteredDetails"
-          component={RegisteredDetailsScreen}
         />
       </Stack.Navigator>
     </ClinicRegistrationProvider>

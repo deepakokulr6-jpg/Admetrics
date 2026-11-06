@@ -1,15 +1,16 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export type AuthStackParamList = {
+export type RootStackParamList = {
   Splash: undefined;
+  Auth: undefined;
+  App: undefined;
+};
+
+export type AuthStackParamList = {
   Login: undefined;
-  WelcomeBack: undefined;
   CreateAccount: undefined;
+  VerifyOtp: { email: string };
   ForgotPassword: undefined;
-  VerifyOtp: {
-    email: string;
-    mode?: 'signup' | 'reset';
-  };
   ConfirmPassword: {
     email: string;
     mode?: 'signup' | 'reset';
@@ -31,7 +32,8 @@ export type AppStackParamList = {
   RegisterPhotos: undefined;
   ClinicRegistered: undefined;
   EditDetails: undefined;
-  RegisteredDetails?: undefined;
+  RegisteredDetails: undefined;
+  PaymentDetails: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =
