@@ -11,13 +11,22 @@ import Icon from 'react-native-vector-icons/Feather';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
+  selectedPeriod?: string;
+  onSelectPeriod?: (value: string) => void;
 };
 
 const periods = ['7 days', '30 days', '90 days'];
 
-const RevenuePeriodDropdown: React.FC<Props> = ({ value, onChange }) => {
+const RevenuePeriodDropdown: React.FC<Props> = ({
+  value,
+  onChange,
+  selectedPeriod,
+  onSelectPeriod,
+}) => {
+  const currentValue = value ?? selectedPeriod ?? '7 days';
+  const handleChange = onChange ?? onSelectPeriod ?? (() => {});
   const [modalVisible, setModalVisible] = useState(false);
   const [dropdownCoords, setDropdownCoords] = useState({
     top: 0,
@@ -46,7 +55,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({ value, onChange }) => {
   };
 
   const handleSelect = (item: string) => {
-    onChange(item);
+    handleChange(item);
     setModalVisible(false);
   };
 
@@ -57,7 +66,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({ value, onChange }) => {
         accessibilityRole="button"
         onPress={handleOpen}
       >
-        <Text style={styles.buttonText}>{value}</Text>
+        <Text style={styles.buttonText}>{currentValue}</Text>
         <Icon name="chevron-down" size={scale(14)} color="#221E25" />
       </Pressable>
 

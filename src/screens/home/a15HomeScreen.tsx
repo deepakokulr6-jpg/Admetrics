@@ -12,9 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeHeader from '../../components/home/HomeHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
+import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { getClinicRegistrations } from '../../services/clinicService';
@@ -83,7 +81,7 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({
 
     switch (tab) {
       case 'Clinics':
-        // Already on the Clinics screen.
+        navigation.navigate('Home');
         break;
       case 'Statement':
         navigation.navigate('Statement');
