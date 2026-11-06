@@ -12,8 +12,8 @@ import RegisterPersonalScreen from '../screens/clinic/RegisterPersonalScreen';
 import RegisterTimingsScreen from '../screens/clinic/RegisterTimingsScreen';
 import RegisterPhotoScreen from '../screens/clinic/RegisterPhotoScreen';
 import ClinicRegisteredScreen from '../screens/clinic/ClinicRegisteredScreen';
+import RegisteredDetailsScreen from '../screens/clinic/RegisteredDetailsScreen';
 import { ClinicRegistrationProvider } from '../contexts/ClinicRegistrationContext';
-
 import type { AppStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -34,6 +34,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Revenue" component={RevenueScreen} />
         <Stack.Screen name="Statement" component={StatementScreen} />
         <Stack.Screen name="Support" component={SupportScreen} />
+        <Stack.Screen name="Receipt" component={StatementScreen as any} />
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
         <Stack.Screen name="EditDetails" component={EditDetailsScreen} />
         <Stack.Screen
@@ -49,6 +50,10 @@ const AppNavigator = () => {
           name="ClinicRegistered"
           component={ClinicRegisteredScreen}
           options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="RegisteredDetails"
+          component={RegisteredDetailsScreen}
         />
       </Stack.Navigator>
     </ClinicRegistrationProvider>

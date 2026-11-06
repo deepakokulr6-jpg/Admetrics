@@ -27,6 +27,13 @@ export const wp = (percent: number) =>
 export const hp = (percent: number) =>
   Math.round((SCREEN_HEIGHT * percent) / 100);
 
+export const hitSlop = (margin: number) => ({
+  top: margin,
+  bottom: margin,
+  left: margin,
+  right: margin,
+});
+
 export default {
   scale,
   verticalScale,
@@ -34,9 +41,9 @@ export default {
   normalizeFont,
   wp,
   hp,
+  hitSlop,
   SCREEN_WIDTH,
   SCREEN_HEIGHT,
   BASE_WIDTH,
   BASE_HEIGHT,
 };
-

@@ -6,16 +6,19 @@ import AppLogo from '../shared/AppLogo';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
-  userName: string;
+  userName?: string;
+  name?: string;
   onProfilePress?: () => void;
   onLogoPress?: () => void;
 };
 
 const DashboardHeader: React.FC<Props> = ({
   userName,
+  name,
   onProfilePress,
   onLogoPress,
 }) => {
+  const displayName = userName ?? name ?? 'Ramkumar';
   const logoSize = scale(40);
   const logo = <AppLogo width={logoSize} height={logoSize} />;
 
@@ -33,7 +36,7 @@ const DashboardHeader: React.FC<Props> = ({
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
             <Text style={styles.userName} numberOfLines={1}>
-              {userName}
+              {displayName}
             </Text>
           </View>
         </Pressable>
@@ -44,7 +47,7 @@ const DashboardHeader: React.FC<Props> = ({
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Good Morning!</Text>
             <Text style={styles.userName} numberOfLines={1}>
-              {userName}
+              {displayName}
             </Text>
           </View>
         </View>

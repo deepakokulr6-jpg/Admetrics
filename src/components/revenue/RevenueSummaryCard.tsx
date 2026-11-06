@@ -5,17 +5,17 @@ import Svg, { Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
-  totalRevenue: string;
-  growth: string;
-  monthlyRevenue: string;
-  pendingPayout: string;
+  totalRevenue?: string;
+  growth?: string;
+  monthlyRevenue?: string;
+  pendingPayout?: string;
 };
 
 const RevenueSummaryCard: React.FC<Props> = ({
-  totalRevenue,
-  growth,
-  monthlyRevenue,
-  pendingPayout,
+  totalRevenue = '₹48,650',
+  growth = '12.8%',
+  monthlyRevenue = '₹13,580',
+  pendingPayout = '₹3,710',
 }) => {
   return (
     <LinearGradient

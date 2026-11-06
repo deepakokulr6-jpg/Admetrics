@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
+  ScrollView,
   StatusBar,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import HomeHeader from '../../components/home/HomeHeader';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
+import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
@@ -28,12 +27,13 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({
 }) => {
   const [period, setPeriod] = useState('7 days');
   const [activeTab, setActiveTab] = useState<TabName>('Revenue');
+  const { width } = useWindowDimensions();
 
   const handleTabPress = (tab: TabName) => {
     setActiveTab(tab);
 
     if (tab === 'Clinics') {
-      navigation.navigate('A15Home');
+      navigation.navigate('Home');
     } else if (tab === 'Revenue') {
       // Already on the Revenue screen.
     } else if (tab === 'Statement') {
@@ -53,27 +53,24 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={[
-            styles.content,
-            { paddingHorizontal: wp(4) },
+            styles.scrollContent,
+            width > 420 && styles.tabletContent,
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <RevenueSummaryCard
-            totalRevenue="₹48,650"
-            growth="12.8%"
-            monthlyRevenue="₹13,580"
-            pendingPayout="₹3,710"
-          />
+          <RevenueSummaryCard />
 
-          <View style={styles.chartHeader}>
-            <View>
-              <Text style={styles.chartTitle}>Revenue overview</Text>
+          <View style={styles.chartSection}>
+            <View style={styles.chartHeader}>
+              <Text style={styles.chartTitle}>Revenue Generated</Text>
+              <RevenuePeriodDropdown
+                selectedPeriod={period}
+                onSelectPeriod={setPeriod}
+              />
             </View>
 
-            <RevenuePeriodDropdown value={period} onChange={setPeriod} />
+            <RevenueChart period={period} />
           </View>
-
-          <RevenueChart period={period} />
 
           <TVDisplaysSection />
         </ScrollView>
@@ -96,16 +93,29 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  content: {
-    paddingTop: verticalScale(14),
-    paddingBottom: verticalScale(16),
-    flexGrow: 1,
+  scrollContent: {
+    paddingHorizontal: wp(4.2),
+    paddingTop: verticalScale(16),
+    paddingBottom: verticalScale(24),
+  },
+  tabletContent: {
+    maxWidth: 720,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  chartSection: {
+    marginTop: verticalScale(16),
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: wp(4.2),
+    borderWidth: 1,
+    borderColor: '#EAEAEA',
   },
   chartHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: verticalScale(18),
+    marginBottom: verticalScale(12),
   },
   chartTitle: {
     color: '#221E25',

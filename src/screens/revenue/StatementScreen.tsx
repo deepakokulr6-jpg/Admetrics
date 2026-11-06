@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -23,7 +23,7 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
     setActiveTab(tab);
 
     if (tab === 'Clinics') {
-      navigation.navigate('A15Home');
+      navigation.navigate('Home');
     } else if (tab === 'Statement') {
       // Already on the Statement screen.
     } else if (tab === 'Revenue') {
@@ -37,8 +37,8 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
-      {/* Top Header */}
-      <DashboardHeader userName="Ramkumar" />
+      {/* 1. Header with Avatar, Greeting and App Logo */}
+      <DashboardHeader name="Ramkumar" />
 
       {/* Main Scroll Content */}
       <ScrollView
@@ -46,9 +46,9 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Screen Section Header */}
+        {/* Title Section */}
         <View style={styles.titleRow}>
-          <Text style={styles.screenTitle}>Monthly Payout Statement</Text>
+          <Text style={styles.screenTitle}>Monthly Statements</Text>
         </View>
 
         {/* 1. Statement Card - October 2026 (Not Paid) */}
@@ -92,9 +92,10 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
             </View>
           </View>
           <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid on 12 September 2026</Text>
+            <Text style={styles.paidStatus}>Paid</Text>
             <Text style={styles.dotText}> • </Text>
-            <Text style={styles.monthText}>August 2026</Text>
+            <Icon name="calendar" size={scale(12)} color="#6B7280" />
+            <Text style={styles.monthText}> August 2026</Text>
           </View>
         </View>
 
@@ -107,9 +108,10 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
             </View>
           </View>
           <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid on 12 August 2026</Text>
+            <Text style={styles.paidStatus}>Paid</Text>
             <Text style={styles.dotText}> • </Text>
-            <Text style={styles.monthText}>July 2026</Text>
+            <Icon name="calendar" size={scale(12)} color="#6B7280" />
+            <Text style={styles.monthText}> July 2026</Text>
           </View>
         </View>
 
@@ -122,13 +124,14 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
             </View>
           </View>
           <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid on 10 July 2026</Text>
+            <Text style={styles.paidStatus}>Paid</Text>
             <Text style={styles.dotText}> • </Text>
-            <Text style={styles.monthText}>June 2026</Text>
+            <Icon name="calendar" size={scale(12)} color="#6B7280" />
+            <Text style={styles.monthText}> June 2026</Text>
           </View>
         </View>
 
-        {/* 6. Statement Card - May 2026 (Paid) */}
+        {/* 6. Statement Card - May 2026 (Paid - Additional Card) */}
         <View style={styles.statementCard}>
           <View style={styles.cardHeaderRow}>
             <Text style={styles.amountText}>₹14,850.50</Text>
@@ -137,9 +140,10 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
             </View>
           </View>
           <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid on 10 June 2026</Text>
+            <Text style={styles.paidStatus}>Paid</Text>
             <Text style={styles.dotText}> • </Text>
-            <Text style={styles.monthText}>May 2026</Text>
+            <Icon name="calendar" size={scale(12)} color="#6B7280" />
+            <Text style={styles.monthText}> May 2026</Text>
           </View>
         </View>
       </ScrollView>
@@ -234,4 +238,3 @@ const styles = StyleSheet.create({
 });
 
 export default StatementScreen;
-

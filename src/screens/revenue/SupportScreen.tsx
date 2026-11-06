@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
-  Pressable,
+  ScrollView,
   StatusBar,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
@@ -28,13 +28,13 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
     setActiveTab(tab);
 
     if (tab === 'Clinics') {
-      navigation.navigate('A15Home');
+      navigation.navigate('Home');
     } else if (tab === 'Statement') {
       navigation.navigate('Statement');
     } else if (tab === 'Revenue') {
       navigation.navigate('Revenue');
     } else if (tab === 'Support') {
-      // Already on the Support screen.
+      // Already on Support screen.
     }
   };
 
@@ -42,8 +42,8 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
-      {/* Top Header */}
-      <DashboardHeader userName="Ramkumar" />
+      {/* 1. Header with Avatar, Greeting and App Logo */}
+      <DashboardHeader name="Ramkumar" />
 
       {/* Main Scroll Content */}
       <ScrollView
@@ -51,11 +51,11 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Support Title Section */}
+        {/* Header Title Section */}
         <View style={styles.headerTitleSection}>
-          <Text style={styles.mainTitle}>How can we help you?</Text>
+          <Text style={styles.mainTitle}>Need Help?</Text>
           <Text style={styles.subtitle}>
-            Get assistance with your AdMetrics devices, installation and
+            Get assistance with your Admetrics devices, installation and
             technical issues.
           </Text>
         </View>
@@ -104,11 +104,11 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
           </Pressable>
         </View>
 
-        {/* 3. Recent Requests Section */}
+        {/* 3. Recent Requests Section (Clean flat layout matching Figma) */}
         <View style={styles.recentRequestsSection}>
           <View style={styles.recentRequestsHeader}>
             <Text style={styles.sectionHeading}>Recent Requests</Text>
-            <Pressable>
+            <Pressable accessibilityRole="button">
               <Text style={styles.viewAllText}>View All</Text>
             </Pressable>
           </View>
@@ -355,4 +355,3 @@ const styles = StyleSheet.create({
 });
 
 export default SupportScreen;
-
