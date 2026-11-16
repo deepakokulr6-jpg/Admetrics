@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import AppLogo from '../../components/shared/AppLogo';
+import AuthScreenLayout from '../../components/auth/AuthScreenLayout';
 import AuthFooter from '../../components/auth/AuthFooter';
 import ForgotPasswordLink from '../../components/auth/ForgotPasswordLink';
 import GradientButton from '../../components/shared/GradientButton';
@@ -60,133 +51,95 @@ export default function WelcomeBackScreen({
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.content}>
-            <View style={styles.logo}>
-              <AppLogo width={scale(200)} />
-            </View>
-
-            <Text style={styles.title}>{strings.welcomeBack.welcomeBack}</Text>
-            <View style={styles.subtitleRow}>
-              <Text style={styles.subtitle}>
-                {strings.welcomeBack.signInToContinueTo}{' '}
-              </Text>
-              <GradientText style={styles.brand}>
-                {strings.welcomeBack.admetrics}
-              </GradientText>
-            </View>
-
-            <View style={styles.form}>
-              <InputField
-                containerStyle={styles.field}
-                label={strings.common.emailId}
-                placeholder={strings.common.enterYourEmail}
-                value={email}
-                onChangeText={value => {
-                  setEmail(value);
-                  setError(null);
-                }}
-                iconName="email"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-              />
-
-              <InputField
-                containerStyle={styles.passwordField}
-                label={strings.welcomeBack.password}
-                placeholder={strings.auth.enterYourPassword}
-                value={password}
-                onChangeText={value => {
-                  setPassword(value);
-                  setError(null);
-                }}
-                iconName="password"
-                secureTextEntry={!showPassword}
-                textContentType="password"
-                rightElement={
-                  <Pressable
-                    onPress={() => setShowPassword(previous => !previous)}
-                    hitSlop={10}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      showPassword
-                        ? strings.auth.hidePassword
-                        : strings.auth.showPassword
-                    }
-                  >
-                    <Feather
-                      name={showPassword ? 'eye-off' : 'eye'}
-                      size={scale(18)}
-                      color={colors.border}
-                    />
-                  </Pressable>
-                }
-              />
-
-              <ForgotPasswordLink
-                onPress={() => navigation.navigate('ForgotPassword')}
-              />
-
-              {error ? <Text style={styles.error}>{error}</Text> : null}
-
-              <View style={styles.button}>
-                <GradientButton
-                  title={strings.welcomeBack.signIn}
-                  onPress={handleSignIn}
-                  loading={isSubmitting}
-                />
-              </View>
-
-              <View style={styles.footer}>
-                <AuthFooter
-                  text={strings.welcomeBack.newUser}
-                  accent
-                  onPress={() => navigation.navigate('CreateAccount')}
-                />
-              </View>
-            </View>
+    <AuthScreenLayout
+      header={
+        <>
+          <Text style={styles.title}>{strings.welcomeBack.welcomeBack}</Text>
+          <View style={styles.subtitleRow}>
+            <Text style={styles.subtitle}>
+              {strings.welcomeBack.signInToContinueTo}{' '}
+            </Text>
+            <GradientText style={styles.brand}>
+              {strings.welcomeBack.admetrics}
+            </GradientText>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </>
+      }
+    >
+      <InputField
+        containerStyle={styles.field}
+        label={strings.common.emailId}
+        placeholder={strings.common.enterYourEmail}
+        value={email}
+        onChangeText={value => {
+          setEmail(value);
+          setError(null);
+        }}
+        iconName="email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+      />
+
+      <InputField
+        containerStyle={styles.passwordField}
+        label={strings.welcomeBack.password}
+        placeholder={strings.auth.enterYourPassword}
+        value={password}
+        onChangeText={value => {
+          setPassword(value);
+          setError(null);
+        }}
+        iconName="password"
+        secureTextEntry={!showPassword}
+        textContentType="password"
+        rightElement={
+          <Pressable
+            onPress={() => setShowPassword(previous => !previous)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel={
+              showPassword
+                ? strings.auth.hidePassword
+                : strings.auth.showPassword
+            }
+          >
+            <Feather
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={scale(18)}
+              color={colors.border}
+            />
+          </Pressable>
+        }
+      />
+
+      <ForgotPasswordLink
+        onPress={() => navigation.navigate('ForgotPassword')}
+      />
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      <View style={styles.button}>
+        <GradientButton
+          title={strings.welcomeBack.signIn}
+          onPress={handleSignIn}
+          loading={isSubmitting}
+        />
+      </View>
+
+      <View style={styles.footer}>
+        <AuthFooter
+          text={strings.welcomeBack.newUser}
+          accent
+          onPress={() => navigation.navigate('CreateAccount')}
+        />
+      </View>
+    </AuthScreenLayout>
   );
 }
 
 // Layout follows Figma "Android Large - 2": logo at y144, title 20px bold,
 // fields 312px wide (24px gutters), Sign In at y634, "New User?" 24 below.
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingHorizontal: scale(24),
-    paddingTop: verticalScale(120),
-    paddingBottom: verticalScale(32),
-  },
-  content: {
-    width: '100%',
-    maxWidth: scale(360),
-  },
-  logo: {
-    alignItems: 'center',
-    marginBottom: verticalScale(40),
-  },
   title: {
     fontSize: normalizeFont(20),
     lineHeight: normalizeFont(24),
@@ -207,9 +160,6 @@ const styles = StyleSheet.create({
   brand: {
     fontSize: normalizeFont(14),
     fontFamily: fonts.semibold,
-  },
-  form: {
-    marginTop: verticalScale(24),
   },
   field: {
     marginBottom: verticalScale(24),

@@ -1,46 +1,59 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import ScreenHeader from '../../components/shared/ScreenHeader';
-import StepProgress from '../../components/shared/StepProgress';
-import InputField from '../../components/shared/InputField';
+import FormScreenLayout from '../../components/shared/FormScreenLayout';
 import GradientButton from '../../components/shared/GradientButton';
-import MapPreview from '../../components/clinic/MapPreview';
+import ClinicInfoForm, {
+  CLINIC_BOTTOM_FIELDS,
+} from '../../components/clinic/ClinicInfoForm';
+import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import type { ClinicInfo } from '../../types/clinic';
+import {
+  type ClinicErrors,
+  hasErrors,
+  validateClinic,
+  withoutError,
+} from '../../utils/clinicValidation';
+import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
-import colors from '../../theme/colors';
-import { fonts } from '../../theme/typography';
+import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import { sampleClinic } from '../../constants/mockData';
 
+/**
+ * Edit an existing clinic. Starts from the clinic's saved details (demo data
+ * until the API is connected), then continues through the same steps.
+ */
 const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
   navigation,
 }) => {
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { updateClinicInfo } = useClinicRegistration();
+  const keyboard = useKeyboardAutoScroll();
+  const [values, setValues] = useState<ClinicInfo>(() => ({
+    clinicName: sampleClinic.clinicName,
+    medicalRegistrationNumber: sampleClinic.medicalRegistrationNumber,
+    establishmentYear: sampleClinic.establishmentYear,
+    licenceNumber: sampleClinic.licenceNumber,
+    gstNumber: sampleClinic.gstNumber,
+    panNumber: sampleClinic.panNumber,
+    address: sampleClinic.address,
+    street: sampleClinic.street,
+    city: sampleClinic.city,
+    state: sampleClinic.state,
+    pincode: sampleClinic.pincode,
+  }));
+  const [errors, setErrors] = useState<ClinicErrors>({});
+
+  const handleChange = (key: keyof ClinicInfo, value: string) => {
+    setValues(previous => ({ ...previous, [key]: value }));
+    setErrors(previous => withoutError<ClinicInfo>(previous, key));
+  };
 
   const handleNext = () => {
-    const nextErrors: Record<string, string> = {};
-
-    if (!clinicName.trim()) {
-      nextErrors.clinicName = strings.clinicForm.clinicNameIsRequired;
-    }
-    if (!medicalRegistrationNumber.trim()) {
-      nextErrors.medicalRegistrationNumber =
-        strings.clinicForm.medicalRegistrationNumberIsRequired;
-    }
-
+    const nextErrors = validateClinic(values);
     setErrors(nextErrors);
 
-    if (Object.keys(nextErrors).length > 0) {
+    if (hasErrors(nextErrors)) {
       Alert.alert(
         strings.clinicForm.checkClinicDetails,
         strings.clinicForm.pleaseCompleteTheRequiredClinic,
@@ -48,188 +61,35 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
       return;
     }
 
+    // The next steps (Contact → Photos → MOU) read from the draft.
+    updateClinicInfo(values);
     navigation.navigate('RegisterPersonal');
   };
 
-  // Demo data until the API is connected (constants/mockData).
-  const {
-    clinicName,
-    medicalRegistrationNumber,
-    establishmentYear,
-    licenceNumber,
-    gstNumber,
-    panNumber,
-    address,
-    street,
-    city,
-    state,
-    pincode,
-  } = sampleClinic;
-
   return (
-    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-      <ScreenHeader
-        title={strings.editDetails.editDetails}
-        onBackPress={() => navigation.goBack()}
+    <FormScreenLayout
+      title={strings.editDetails.editDetails}
+      onBack={() => navigation.goBack()}
+      step={1}
+      keyboard={keyboard}
+    >
+      <ClinicInfoForm
+        values={values}
+        errors={errors}
+        onChange={handleChange}
+        onFieldFocus={key =>
+          keyboard.setAutoScroll(CLINIC_BOTTOM_FIELDS.includes(key))
+        }
       />
-      <StepProgress currentStep={1} />
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <Text style={styles.heading}>{strings.common.clinicInformation}</Text>
-
-          <InputField
-            label={strings.clinicForm.clinicName}
-            placeholder={strings.clinicForm.enterClinicName}
-            value={clinicName}
-            onChangeText={() => {}}
-            required
-            autoCapitalize="words"
-            error={errors.clinicName}
-          />
-
-          <InputField
-            label={strings.clinicForm.medicalRegistrationNumber}
-            placeholder={strings.clinicForm.enterMedicalRegistrationNumber}
-            value={medicalRegistrationNumber}
-            onChangeText={() => {}}
-            required
-            error={errors.medicalRegistrationNumber}
-          />
-
-          <InputField
-            label={strings.clinicForm.establishmentYear}
-            placeholder={strings.clinicForm.eG2023}
-            value={establishmentYear}
-            onChangeText={() => {}}
-            keyboardType="number-pad"
-            maxLength={4}
-            error={errors.establishmentYear}
-          />
-
-          <InputField
-            label={strings.clinicForm.registrationLicenceNumber}
-            placeholder={strings.clinicForm.enterRegistrationOrLicenceNumber}
-            value={licenceNumber}
-            onChangeText={() => {}}
-            required
-            autoCapitalize="characters"
-            error={errors.licenceNumber}
-          />
-
-          <InputField
-            label={strings.clinicForm.gstNumber}
-            placeholder={strings.clinicForm.enterGstNumber}
-            value={gstNumber}
-            onChangeText={() => {}}
-            required
-            autoCapitalize="characters"
-            maxLength={15}
-            error={errors.gstNumber}
-          />
-
-          <InputField
-            label={strings.clinicForm.panNumber}
-            placeholder={strings.clinicForm.enterPanNumber}
-            value={panNumber}
-            onChangeText={() => {}}
-            autoCapitalize="characters"
-            maxLength={10}
-            error={errors.panNumber}
-          />
-
-          <InputField
-            label={strings.clinicForm.address}
-            placeholder={strings.clinicForm.enterClinicAddress}
-            value={address}
-            onChangeText={() => {}}
-            autoCapitalize="sentences"
-            error={errors.address}
-          />
-
-          <InputField
-            label={strings.clinicForm.street}
-            placeholder={strings.clinicForm.enterStreet}
-            value={street}
-            onChangeText={() => {}}
-            autoCapitalize="sentences"
-            error={errors.street}
-          />
-
-          <InputField
-            label={strings.clinicForm.city}
-            placeholder={strings.clinicForm.enterCity}
-            value={city}
-            onChangeText={() => {}}
-            autoCapitalize="words"
-            error={errors.city}
-          />
-
-          <InputField
-            label={strings.clinicForm.state}
-            placeholder={strings.clinicForm.enterState}
-            value={state}
-            onChangeText={() => {}}
-            autoCapitalize="words"
-            error={errors.state}
-          />
-
-          <InputField
-            label={strings.clinicForm.pincode}
-            placeholder={strings.clinicForm.enterPincode}
-            value={pincode}
-            onChangeText={() => {}}
-            keyboardType="number-pad"
-            maxLength={6}
-            error={errors.pincode}
-          />
-
-          <MapPreview />
-
-          <View style={styles.button}>
-            <GradientButton title={strings.common.next} onPress={handleNext} />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <View style={styles.button}>
+        <GradientButton title={strings.common.next} onPress={handleNext} />
+      </View>
+    </FormScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
-  flex: {
-    flex: 1,
-  },
-
-  content: {
-    width: '100%',
-    maxWidth: scale(420),
-    alignSelf: 'center',
-    paddingHorizontal: scale(16),
-    paddingTop: 0,
-    paddingBottom: verticalScale(32),
-  },
-
-  heading: {
-    fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(19),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
-
   button: {
     marginTop: verticalScale(48),
   },

@@ -7,7 +7,8 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
-import { useProfileMenu } from '../../hooks/useProfileMenu';
+import { useLogout } from '../../hooks/useLogout';
+import { useAuth } from '../../contexts/AuthContext';
 import ProfileDrawer from './ProfileDrawer';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,13 +27,14 @@ const DashboardHeader: React.FC<Props> = ({
   onProfilePress,
   onLogoPress,
 }) => {
-  const { confirmLogout } = useProfileMenu();
+  const confirmLogout = useLogout();
+  const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   // Default: avatar / name opens the side menu on every tab.
   const handleProfilePress = onProfilePress ?? (() => setDrawerOpen(true));
-  const displayName = userName ?? name ?? 'Ramkumar';
+  const displayName = userName ?? name ?? user?.name ?? '';
   const logoSize = scale(40);
   const logo = <AppLogo width={logoSize} height={logoSize} />;
 

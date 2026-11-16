@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import HomeHeader from '../../components/home/HomeHeader';
+import DashboardHeader from '../../components/home/DashboardHeader';
 import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
@@ -29,7 +29,7 @@ const RevenueScreen: React.FC<TabScreenProps<'Revenue'>> = () => {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.screen}>
-        <HomeHeader name="Ramkumar" />
+        <DashboardHeader />
 
         <ScrollView
           style={styles.scrollView}

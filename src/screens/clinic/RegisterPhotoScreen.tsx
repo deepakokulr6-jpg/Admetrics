@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 
-import ScreenHeader from '../../components/shared/ScreenHeader';
-import StepProgress from '../../components/shared/StepProgress';
+import FormScreenLayout, {
+  formStyles,
+} from '../../components/shared/FormScreenLayout';
 import PhotoUploadItem from '../../components/clinic/PhotoUploadItem';
 import GradientButton from '../../components/shared/GradientButton';
 import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
@@ -20,7 +12,6 @@ import { ClinicPhotos } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
-import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
@@ -98,13 +89,13 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   const handlePhotoPress = (slot: PhotoSlot, label: string) => {
     if (draft.photos[slot]) {
       Alert.alert(label, strings.registerPhoto.whatWouldYouLikeTo, [
-        { text: 'Replace', onPress: () => pickPhoto(slot) },
+        { text: strings.registerPhoto.replace, onPress: () => pickPhoto(slot) },
         {
-          text: 'Remove',
+          text: strings.registerPhoto.remove,
           style: 'destructive',
           onPress: () => setPhoto(slot, null),
         },
-        { text: 'Cancel', style: 'cancel' },
+        { text: strings.common.cancel, style: 'cancel' },
       ]);
       return;
     }
@@ -115,88 +106,43 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   const handleNext = () => navigation.navigate('RegisterMou');
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-      <ScreenHeader
-        title={strings.common.registerYourClinic}
-        onBackPress={() => navigation.goBack()}
-      />
-      <StepProgress currentStep={3} />
+    <FormScreenLayout
+      title={strings.common.registerYourClinic}
+      onBack={() => navigation.goBack()}
+      step={3}
+      contentStyle={formStyles.pinnedContent}
+    >
+      <Text style={formStyles.heading}>{strings.registerPhoto.photos}</Text>
+      <Text style={styles.instruction}>
+        {strings.registerPhoto.onlyJpgPngFilesWith}
+      </Text>
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <Text style={styles.heading}>{strings.registerPhoto.photos}</Text>
-          <Text style={styles.instruction}>
-            {strings.registerPhoto.onlyJpgPngFilesWith}
-          </Text>
+      <View style={styles.photoRow}>
+        <PhotoUploadItem
+          title={strings.registerPhoto.n1Entrance}
+          imageUri={draft.photos.entrance}
+          onPress={() =>
+            handlePhotoPress('entrance', strings.registerPhoto.entrancePhoto)
+          }
+        />
 
-          <View style={styles.photoRow}>
-            <PhotoUploadItem
-              title={strings.registerPhoto.n1Entrance}
-              imageUri={draft.photos.entrance}
-              onPress={() =>
-                handlePhotoPress(
-                  'entrance',
-                  strings.registerPhoto.entrancePhoto,
-                )
-              }
-            />
+        <PhotoUploadItem
+          title={strings.registerPhoto.n2Reception}
+          imageUri={draft.photos.reception}
+          onPress={() =>
+            handlePhotoPress('reception', strings.registerPhoto.receptionPhoto)
+          }
+        />
+      </View>
 
-            <PhotoUploadItem
-              title={strings.registerPhoto.n2Reception}
-              imageUri={draft.photos.reception}
-              onPress={() =>
-                handlePhotoPress(
-                  'reception',
-                  strings.registerPhoto.receptionPhoto,
-                )
-              }
-            />
-          </View>
-
-          <View style={styles.button}>
-            <GradientButton title={strings.common.next} onPress={handleNext} />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <View style={formStyles.pinnedButton}>
+        <GradientButton title={strings.common.next} onPress={handleNext} />
+      </View>
+    </FormScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
-  flex: {
-    flex: 1,
-  },
-
-  content: {
-    width: '100%',
-    maxWidth: scale(420),
-    alignSelf: 'center',
-    flexGrow: 1,
-    paddingHorizontal: scale(16),
-    paddingTop: 0,
-    paddingBottom: verticalScale(110),
-  },
-
-  heading: {
-    fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(19),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: verticalScale(8),
-  },
-
   instruction: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
@@ -208,12 +154,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: scale(24),
-  },
-
-  // Figma pins the Next button at y634 of 800.
-  button: {
-    marginTop: 'auto',
-    paddingTop: verticalScale(24),
   },
 });
 

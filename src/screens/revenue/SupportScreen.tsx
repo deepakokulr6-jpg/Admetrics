@@ -24,7 +24,7 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
       <StatusBar barStyle="dark-content" />
 
       {/* 1. Header with Avatar, Greeting and App Logo */}
-      <DashboardHeader name="Ramkumar" />
+      <DashboardHeader />
 
       {/* Main Scroll Content */}
       <ScrollView

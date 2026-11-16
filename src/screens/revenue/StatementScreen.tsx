@@ -25,7 +25,7 @@ const StatementScreen: React.FC<TabScreenProps<'Statement'>> = ({
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
-      <DashboardHeader name="Ramkumar" />
+      <DashboardHeader />
 
       <ScrollView
         style={styles.scrollView}

@@ -16,6 +16,7 @@ const strings = {
     photos: 'Photos',
     next: 'Next',
     cancel: 'Cancel',
+    notProvided: '—',
     close: 'Close',
     /** Appended to the label of a required field. */
     requiredMark: ' *',
@@ -253,6 +254,8 @@ const strings = {
     n2Reception: '2. Reception',
     receptionPhoto: 'Reception Photo',
     register: 'Register',
+    replace: 'Replace',
+    remove: 'Remove',
   },
   registerTimings: {
     startAndEndTimeAre: 'Start and end time are required.',
@@ -344,12 +347,9 @@ const strings = {
     areYouSureYouWant: 'Are you sure you want to log out of Admetrics?',
     logOutFailed: 'Log Out Failed',
     unableToClearYourSession: 'Unable to clear your session. Please try again.',
-    yourProfile: 'Your Profile',
-    youAreSignedInTo: 'You are signed in to Admetrics.',
-    logOut2: 'Log out',
-    signedInAs: (email: string) => `Signed in as ${email}`,
   },
   a15Home: {
+    unnamedClinic: 'Clinic',
     waitingForApproval: 'Waiting for Approval',
   },
   clinicCard: {

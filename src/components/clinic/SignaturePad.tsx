@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -33,14 +33,12 @@ const SignaturePad: React.FC<Props> = ({
   onChangeRef.current = onChange;
 
   // Reset when the parent asks to clear.
-  const lastClearKey = useRef(clearKey);
-  if (lastClearKey.current !== clearKey) {
-    lastClearKey.current = clearKey;
+  useEffect(() => {
     strokesRef.current = [];
     currentRef.current = '';
     setStrokes([]);
     setCurrent('');
-  }
+  }, [clearKey]);
 
   const responder = useMemo(
     () =>

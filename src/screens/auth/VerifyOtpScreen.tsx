@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-  Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import AppLogo from '../../components/shared/AppLogo';
+import AuthScreenLayout from '../../components/auth/AuthScreenLayout';
 import AuthHeader from '../../components/auth/AuthHeader';
 import InputField from '../../components/shared/InputField';
 import OtpInput from '../../components/auth/OtpInput';
@@ -27,7 +17,7 @@ import type {
   AuthScreenProps,
   AuthStackParamList,
 } from '../../navigation/types';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import { normalizeFont, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
@@ -172,107 +162,83 @@ function OtpVerification<RouteName extends OtpRouteName>({
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" />
+    <AuthScreenLayout
+      header={
+        <AuthHeader
+          title={
+            isReset
+              ? strings.verifyOtp.forgotPassword
+              : strings.common.createYourAccount
+          }
+          subtitle={
+            isReset
+              ? strings.verifyOtp.enterYourRegisteredEmailTo
+              : strings.common.enterYourEmailAddressTo
+          }
+        />
+      }
+    >
+      <InputField
+        containerStyle={styles.field}
+        label={strings.common.emailId}
+        placeholder={strings.common.enterYourEmail}
+        value={email}
+        onChangeText={handleEmailChange}
+        iconName="email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        rightElement={
+          isEmailValid ? <InputStatusIcon status={'success'} /> : undefined
+        }
+      />
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.content}>
-            <View style={styles.logo}>
-              <AppLogo width={scale(200)} />
-            </View>
+      {otpSent ? (
+        <View style={styles.otpHeader}>
+          <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
+          <ResendOtp
+            sentAt={otpSentAt}
+            onResend={handleResendOtp}
+            disabled={isSubmitting}
+          />
+        </View>
+      ) : (
+        <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
+      )}
 
-            <AuthHeader
-              title={
-                isReset
-                  ? strings.verifyOtp.forgotPassword
-                  : strings.common.createYourAccount
-              }
-              subtitle={
-                isReset
-                  ? strings.verifyOtp.enterYourRegisteredEmailTo
-                  : strings.common.enterYourEmailAddressTo
-              }
-            />
+      <OtpInput
+        key={otpSentAt}
+        value={otp}
+        onChangeText={value => {
+          setOtp(value);
+          setError(null);
+        }}
+        autoFocus={otpSent}
+      />
 
-            <View style={styles.form}>
-              <InputField
-                containerStyle={styles.field}
-                label={strings.common.emailId}
-                placeholder={strings.common.enterYourEmail}
-                value={email}
-                onChangeText={handleEmailChange}
-                iconName="email"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                rightElement={
-                  isEmailValid ? (
-                    <InputStatusIcon status={'success'} />
-                  ) : undefined
-                }
-              />
+      {error ? <Text style={styles.error}>{error}</Text> : null}
 
-              {otpSent ? (
-                <View style={styles.otpHeader}>
-                  <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
-                  <ResendOtp
-                    sentAt={otpSentAt}
-                    onResend={handleResendOtp}
-                    disabled={isSubmitting}
-                  />
-                </View>
-              ) : (
-                <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
-              )}
+      <View style={styles.button}>
+        <GradientButton
+          title={
+            isReset && !otpSent ? strings.auth.getOtp : strings.common.verify
+          }
+          onPress={isReset && !otpSent ? handleSendOtp : handleVerify}
+          loading={isSubmitting}
+        />
+      </View>
 
-              <OtpInput
-                key={otpSentAt}
-                value={otp}
-                onChangeText={value => {
-                  setOtp(value);
-                  setError(null);
-                }}
-                autoFocus={otpSent}
-              />
-
-              {error ? <Text style={styles.error}>{error}</Text> : null}
-
-              <View style={styles.button}>
-                <GradientButton
-                  title={
-                    isReset && !otpSent
-                      ? strings.auth.getOtp
-                      : strings.common.verify
-                  }
-                  onPress={isReset && !otpSent ? handleSendOtp : handleVerify}
-                  loading={isSubmitting}
-                />
-              </View>
-
-              <View style={styles.footer}>
-                <AuthFooter
-                  text={
-                    isReset
-                      ? strings.verifyOtp.rememberYourPassword
-                      : strings.auth.alreadyHaveAnAccount
-                  }
-                  highlight={strings.auth.logIn}
-                  onPress={() => navigation.popTo('Login')}
-                />
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <View style={styles.footer}>
+        <AuthFooter
+          text={
+            isReset
+              ? strings.verifyOtp.rememberYourPassword
+              : strings.auth.alreadyHaveAnAccount
+          }
+          highlight={strings.auth.logIn}
+          onPress={() => navigation.popTo('Login')}
+        />
+      </View>
+    </AuthScreenLayout>
   );
 }
 
@@ -294,41 +260,8 @@ export const ForgotPasswordScreen: React.FC<
 );
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
-  flex: {
-    flex: 1,
-  },
-
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingHorizontal: scale(24),
-    // Figma: logo top at y144 of 800 (status bar ≈ 24).
-    paddingTop: verticalScale(120),
-    paddingBottom: verticalScale(32),
-  },
-
-  content: {
-    width: '100%',
-    maxWidth: scale(360),
-    alignSelf: 'center',
-  },
-
-  logo: {
-    alignItems: 'center',
-    marginBottom: verticalScale(40),
-  },
-
   field: {
     marginBottom: verticalScale(24),
-  },
-
-  form: {
-    marginTop: verticalScale(24),
   },
 
   otpHeader: {

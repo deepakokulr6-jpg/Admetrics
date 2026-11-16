@@ -3,7 +3,7 @@ import { View, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import HomeHeader from '../../components/home/HomeHeader';
+import DashboardHeader from '../../components/home/DashboardHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
 
@@ -15,7 +15,7 @@ import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 
-const A15HomeScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
+const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   const [clinics, setClinics] = useState<ClinicRegistrationRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,7 +44,7 @@ const A15HomeScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
             setClinics(records);
           }
         } catch (error) {
-          console.warn('[A15Home] Clinic load failed', error);
+          console.warn('[Clinics] Clinic load failed', error);
 
           if (!cancelled) {
             setClinics([]);
@@ -80,7 +80,7 @@ const A15HomeScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
       <StatusBar barStyle="dark-content" />
 
       <View style={[styles.screen, !hasClinics && styles.screenEmpty]}>
-        <HomeHeader name={user?.name ?? 'Ramkumar'} />
+        <DashboardHeader />
 
         <ScrollView
           style={styles.scrollView}
@@ -97,9 +97,16 @@ const A15HomeScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
                   <ClinicCard
                     key={record.id}
                     status={strings.a15Home.waitingForApproval}
-                    clinicName={record.clinic.clinicName || 'Clinic'}
-                    contactName={record.personal.contactPerson || '—'}
-                    designation={record.personal.designation || '—'}
+                    clinicName={
+                      record.clinic.clinicName || strings.a15Home.unnamedClinic
+                    }
+                    contactName={
+                      record.personal.contactPerson ||
+                      strings.common.notProvided
+                    }
+                    designation={
+                      record.personal.designation || strings.common.notProvided
+                    }
                     phone={record.personal.mobile}
                     email={record.personal.email}
                     photoOneUri={record.photos.entrance}
@@ -165,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default A15HomeScreen;
+export default ClinicsScreen;

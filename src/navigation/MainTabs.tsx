@@ -8,7 +8,7 @@ import { StyleSheet } from 'react-native';
 import BottomNavigation, {
   type TabName,
 } from '../components/shared/BottomNavigation';
-import A15HomeScreen from '../screens/home/a15HomeScreen';
+import ClinicsScreen from '../screens/home/ClinicsScreen';
 import RevenueScreen from '../screens/revenue/RevenueScreen';
 import StatementScreen from '../screens/revenue/StatementScreen';
 import SupportScreen from '../screens/revenue/SupportScreen';
@@ -73,7 +73,7 @@ const MainTabs = () => (
     screenOptions={{ headerShown: false, animation: 'none' }}
   >
     <Tab.Screen name="Revenue" component={RevenueScreen} />
-    <Tab.Screen name="Clinics" component={A15HomeScreen} />
+    <Tab.Screen name="Clinics" component={ClinicsScreen} />
     <Tab.Screen name="Statement" component={StatementScreen} />
     <Tab.Screen name="Support" component={SupportScreen} />
   </Tab.Navigator>

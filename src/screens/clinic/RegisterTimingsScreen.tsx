@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 
-import ScreenHeader from '../../components/shared/ScreenHeader';
-import StepProgress from '../../components/shared/StepProgress';
+import FormScreenLayout, {
+  formStyles,
+} from '../../components/shared/FormScreenLayout';
 import WorkingHoursRow from '../../components/shared/WorkingHoursRow';
 import GradientButton from '../../components/shared/GradientButton';
 import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
@@ -20,7 +12,6 @@ import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
-import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 
 const validateHours = (
@@ -60,7 +51,7 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
   const { draft, updateWorkingHour } = useClinicRegistration();
   const { workingHours } = draft;
 
-  const { scrollRef, onScroll, onLayout } = useKeyboardAutoScroll();
+  const keyboard = useKeyboardAutoScroll();
 
   const [errors, setErrors] = useState<Record<number, string>>({});
 
@@ -114,90 +105,44 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-      <ScreenHeader
-        title={strings.common.registerYourClinic}
-        onBackPress={() => navigation.goBack()}
-      />
-      {/* Legacy standalone route: the primary flow skips timings, so this
-          screen stays on the Personal step of the 3-step indicator. */}
-      <StepProgress currentStep={2} />
+    <FormScreenLayout
+      title={strings.common.registerYourClinic}
+      onBack={() => navigation.goBack()}
+      step={2}
+      keyboard={keyboard}
+    >
+      <Text style={formStyles.heading}>
+        {strings.registerTimings.workingHours}
+      </Text>
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          ref={scrollRef}
-          style={styles.flex}
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-          onScroll={onScroll}
-          onLayout={onLayout}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text style={styles.heading}>
-            {strings.registerTimings.workingHours}
-          </Text>
+      {workingHours.map((item, index) => (
+        <View key={item.day} style={styles.rowWrapper}>
+          <WorkingHoursRow
+            day={item.day}
+            enabled={item.enabled}
+            startTime={item.startTime}
+            endTime={item.endTime}
+            onToggle={value => handleToggle(index, value)}
+            onStartTimeChange={value =>
+              handleTimeChange(index, 'startTime', value)
+            }
+            onEndTimeChange={value => handleTimeChange(index, 'endTime', value)}
+          />
 
-          {workingHours.map((item, index) => (
-            <View key={item.day} style={styles.rowWrapper}>
-              <WorkingHoursRow
-                day={item.day}
-                enabled={item.enabled}
-                startTime={item.startTime}
-                endTime={item.endTime}
-                onToggle={value => handleToggle(index, value)}
-                onStartTimeChange={value =>
-                  handleTimeChange(index, 'startTime', value)
-                }
-                onEndTimeChange={value =>
-                  handleTimeChange(index, 'endTime', value)
-                }
-              />
+          {errors[index] ? (
+            <Text style={styles.errorText}>{errors[index]}</Text>
+          ) : null}
+        </View>
+      ))}
 
-              {errors[index] ? (
-                <Text style={styles.errorText}>{errors[index]}</Text>
-              ) : null}
-            </View>
-          ))}
-
-          <View style={styles.button}>
-            <GradientButton title={strings.common.next} onPress={handleNext} />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <View style={styles.button}>
+        <GradientButton title={strings.common.next} onPress={handleNext} />
+      </View>
+    </FormScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
-  flex: {
-    flex: 1,
-  },
-
-  content: {
-    width: '100%',
-    maxWidth: scale(420),
-    alignSelf: 'center',
-    paddingHorizontal: scale(16),
-    paddingTop: 0,
-    paddingBottom: verticalScale(32),
-  },
-
-  heading: {
-    fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(19),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
-
   rowWrapper: {
     width: '100%',
   },

@@ -35,7 +35,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
     right: 16,
   });
 
-  const containerRef = useRef<any>(null);
+  const containerRef = useRef<React.ComponentRef<typeof View>>(null);
 
   const handleOpen = () => {
     containerRef.current?.measure(
