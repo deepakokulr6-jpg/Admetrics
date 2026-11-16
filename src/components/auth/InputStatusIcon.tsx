@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import VerifiedIcon from '../../../assets/images/figma/email_verified.svg';
 import { scale } from '../../utils/responsive';
 
 type Props = {
@@ -20,7 +21,12 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
     );
   }
 
-  const isSuccess = status === 'success';
+  if (status === 'success') {
+    // Figma: 24px gradient "verified" badge inside the email field.
+    return <VerifiedIcon width={scale(24)} height={scale(24)} />;
+  }
+
+  const isSuccess = false;
 
   return (
     <View
@@ -37,8 +43,8 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: scale(20),
-    height: scale(20),
+    width: scale(24),
+    height: scale(24),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    backgroundColor: '#E53935',
+    backgroundColor: '#FF2A2A',
   },
 });
 

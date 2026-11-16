@@ -77,13 +77,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(16),
     paddingTop: verticalScale(12),
     paddingBottom: verticalScale(12),
+    zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
-    borderTopWidth: 0,
+    // Figma: soft shadow instead of a divider line.
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   profileSection: {
@@ -95,15 +99,14 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
-    marginLeft: scale(14),
+    marginLeft: scale(16),
   },
 
   greeting: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
     fontWeight: '500',
-    color: '#666666',
-    marginBottom: verticalScale(2),
+    color: '#111111',
   },
 
   userName: {

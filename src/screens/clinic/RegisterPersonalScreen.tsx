@@ -15,6 +15,7 @@ import StepProgress from '../../components/shared/StepProgress';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
 import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { PersonalInfo } from '../../types/clinic';
 import { isBlank, isValidEmail, isValidMobile } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
@@ -34,13 +35,7 @@ const validatePersonal = (personal: PersonalInfo): PersonalErrors => {
     errors.contactPerson = 'Contact person is required.';
   }
 
-  if (isBlank(personal.designation)) {
-    errors.designation = 'Designation is required.';
-  }
-
-  if (isBlank(personal.mobile)) {
-    errors.mobile = 'Mobile number is required.';
-  } else if (!isValidMobile(personal.mobile)) {
+  if (!isBlank(personal.mobile) && !isValidMobile(personal.mobile)) {
     errors.mobile = 'Enter a valid 10-digit mobile number.';
   }
 
@@ -57,7 +52,12 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
   navigation,
 }) => {
   const { draft, updatePersonalInfo } = useClinicRegistration();
-  const { personal } = draft;
+  const { user } = useAuth();
+  // Figma shows the Email ID pre-filled from the signed-in account and locked.
+  const personal = {
+    ...draft.personal,
+    email: draft.personal.email || user?.email || '',
+  };
 
   const { scrollRef, onScroll, onLayout, setAutoScroll } =
     useKeyboardAutoScroll();
@@ -83,6 +83,9 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
 
   const handleNext = () => {
     const nextErrors = validatePersonal(personal);
+    if (!draft.personal.email && personal.email) {
+      updatePersonalInfo({ email: personal.email });
+    }
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
@@ -120,15 +123,14 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Personal Information</Text>
+          <Text style={styles.heading}>Contact Information</Text>
 
           <InputField
-            label="Contact Person Number"
-            placeholder="Enter contact person name or number"
+            label="Contact Person Number *"
+            placeholder="Enter contact person name"
             value={personal.contactPerson}
             onChangeText={value => update('contactPerson', value)}
             {...focusProps('contactPerson')}
-            required
             autoCapitalize="words"
             error={errors.contactPerson}
           />
@@ -139,7 +141,6 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
             value={personal.designation}
             onChangeText={value => update('designation', value)}
             {...focusProps('designation')}
-            required
             autoCapitalize="words"
             error={errors.designation}
           />
@@ -152,19 +153,18 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
               update('mobile', value.replace(/[^\d+\s-]/g, ''))
             }
             {...focusProps('mobile')}
-            required
             keyboardType="phone-pad"
             maxLength={15}
             error={errors.mobile}
           />
 
           <InputField
-            label="Email ID"
+            label="Email ID *"
             placeholder="Enter email address"
             value={personal.email}
             onChangeText={value => update('email', value.trim())}
             {...focusProps('email')}
-            required
+            editable={!user?.email}
             keyboardType="email-address"
             textContentType="emailAddress"
             error={errors.email}
@@ -193,21 +193,24 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: scale(20),
-    paddingTop: verticalScale(4),
-    paddingBottom: verticalScale(32),
+    flexGrow: 1,
+    paddingHorizontal: scale(16),
+    paddingTop: 0,
+    paddingBottom: verticalScale(110),
   },
 
   heading: {
     fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(22),
+    lineHeight: normalizeFont(19),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: verticalScale(14),
+    marginBottom: verticalScale(16),
   },
 
+  // Figma pins the Next button at y634 of 800 on short forms.
   button: {
-    marginTop: verticalScale(22),
+    marginTop: 'auto',
+    paddingTop: verticalScale(24),
   },
 });
 

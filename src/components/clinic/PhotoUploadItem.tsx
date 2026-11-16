@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Svg, { Path } from 'react-native-svg';
+import Placeholder from '../../../assets/images/figma/photo_placeholder.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface PhotoUploadProps {
@@ -10,102 +11,69 @@ interface PhotoUploadProps {
   onRemove?: () => void;
 }
 
+const BOX = scale(120);
+const PLUS =
+  'M12 24C10.8753 24 9.96364 23.0883 9.96364 21.9636V2.03636C9.96364 0.91171 10.8753 0 12 0C13.1247 0 14.0364 0.911711 14.0364 2.03636V21.9636C14.0364 23.0883 13.1247 24 12 24ZM2.03637 14.0364C0.911713 14.0364 0 13.1247 0 12C0 10.8753 0.911712 9.96364 2.03636 9.96364H21.9636C23.0883 9.96364 24 10.8753 24 12C24 13.1247 23.0883 14.0364 21.9636 14.0364H2.03637Z';
+
+// Figma: numbered 12px medium label, 120x120 box with 8px radius.
+// Empty = grey box with "+"; filled = the photo with a "+" over it.
 const PhotoUpload: React.FC<PhotoUploadProps> = ({
   title,
   imageUri,
   onPress,
-  onRemove,
-}) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+}) => (
+  <View style={styles.container}>
+    <Text style={styles.title}>{title}</Text>
 
-      <View style={styles.uploadWrapper}>
-        <Pressable
-          onPress={onPress}
-          style={styles.uploadBox}
-          accessibilityRole="button"
-          accessibilityLabel={
-            imageUri ? `Replace ${title} photo` : `Upload ${title} photo`
-          }
-        >
-          {imageUri ? (
-            <Image
-              source={{ uri: imageUri }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.placeholder}>
-              <Ionicons name="add" size={scale(44)} color="#AAAAAA" />
-            </View>
-          )}
-        </Pressable>
-
-        {imageUri && onRemove ? (
-          <Pressable
-            onPress={onRemove}
-            style={styles.removeButton}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={`Remove ${title} photo`}
-          >
-            <Ionicons name="close" size={scale(14)} color="#FFFFFF" />
-          </Pressable>
-        ) : null}
-      </View>
-    </View>
-  );
-};
+    <Pressable
+      onPress={onPress}
+      style={styles.box}
+      accessibilityRole="button"
+      accessibilityLabel={imageUri ? `Replace ${title} photo` : `Upload ${title} photo`}
+    >
+      {imageUri ? (
+        <>
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+          <View style={styles.overlay} pointerEvents="none">
+            <Svg width={scale(24)} height={scale(24)} viewBox="0 0 24 24">
+              <Path d={PLUS} fill="#AAAAAA" />
+            </Svg>
+          </View>
+        </>
+      ) : (
+        <Placeholder width={BOX} height={BOX} />
+      )}
+    </Pressable>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    minWidth: 0,
+    width: BOX,
   },
-
   title: {
     fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontWeight: '400',
+    lineHeight: normalizeFont(15),
+    fontWeight: '500',
     color: '#221E25',
     marginBottom: verticalScale(8),
   },
-
-  uploadWrapper: {
-    width: '100%',
-    position: 'relative',
-  },
-
-  uploadBox: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: scale(10),
+  box: {
+    width: BOX,
+    height: BOX,
+    borderRadius: scale(8),
     overflow: 'hidden',
-    backgroundColor: '#EEEEEE',
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
   },
-
-  placeholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   image: {
     width: '100%',
     height: '100%',
   },
-
-  removeButton: {
-    position: 'absolute',
-    top: scale(6),
-    right: scale(6),
-    width: scale(24),
-    height: scale(24),
-    borderRadius: scale(12),
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+  overlay: {
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
     justifyContent: 'center',
   },

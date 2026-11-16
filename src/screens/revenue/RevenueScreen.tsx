@@ -15,16 +15,10 @@ import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
 import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
-import {
-  normalizeFont,
-  verticalScale,
-  wp,
-} from '../../utils/responsive';
+import { normalizeFont, verticalScale, scale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
 
-const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({
-  navigation,
-}) => {
+const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({ navigation }) => {
   const [period, setPeriod] = useState('7 days');
   const [activeTab, setActiveTab] = useState<TabName>('Revenue');
   const { width } = useWindowDimensions();
@@ -62,7 +56,7 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({
 
           <View style={styles.chartSection}>
             <View style={styles.chartHeader}>
-              <Text style={styles.chartTitle}>Revenue Generated</Text>
+              <Text style={styles.chartTitle}>Revenue overview</Text>
               <RevenuePeriodDropdown
                 selectedPeriod={period}
                 onSelectPeriod={setPeriod}
@@ -88,14 +82,14 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 1,
-    backgroundColor: '#F5F4F2',
+    backgroundColor: '#F5F3EF',
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: wp(4.2),
-    paddingTop: verticalScale(16),
+    paddingHorizontal: scale(16),
+    paddingTop: verticalScale(24),
     paddingBottom: verticalScale(24),
   },
   tabletContent: {
@@ -103,13 +97,9 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
   },
+  // Figma: title + dropdown sit on the page, the chart is its own white card.
   chartSection: {
-    marginTop: verticalScale(16),
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: wp(4.2),
-    borderWidth: 1,
-    borderColor: '#EAEAEA',
+    marginTop: verticalScale(24),
   },
   chartHeader: {
     flexDirection: 'row',
@@ -119,8 +109,8 @@ const styles = StyleSheet.create({
   },
   chartTitle: {
     color: '#221E25',
-    fontSize: normalizeFont(12),
-    fontWeight: '700',
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
   },
 });
 

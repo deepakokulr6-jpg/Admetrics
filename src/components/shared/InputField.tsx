@@ -9,8 +9,8 @@ import {
   TextInputProps,
 } from 'react-native';
 
-import EmailIcon from '../../../assets/images/email.svg';
-import PasswordIcon from '../../../assets/images/password.svg';
+import EmailIcon from '../../../assets/images/figma/mail.svg';
+import PasswordIcon from '../../../assets/images/figma/lock.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type InputFieldProps = {
@@ -96,7 +96,12 @@ const InputField: React.FC<InputFieldProps> = ({
         ]}
       >
         {InputIcon ? (
-          <InputIcon width={scale(20)} height={scale(20)} />
+          <View style={styles.icon}>
+            <InputIcon
+              width={iconName === 'password' ? scale(13.5) : scale(24)}
+              height={iconName === 'password' ? scale(15.3) : scale(24)}
+            />
+          </View>
         ) : null}
 
         <TextInput
@@ -138,7 +143,7 @@ const InputField: React.FC<InputFieldProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: verticalScale(14),
+    marginBottom: verticalScale(16),
   },
 
   label: {
@@ -146,11 +151,11 @@ const styles = StyleSheet.create({
     lineHeight: normalizeFont(16),
     fontWeight: '400',
     color: '#221E25',
-    marginBottom: verticalScale(6),
+    marginBottom: verticalScale(8),
   },
 
   required: {
-    color: '#D93025',
+    color: '#FF2A2A',
   },
 
   inputBox: {
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
     borderRadius: scale(6),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: scale(12),
+    paddingHorizontal: scale(16),
   },
 
   inputBoxError: {
@@ -174,8 +179,8 @@ const styles = StyleSheet.create({
   },
 
   inputBoxDisabled: {
-    backgroundColor: '#F7F7F7',
-    borderColor: '#DDDDDD',
+    backgroundColor: '#EEEEEE',
+    borderColor: '#EEEEEE',
   },
 
   input: {
@@ -192,8 +197,15 @@ const styles = StyleSheet.create({
     color: '#221E25',
   },
 
+  icon: {
+    width: scale(24),
+    height: scale(24),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   inputWithIcon: {
-    marginLeft: scale(10),
+    marginLeft: scale(8),
   },
 
   multilineBox: {

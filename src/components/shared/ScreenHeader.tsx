@@ -1,17 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { ReactNode } from 'react';
+import { View, StyleSheet, Pressable } from 'react-native';
+import AppText from './AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import BackIcon from '../../../assets/images/figma/back.svg';
+import { scale, verticalScale } from '../../utils/responsive';
 
 interface ScreenHeaderProps {
   title?: string;
   onBackPress?: () => void;
+  rightElement?: ReactNode;
 }
 
+// Figma: white 94px bar (status bar included), 24px back icon at x16,
+// title 14px bold #111 at x56, soft bottom shadow.
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   title = 'Register Your Clinic',
   onBackPress,
+  rightElement,
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -19,9 +24,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     <View
       style={[
         styles.container,
-        {
-          paddingTop: Math.max(insets.top, verticalScale(8)),
-        },
+        { paddingTop: Math.max(insets.top, verticalScale(8)) },
       ]}
     >
       <View style={styles.row}>
@@ -32,12 +35,14 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Go back"
         >
-          <Ionicons name="chevron-back" size={scale(22)} color="#221E25" />
+          <BackIcon width={scale(24)} height={scale(24)} />
         </Pressable>
 
-        <Text style={styles.title} numberOfLines={1}>
+        <AppText variant="headerTitle" style={styles.title} numberOfLines={1}>
           {title}
-        </Text>
+        </AppText>
+
+        {rightElement ? <View>{rightElement}</View> : null}
       </View>
     </View>
   );
@@ -46,14 +51,10 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: scale(12),
-    paddingBottom: verticalScale(12),
-
+    paddingHorizontal: scale(16),
+    paddingBottom: verticalScale(20),
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
@@ -62,20 +63,15 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: verticalScale(32),
+    height: scale(24),
   },
   backButton: {
     width: scale(24),
-    height: verticalScale(32),
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginRight: scale(8),
+    height: scale(24),
+    marginRight: scale(16),
   },
   title: {
     flex: 1,
-    color: '#221E25',
-    fontSize: normalizeFont(14),
-    fontWeight: '700',
   },
 });
 

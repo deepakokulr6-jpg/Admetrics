@@ -180,17 +180,17 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: scale(20),
-    paddingTop: verticalScale(4),
+    paddingHorizontal: scale(16),
+    paddingTop: 0,
     paddingBottom: verticalScale(32),
   },
 
   heading: {
     fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(22),
+    lineHeight: normalizeFont(19),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: verticalScale(14),
+    marginBottom: verticalScale(16),
   },
 
   rowWrapper: {

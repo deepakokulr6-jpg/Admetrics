@@ -1,152 +1,118 @@
 import React from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Svg, { Circle, Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 interface StepProgressProps {
   currentStep: number;
 }
 
-const STEPS = ['Clinic', 'Personal', 'Photos'];
+const STEPS = ['Clinic', 'Contact', 'Photos'];
 
-// Completed steps follow the brand gradient across the row, so the first
-// check is blue and the last one is purple (matching the registration design).
-const GRADIENT_START = [2, 101, 251]; // #0265FB
-const GRADIENT_END = [180, 58, 252]; // #B43AFC
+// Badge colours follow the brand gradient from left to right (Figma).
+const DONE_COLORS = ['#1D5FFB', '#644EFB', '#B43AFC'];
+const TICK =
+  'M16.4877 9.00069C16.7057 9.21865 16.7057 9.57205 16.4877 9.79001L11.2784 14.9993C11.1738 15.104 11.0318 15.1628 10.8838 15.1628C10.7357 15.1628 10.5938 15.104 10.4891 14.9993L7.51235 12.0225C7.29439 11.8046 7.29439 11.4512 7.51235 11.2333C7.73032 11.0153 8.08371 11.0153 8.30168 11.2333L10.8838 13.8153L15.6984 9.00069C15.9164 8.78272 16.2697 8.78272 16.4877 9.00069Z';
 
-const mixChannel = (start: number, end: number, ratio: number): number =>
-  Math.round(start + (end - start) * ratio);
+const BADGE = scale(24);
+const TRACK_WIDTH = scale(230);
+// Badge centres sit at 58 / 180 / 300 on a 360 wide frame; the bar runs
+// from 65 to 295, i.e. it starts 7px after the first centre.
+const CENTERS = [58, 180, 300].map(scale);
+const TRACK_LEFT = scale(65);
+// How far the gradient fills for each step (Figma: grey covers the rest).
+const FILL_TO = [75, 185, 295].map(scale);
 
-const stepColor = (index: number): string => {
-  const ratio = STEPS.length > 1 ? index / (STEPS.length - 1) : 0;
-  const [r, g, b] = GRADIENT_START.map((channel, channelIndex) =>
-    mixChannel(channel, GRADIENT_END[channelIndex], ratio),
-  );
-
-  return `rgb(${r}, ${g}, ${b})`;
-};
+const StepBadge: React.FC<{ index: number; done: boolean }> = ({
+  index,
+  done,
+}) => (
+  <Svg width={BADGE} height={BADGE} viewBox="0 0 24 24">
+    {done ? (
+      <>
+        <Circle cx={12} cy={12} r={8} fill={DONE_COLORS[index]} />
+        <Path d={TICK} fill="#ECEFF1" fillRule="evenodd" clipRule="evenodd" />
+      </>
+    ) : (
+      <>
+        <Circle cx={12} cy={12} r={8} fill="#DDDDDD" />
+        <Circle cx={12} cy={12} r={3} fill="#FFFFFF" />
+      </>
+    )}
+  </Svg>
+);
 
 const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
-  const { width } = useWindowDimensions();
-  const contentWidth = Math.min(width - scale(48), scale(328));
+  const fillEnd = FILL_TO[Math.min(currentStep, STEPS.length) - 1];
 
   return (
-    <View style={[styles.container, { width: contentWidth }]}>
-      <View style={styles.progressRow}>
-        {STEPS.map((step, index) => {
-          const stepNumber = index + 1;
-          const completed = stepNumber < currentStep;
-          const reached = stepNumber <= currentStep;
-          const nextStepCompleted = stepNumber + 1 < currentStep;
-
-          return (
-            <React.Fragment key={step}>
-              <View style={styles.step}>
-                <View style={styles.indicator}>
-                  {completed ? (
-                    <View
-                      style={[
-                        styles.completedCircle,
-                        { backgroundColor: stepColor(index) },
-                      ]}
-                    >
-                      <Ionicons
-                        name="checkmark"
-                        size={scale(12)}
-                        color="#FFFFFF"
-                      />
-                    </View>
-                  ) : (
-                    <View style={styles.inactiveCircle} />
-                  )}
-                </View>
-
-                <Text
-                  style={[styles.stepLabel, reached && styles.reachedLabel]}
-                  numberOfLines={1}
-                >
-                  {step}
-                </Text>
-              </View>
-
-              {index < STEPS.length - 1 && (
-                <View style={styles.lineContainer}>
-                  {nextStepCompleted ? (
-                    <LinearGradient
-                      colors={[stepColor(index), stepColor(index + 1)]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.line}
-                    />
-                  ) : (
-                    <View style={[styles.line, styles.inactiveLine]} />
-                  )}
-                </View>
-              )}
-            </React.Fragment>
-          );
-        })}
+    <View style={styles.container}>
+      <View style={styles.track}>
+        <LinearGradient
+          colors={['#0265FB', '#B43AFC']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.trackFill}
+        />
+        <View
+          style={[
+            styles.trackRest,
+            { left: fillEnd - TRACK_LEFT, right: 0 },
+          ]}
+        />
       </View>
+
+      {STEPS.map((step, index) => (
+        <View
+          key={step}
+          style={[styles.step, { left: CENTERS[index] - scale(30) }]}
+        >
+          <StepBadge index={index} done={index + 1 <= currentStep} />
+          <Text style={styles.label} numberOfLines={1}>
+            {step}
+          </Text>
+        </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    width: scale(360),
     alignSelf: 'center',
-    paddingTop: verticalScale(12),
-    paddingBottom: verticalScale(16),
+    // header → badges 20, badges + label, then 24 down to the section title
+    height: BADGE + scale(19),
+    marginTop: verticalScale(20),
+    marginBottom: verticalScale(24),
   },
-  progressRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+  track: {
+    position: 'absolute',
+    top: BADGE / 2 - 1,
+    left: TRACK_LEFT,
+    width: TRACK_WIDTH,
+    height: 2,
   },
-  step: {
-    width: scale(44),
-    alignItems: 'center',
-    zIndex: 1,
+  trackFill: {
+    ...StyleSheet.absoluteFill,
   },
-  indicator: {
-    height: verticalScale(16),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  completedCircle: {
-    width: scale(12),
-    height: scale(12),
-    borderRadius: scale(6),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inactiveCircle: {
-    width: scale(10),
-    height: scale(10),
-    borderRadius: scale(5),
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#D8D8D8',
-  },
-  lineContainer: {
-    flex: 1,
-    height: verticalScale(16),
-    justifyContent: 'center',
-    marginHorizontal: scale(-2),
-  },
-  line: {
-    height: verticalScale(2),
-  },
-  inactiveLine: {
+  trackRest: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
     backgroundColor: '#DDDDDD',
   },
-  stepLabel: {
-    fontSize: normalizeFont(10),
-    color: '#777777',
-    marginTop: verticalScale(4),
-    textAlign: 'center',
+  step: {
+    position: 'absolute',
+    top: 0,
+    width: scale(60),
+    alignItems: 'center',
   },
-  reachedLabel: {
+  label: {
+    marginTop: scale(4),
+    fontSize: normalizeFont(12),
+    fontWeight: '500',
     color: '#221E25',
   },
 });

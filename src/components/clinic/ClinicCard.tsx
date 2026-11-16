@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import TvOn from '../../../assets/images/figma/tv_on.svg';
+import TvOff from '../../../assets/images/figma/tv_off.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
@@ -14,8 +16,12 @@ type Props = {
   photoOneUri?: string | null;
   photoTwoUri?: string | null;
   displayCount?: number;
+  onlineDisplays?: number;
 };
 
+// Figma (Android Large - 15): 328x144 white card, 1px #DDD border, 6px radius.
+// Top strip shows either the approval status (red dot + text) or the display
+// count with TV icons; details on the left, two 80x89 photos on the right.
 const ClinicCard: React.FC<Props> = ({
   status,
   clinicName,
@@ -28,39 +34,60 @@ const ClinicCard: React.FC<Props> = ({
   photoOneUri,
   photoTwoUri,
   displayCount,
+  onlineDisplays = 1,
 }) => (
   <View style={styles.card}>
-    <View style={styles.photos}>
-      <View style={[styles.circle, { backgroundColor: photoOneColor }]}>
-        {photoOneUri ? (
-          <Image source={{ uri: photoOneUri }} style={styles.photo} />
-        ) : null}
-      </View>
-
-      <View style={[styles.circle, { backgroundColor: photoTwoColor }]}>
-        {photoTwoUri ? (
-          <Image source={{ uri: photoTwoUri }} style={styles.photo} />
-        ) : null}
-      </View>
-
-      {displayCount ? (
-        <View style={styles.countBadge}>
-          <Text style={styles.countText}>+{displayCount}</Text>
+    <View style={styles.strip}>
+      {status ? (
+        <View style={styles.row}>
+          <View style={styles.dot} />
+          <Text style={styles.status}>{status}</Text>
         </View>
+      ) : displayCount ? (
+        <>
+          <Text style={styles.displays}>{displayCount} Displays</Text>
+          <View style={styles.tvs}>
+            {Array.from({ length: displayCount }, (_, index) => {
+              // Online screens are listed from the right, as in Figma.
+              const online = index >= displayCount - onlineDisplays;
+              const Tv = online ? TvOn : TvOff;
+              return (
+                <View key={index} style={styles.tv}>
+                  <Tv width={scale(23.7)} height={scale(19.55)} />
+                </View>
+              );
+            })}
+          </View>
+        </>
       ) : null}
     </View>
 
-    <View style={styles.info}>
-      <Text style={styles.clinicName}>{clinicName}</Text>
+    <View style={styles.body}>
+      <View style={styles.info}>
+        <Text style={styles.clinicName} numberOfLines={1}>
+          {clinicName}
+        </Text>
+        <Text style={styles.detail} numberOfLines={1}>{contactName}</Text>
+        <Text style={styles.detail} numberOfLines={1}>{designation}</Text>
+        <Text style={styles.detail} numberOfLines={1}>{phone}</Text>
+        <Text style={styles.detail} numberOfLines={1}>{email}</Text>
+      </View>
 
-      <Text style={styles.contact}>
-        {contactName} · {designation}
-      </Text>
-
-      <Text style={styles.detail}>{phone}</Text>
-      <Text style={styles.detail}>{email}</Text>
-
-      {status ? <Text style={styles.status}>{status}</Text> : null}
+      <View style={styles.photos}>
+        {[
+          { uri: photoOneUri, color: photoOneColor },
+          { uri: photoTwoUri, color: photoTwoColor },
+        ].map((photo, index) => (
+          <View
+            key={index}
+            style={[styles.photo, { backgroundColor: photo.color }]}
+          >
+            {photo.uri ? (
+              <Image source={{ uri: photo.uri }} style={styles.photoImage} />
+            ) : null}
+          </View>
+        ))}
+      </View>
     </View>
   </View>
 );
@@ -68,83 +95,81 @@ const ClinicCard: React.FC<Props> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(16),
-    padding: scale(16),
-    flexDirection: 'row',
-    gap: scale(12),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#DDDDDD',
+    borderRadius: scale(6),
+    paddingHorizontal: scale(16),
+    paddingBottom: verticalScale(16),
   },
-
-  photos: {
+  strip: {
+    height: scale(31),
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-
-  circle: {
-    width: scale(50),
-    height: scale(50),
-    borderRadius: scale(25),
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    marginLeft: scale(-12),
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
   },
-
-  photo: {
-    width: scale(46),
-    height: scale(46),
-    borderRadius: scale(23),
+  dot: {
+    width: scale(8),
+    height: scale(8),
+    borderRadius: scale(4),
+    backgroundColor: '#FF2A2A',
+    marginRight: scale(8),
   },
-
-  countBadge: {
-    width: scale(32),
-    height: scale(32),
-    borderRadius: scale(16),
-    backgroundColor: '#221E25',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: scale(4),
-  },
-
-  countText: {
-    color: '#FFFFFF',
+  status: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
+    fontWeight: '500',
+    color: '#FF2A2A',
   },
-
+  displays: {
+    fontSize: normalizeFont(12),
+    fontWeight: '500',
+    color: '#221E25',
+  },
+  tvs: {
+    flexDirection: 'row',
+    gap: scale(8),
+    marginRight: scale(-12),
+  },
+  tv: {
+    width: scale(24),
+    height: scale(24),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  body: {
+    flexDirection: 'row',
+    marginTop: scale(8),
+  },
   info: {
     flex: 1,
   },
-
   clinicName: {
-    fontSize: normalizeFont(16),
-    fontWeight: '700',
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
     color: '#221E25',
+    marginBottom: scale(6),
   },
-
-  contact: {
-    fontSize: normalizeFont(13),
-    color: '#777777',
-    marginTop: verticalScale(2),
-  },
-
   detail: {
     fontSize: normalizeFont(12),
-    color: '#555555',
-    marginTop: verticalScale(1),
+    lineHeight: normalizeFont(17),
+    color: '#565656',
   },
-
-  status: {
-    marginTop: verticalScale(6),
-    fontSize: normalizeFont(12),
-    color: '#B43AFC',
-    fontWeight: '600',
+  photos: {
+    flexDirection: 'row',
+    gap: scale(8),
+  },
+  photo: {
+    width: scale(80),
+    height: scale(89),
+    borderRadius: scale(5.33),
+    overflow: 'hidden',
+  },
+  photoImage: {
+    width: '100%',
+    height: '100%',
   },
 });
 

@@ -9,12 +9,12 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import StepProgress from '../../components/shared/StepProgress';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
+import MapPreview from '../../components/clinic/MapPreview';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
@@ -103,7 +103,6 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
             placeholder="e.g. 2023"
             value={establishmentYear}
             onChangeText={() => {}}
-            required
             keyboardType="number-pad"
             maxLength={4}
             error={errors.establishmentYear}
@@ -145,19 +144,15 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
             placeholder="Enter clinic address"
             value={address}
             onChangeText={() => {}}
-            required
             autoCapitalize="sentences"
-            multiline
-            numberOfLines={2}
             error={errors.address}
           />
 
           <InputField
-            label="Street"
+            label="Street *"
             placeholder="Enter street"
             value={street}
             onChangeText={() => {}}
-            required
             autoCapitalize="sentences"
             error={errors.street}
           />
@@ -167,7 +162,6 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
             placeholder="Enter city"
             value={city}
             onChangeText={() => {}}
-            required
             autoCapitalize="words"
             error={errors.city}
           />
@@ -177,32 +171,21 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
             placeholder="Enter state"
             value={state}
             onChangeText={() => {}}
-            required
             autoCapitalize="words"
             error={errors.state}
           />
 
           <InputField
-            label="Pincode"
+            label="Pincode *"
             placeholder="Enter pincode"
             value={pincode}
             onChangeText={() => {}}
-            required
             keyboardType="number-pad"
             maxLength={6}
             error={errors.pincode}
           />
 
-          <Text style={styles.mapLabel}>Locate on Map</Text>
-
-          <View style={styles.mapCard}>
-            <Ionicons name="location-outline" size={scale(34)} color="#7B35FF" />
-            <Text style={styles.mapTitle}>Open clinic location</Text>
-            <Text style={styles.mapSubtitle} numberOfLines={2}>
-              {address}, {city}, {pincode}
-            </Text>
-            <Text style={styles.mapLink}>Open in Google Maps</Text>
-          </View>
+          <MapPreview />
 
           <View style={styles.button}>
             <GradientButton title="Next" onPress={handleNext} />
@@ -227,64 +210,21 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: scale(20),
-    paddingTop: verticalScale(4),
+    paddingHorizontal: scale(16),
+    paddingTop: 0,
     paddingBottom: verticalScale(32),
   },
 
   heading: {
     fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(22),
+    lineHeight: normalizeFont(19),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: verticalScale(14),
-  },
-
-  mapLabel: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: '#221E25',
-    marginBottom: verticalScale(6),
-  },
-
-  mapCard: {
-    minHeight: verticalScale(120),
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
-    borderRadius: scale(8),
-    backgroundColor: '#F7F9FC',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: scale(14),
-    marginBottom: verticalScale(24),
-  },
-
-  mapTitle: {
-    marginTop: verticalScale(4),
-    fontSize: normalizeFont(13),
-    lineHeight: normalizeFont(18),
-    fontWeight: '600',
-    color: '#221E25',
-  },
-
-  mapSubtitle: {
-    marginTop: verticalScale(2),
-    fontSize: normalizeFont(11),
-    lineHeight: normalizeFont(15),
-    color: '#777777',
-    textAlign: 'center',
-  },
-
-  mapLink: {
-    marginTop: verticalScale(6),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontWeight: '600',
-    color: '#7B35FF',
+    marginBottom: verticalScale(16),
   },
 
   button: {
-    marginTop: verticalScale(4),
+    marginTop: verticalScale(48),
   },
 });
 

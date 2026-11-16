@@ -5,18 +5,17 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  Pressable,
   Linking,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import StepProgress from '../../components/shared/StepProgress';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
+import MapPreview from '../../components/clinic/MapPreview';
 import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
 import { ClinicInfo } from '../../types/clinic';
 import {
@@ -48,9 +47,10 @@ const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
       'Medical registration number is required.';
   }
 
-  if (isBlank(clinic.establishmentYear)) {
-    errors.establishmentYear = 'Establishment year is required.';
-  } else if (!isValidYear(clinic.establishmentYear)) {
+  if (
+    !isBlank(clinic.establishmentYear) &&
+    !isValidYear(clinic.establishmentYear)
+  ) {
     errors.establishmentYear = 'Enter a valid four-digit year.';
   }
 
@@ -71,20 +71,8 @@ const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
     errors.panNumber = 'Enter a valid 10-character PAN.';
   }
 
-  if (isBlank(clinic.address)) {
-    errors.address = 'Address is required.';
-  }
-
   if (isBlank(clinic.street)) {
     errors.street = 'Street is required.';
-  }
-
-  if (isBlank(clinic.city)) {
-    errors.city = 'City is required.';
-  }
-
-  if (isBlank(clinic.state)) {
-    errors.state = 'State is required.';
   }
 
   if (isBlank(clinic.pincode)) {
@@ -224,7 +212,6 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
             value={clinic.establishmentYear}
             onChangeText={value => update('establishmentYear', value)}
             {...focusProps('establishmentYear')}
-            required
             keyboardType="number-pad"
             maxLength={4}
             error={errors.establishmentYear}
@@ -270,20 +257,16 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
             value={clinic.address}
             onChangeText={value => update('address', value)}
             {...focusProps('address')}
-            required
             autoCapitalize="sentences"
-            multiline
-            numberOfLines={2}
             error={errors.address}
           />
 
           <InputField
-            label="Street"
+            label="Street *"
             placeholder="Enter street"
             value={clinic.street}
             onChangeText={value => update('street', value)}
             {...focusProps('street')}
-            required
             autoCapitalize="sentences"
             error={errors.street}
           />
@@ -294,7 +277,6 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
             value={clinic.city}
             onChangeText={value => update('city', value)}
             {...focusProps('city')}
-            required
             autoCapitalize="words"
             error={errors.city}
           />
@@ -305,41 +287,22 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
             value={clinic.state}
             onChangeText={value => update('state', value)}
             {...focusProps('state')}
-            required
             autoCapitalize="words"
             error={errors.state}
           />
 
           <InputField
-            label="Pincode"
+            label="Pincode *"
             placeholder="Enter pincode"
             value={clinic.pincode}
             onChangeText={value => update('pincode', value)}
             {...focusProps('pincode')}
-            required
             keyboardType="number-pad"
             maxLength={6}
             error={errors.pincode}
           />
 
-          <Text style={styles.mapLabel}>Locate on Map</Text>
-
-          <Pressable
-            onPress={handleOpenMap}
-            style={styles.mapCard}
-            accessibilityRole="button"
-            accessibilityLabel="Open clinic address in Google Maps"
-          >
-            <Ionicons name="location-outline" size={scale(34)} color="#7B35FF" />
-            <Text style={styles.mapTitle}>Open clinic location</Text>
-            <Text style={styles.mapSubtitle} numberOfLines={2}>
-              {[clinic.address, clinic.city, clinic.pincode]
-                .map(part => part.trim())
-                .filter(Boolean)
-                .join(', ') || 'Address will appear here'}
-            </Text>
-            <Text style={styles.mapLink}>Open in Google Maps</Text>
-          </Pressable>
+          <MapPreview onPress={handleOpenMap} />
 
           <View style={styles.button}>
             <GradientButton title="Next" onPress={handleNext} />
@@ -364,64 +327,21 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: scale(20),
-    paddingTop: verticalScale(4),
+    paddingHorizontal: scale(16),
+    paddingTop: 0,
     paddingBottom: verticalScale(32),
   },
 
   heading: {
     fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(22),
+    lineHeight: normalizeFont(19),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: verticalScale(14),
-  },
-
-  mapLabel: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: '#221E25',
-    marginBottom: verticalScale(6),
-  },
-
-  mapCard: {
-    minHeight: verticalScale(120),
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
-    borderRadius: scale(8),
-    backgroundColor: '#F7F9FC',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: scale(14),
-    marginBottom: verticalScale(24),
-  },
-
-  mapTitle: {
-    marginTop: verticalScale(4),
-    fontSize: normalizeFont(13),
-    lineHeight: normalizeFont(18),
-    fontWeight: '600',
-    color: '#221E25',
-  },
-
-  mapSubtitle: {
-    marginTop: verticalScale(2),
-    fontSize: normalizeFont(11),
-    lineHeight: normalizeFont(15),
-    color: '#777777',
-    textAlign: 'center',
-  },
-
-  mapLink: {
-    marginTop: verticalScale(6),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontWeight: '600',
-    color: '#7B35FF',
+    marginBottom: verticalScale(16),
   },
 
   button: {
-    marginTop: verticalScale(4),
+    marginTop: verticalScale(48),
   },
 });
 

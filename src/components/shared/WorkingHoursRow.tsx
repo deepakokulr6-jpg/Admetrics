@@ -25,7 +25,7 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
     <View style={styles.row}>
       {/* Day name and toggle */}
       <View style={styles.dayColumn}>
-        <Text style={[styles.dayText, !enabled && styles.disabledText]}>
+        <Text style={styles.dayText}>
           {day}
         </Text>
 
@@ -71,29 +71,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    gap: scale(12),
-    marginBottom: verticalScale(10),
+    gap: scale(16),
+    marginBottom: verticalScale(16),
   },
   dayColumn: {
-    width: scale(58),
+    width: scale(56),
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
   dayText: {
     fontSize: normalizeFont(12),
     color: '#221E25',
-    marginBottom: verticalScale(2),
-  },
-  disabledText: {
-    color: '#AAAAAA',
+    marginBottom: verticalScale(4),
   },
   switch: {
     marginLeft: -5,
     transform: [{ scaleX: 0.78 }, { scaleY: 0.78 }],
   },
   timeInput: {
-    flex: 1,
-    minWidth: 0,
+    width: scale(120),
     height: verticalScale(40),
     borderWidth: 1,
     borderColor: '#AAAAAA',

@@ -21,7 +21,7 @@ const ClinicRegisteredScreen: React.FC<AppScreenProps<'ClinicRegistered'>> = ({
     <SuccessScreenLayout
       title="Clinic Registered Successfully!"
       description={
-        'Your clinic is registered with Admetrics. Please wait for our approval.'
+        'Your clinic is registered with Admetrics.\nPlease wait for our approval'
       }
       buttonText="Okay"
       onButtonPress={handleOkay}

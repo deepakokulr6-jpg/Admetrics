@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Pressable,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Feather';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
 import BottomNavigation, {
   TabName,
 } from '../../components/shared/BottomNavigation';
-import {
-  normalizeFont,
-  scale,
-  verticalScale,
-} from '../../utils/responsive';
+import CalendarIcon from '../../../assets/images/figma/calendar.svg';
+import ArrowCircle from '../../../assets/images/figma/arrow_circle.svg';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
+
+// Sample data from the Figma design (Android Large - 17).
+const STATEMENTS: { amount: string; paidOn?: string; month: string }[] = [
+  { amount: '₹7,561.60', month: 'October 2026' },
+  { amount: '₹32,411.74', month: 'September 2026' },
+  { amount: '₹17,123.00', paidOn: '12 September 2026', month: 'August 2026' },
+  { amount: '₹10,161.60', paidOn: '12 August 2026', month: 'July 2026' },
+  { amount: '₹19,021.17', paidOn: '12 July 2026', month: 'June 2026' },
+  { amount: '₹17,571.60', paidOn: '12 June 2026', month: 'May 2026' },
+  { amount: '₹32,411.74', paidOn: '12 May 2026', month: 'April 2026' },
+  { amount: '₹17,123.00', paidOn: '12 April 2026', month: 'March 2026' },
+  { amount: '₹10,161.60', paidOn: '12 March 2026', month: 'February 2026' },
+];
 
 const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
   navigation,
@@ -24,8 +41,6 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
 
     if (tab === 'Clinics') {
       navigation.navigate('Home');
-    } else if (tab === 'Statement') {
-      // Already on the Statement screen.
     } else if (tab === 'Revenue') {
       navigation.navigate('Revenue');
     } else if (tab === 'Support') {
@@ -36,204 +51,112 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
-
-      {/* 1. Header with Avatar, Greeting and App Logo */}
       <DashboardHeader name="Ramkumar" />
 
-      {/* Main Scroll Content */}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Title Section */}
-        <View style={styles.titleRow}>
-          <Text style={styles.screenTitle}>Monthly Statements</Text>
-        </View>
+        <Text style={styles.title}>Monthly Payout Statement</Text>
 
-        {/* 1. Statement Card - October 2026 (Not Paid) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹7,561.60</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
+        {STATEMENTS.map(item => (
+          <Pressable
+            key={item.month}
+            style={styles.card}
+            accessibilityRole="button"
+            onPress={() =>
+              navigation.navigate('PaymentDetails', {
+                month: item.month,
+                paid: Boolean(item.paidOn),
+                paidOn: item.paidOn,
+              })
+            }
+          >
+            <View style={styles.cardText}>
+              <Text style={styles.amount}>{item.amount}</Text>
+              {item.paidOn ? (
+                <Text style={styles.paid}>Paid on {item.paidOn}</Text>
+              ) : (
+                <Text style={styles.notPaid}>Not Paid</Text>
+              )}
+              <View style={styles.monthRow}>
+                <CalendarIcon width={scale(16)} height={scale(16)} />
+                <Text style={styles.month}>{item.month}</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.notPaidStatus}>Not Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> October 2026</Text>
-          </View>
-        </View>
-
-        {/* 2. Statement Card - September 2026 (Not Paid) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹32,411.74</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
-            </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.notPaidStatus}>Not Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> September 2026</Text>
-          </View>
-        </View>
-
-        {/* 3. Statement Card - August 2026 (Paid) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹17,123.00</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
-            </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> August 2026</Text>
-          </View>
-        </View>
-
-        {/* 4. Statement Card - July 2026 (Paid) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹10,161.60</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
-            </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> July 2026</Text>
-          </View>
-        </View>
-
-        {/* 5. Statement Card - June 2026 (Paid) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹19,021.17</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
-            </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> June 2026</Text>
-          </View>
-        </View>
-
-        {/* 6. Statement Card - May 2026 (Paid - Additional Card) */}
-        <View style={styles.statementCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.amountText}>₹14,850.50</Text>
-            <View style={styles.actionButton}>
-              <Icon name="chevron-right" size={scale(18)} color="#4B5563" />
-            </View>
-          </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.paidStatus}>Paid</Text>
-            <Text style={styles.dotText}> • </Text>
-            <Icon name="calendar" size={scale(12)} color="#6B7280" />
-            <Text style={styles.monthText}> May 2026</Text>
-          </View>
-        </View>
+            <ArrowCircle width={scale(32)} height={scale(32)} />
+          </Pressable>
+        ))}
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
     </SafeAreaView>
   );
 };
 
+// Figma: #F5F3EF background, 14px semibold title 24 below the header,
+// 98px white cards (1px #DDD border, 6px radius) 16px apart.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F5F3EF',
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: scale(16),
-    paddingTop: verticalScale(12),
-    paddingBottom: verticalScale(20),
+    paddingTop: verticalScale(24),
+    paddingBottom: verticalScale(24),
+  },
+  title: {
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
+    color: '#221E25',
+    marginBottom: verticalScale(16),
+  },
+  card: {
+    flexDirection: 'row',
     alignItems: 'center',
+    minHeight: scale(98),
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DDDDDD',
+    borderRadius: scale(6),
+    paddingLeft: scale(16),
+    paddingRight: scale(24),
+    paddingVertical: scale(16),
+    marginBottom: verticalScale(16),
   },
-  titleRow: {
-    width: '100%',
-    maxWidth: scale(345),
-    marginBottom: verticalScale(14),
+  cardText: {
+    flex: 1,
   },
-  screenTitle: {
+  amount: {
     fontSize: normalizeFont(16),
     fontWeight: '700',
-    color: '#1F2937',
+    color: '#221E25',
   },
-  statementCard: {
-    width: '100%',
-    maxWidth: scale(345),
-    backgroundColor: '#FFFFFF',
-    borderRadius: scale(12),
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: scale(16),
-    marginBottom: verticalScale(12),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+  paid: {
+    marginTop: scale(8),
+    fontSize: normalizeFont(12),
+    fontWeight: '500',
+    color: '#14AB00',
   },
-  cardHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: verticalScale(8),
+  notPaid: {
+    marginTop: scale(8),
+    fontSize: normalizeFont(12),
+    color: '#FF2A2A',
   },
-  amountText: {
-    fontSize: normalizeFont(18),
-    fontWeight: '700',
-    color: '#1F2937',
-  },
-  actionButton: {
-    width: scale(32),
-    height: scale(32),
-    borderRadius: scale(16),
-    backgroundColor: '#F3F4F6',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  statusRow: {
+  monthRow: {
+    marginTop: scale(8),
     flexDirection: 'row',
     alignItems: 'center',
   },
-  notPaidStatus: {
+  month: {
+    marginLeft: scale(8),
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#DC2626',
-  },
-  paidStatus: {
-    fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#16A34A',
-  },
-  dotText: {
-    color: '#9CA3AF',
-    fontSize: normalizeFont(10),
-    marginHorizontal: scale(4),
-  },
-  monthText: {
-    fontSize: normalizeFont(12),
-    color: '#6B7280',
+    color: '#565656',
   },
 });
 

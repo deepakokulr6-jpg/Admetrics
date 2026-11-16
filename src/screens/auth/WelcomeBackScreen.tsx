@@ -3,16 +3,19 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
+  ScrollView,
+  Pressable,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
 import AppLogo from '../../components/shared/AppLogo';
+import AuthFooter from '../../components/auth/AuthFooter';
+import ForgotPasswordLink from '../../components/auth/ForgotPasswordLink';
+import GradientButton from '../../components/shared/GradientButton';
+import GradientText from '../../components/shared/GradientText';
+import InputField from '../../components/shared/InputField';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
@@ -25,11 +28,9 @@ export default function WelcomeBackScreen({
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = async () => {
     const trimmedEmail = email.trim();
@@ -56,261 +57,167 @@ export default function WelcomeBackScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.innerContainer}
       >
-        {/* Logo Section */}
-        <View style={styles.logoContainer}>
-          <AppLogo width={scale(160)} />
-        </View>
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.content}>
+            <View style={styles.logo}>
+              <AppLogo width={scale(200)} />
+            </View>
 
-        {/* Header Text */}
-        <Text style={styles.title}>Welcome Back!</Text>
+            <Text style={styles.title}>Welcome Back!</Text>
+            <View style={styles.subtitleRow}>
+              <Text style={styles.subtitle}>Sign in to continue to </Text>
+              <GradientText style={styles.brand}>Admetrics</GradientText>
+            </View>
 
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>
-          Sign in to continue to <Text style={styles.brandText}>Admetrics</Text>
-        </Text>
-
-        {/* Email Input Group */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email ID</Text>
-          <View
-            style={[
-              styles.inputContainer,
-              emailFocused ? styles.inputContainerFocused : null,
-            ]}
-          >
-            <Feather
-              name="user"
-              size={scale(20)}
-              color="#221E25"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, email.length > 0 && styles.inputFilled]}
-              placeholder="Enter your email"
-              placeholderTextColor="#a1a1aa"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              onFocus={() => setEmailFocused(true)}
-              onBlur={() => setEmailFocused(false)}
-            />
-          </View>
-        </View>
-
-        {/* Password Input Group */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password</Text>
-          <View
-            style={[
-              styles.inputContainer,
-              passwordFocused ? styles.inputContainerFocused : null,
-            ]}
-          >
-            <Feather
-              name="lock"
-              size={scale(20)}
-              color="#221E25"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, password.length > 0 && styles.inputFilled]}
-              placeholder="Enter your Password"
-              placeholderTextColor="#a1a1aa"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={value => {
-                setPassword(value);
-                setError(null);
-              }}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
-            />
-            <TouchableOpacity
-              onPress={() => setShowPassword(previous => !previous)}
-              hitSlop={10}
-            >
-              <Feather
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={scale(18)}
-                color="#71717a"
+            <View style={styles.form}>
+              <InputField
+                containerStyle={styles.field}
+                label="Email ID"
+                placeholder="Enter your email"
+                value={email}
+                onChangeText={value => {
+                  setEmail(value);
+                  setError(null);
+                }}
+                iconName="email"
+                keyboardType="email-address"
+                textContentType="emailAddress"
               />
-            </TouchableOpacity>
+
+              <InputField
+                containerStyle={styles.passwordField}
+                label="Password"
+                placeholder="Enter your Password"
+                value={password}
+                onChangeText={value => {
+                  setPassword(value);
+                  setError(null);
+                }}
+                iconName="password"
+                secureTextEntry={!showPassword}
+                textContentType="password"
+                rightElement={
+                  <Pressable
+                    onPress={() => setShowPassword(previous => !previous)}
+                    hitSlop={10}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                  >
+                    <Feather
+                      name={showPassword ? 'eye-off' : 'eye'}
+                      size={scale(18)}
+                      color="#AAAAAA"
+                    />
+                  </Pressable>
+                }
+              />
+
+              <ForgotPasswordLink
+                onPress={() => navigation.navigate('ForgotPassword')}
+              />
+
+              {error ? <Text style={styles.error}>{error}</Text> : null}
+
+              <View style={styles.button}>
+                <GradientButton
+                  title="Sign In"
+                  onPress={handleSignIn}
+                  loading={isSubmitting}
+                />
+              </View>
+
+              <View style={styles.footer}>
+                <AuthFooter
+                  text="New User?"
+                  accent
+                  onPress={() => navigation.navigate('CreateAccount')}
+                />
+              </View>
+            </View>
           </View>
-          <TouchableOpacity
-            style={styles.forgotPasswordContainer}
-            onPress={() => {
-              Alert.alert(
-                'Forgot Password',
-                'Password recovery flow triggered.',
-              );
-            }}
-          >
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {/* Gradient Sign In Button */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.buttonWrapper}
-          onPress={handleSignIn}
-          disabled={isSubmitting}
-        >
-          <LinearGradient
-            colors={['#0265FB', '#B43AFC']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.signInButton}
-            pointerEvents="none"
-          >
-            {isSubmitting ? (
-              <Text style={styles.signInButtonText}>Signing in...</Text>
-            ) : (
-              <Text style={styles.signInButtonText}>Sign In</Text>
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
-
-        {/* New User Link - Navigates to CreateAccount screen */}
-        <TouchableOpacity
-          style={styles.newUserContainer}
-          activeOpacity={0.7}
-          onPress={() => navigation?.navigate('CreateAccount')}
-        >
-          <Text style={styles.newUserText}>New User?</Text>
-        </TouchableOpacity>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
+// Layout follows Figma "Android Large - 2": logo at y144, title 20px bold,
+// fields 312px wide (24px gutters), Sign In at y634, "New User?" 24 below.
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
-  innerContainer: {
+  flex: {
     flex: 1,
-    paddingHorizontal: scale(24),
-    justifyContent: 'center',
   },
-  logoContainer: {
+  scrollContent: {
+    flexGrow: 1,
     alignItems: 'center',
-    marginBottom: verticalScale(20),
+    paddingHorizontal: scale(24),
+    paddingTop: verticalScale(120),
+    paddingBottom: verticalScale(32),
+  },
+  content: {
+    width: '100%',
+    maxWidth: scale(360),
+  },
+  logo: {
+    alignItems: 'center',
+    marginBottom: verticalScale(40),
   },
   title: {
     fontSize: normalizeFont(20),
-    fontWeight: 'bold',
+    lineHeight: normalizeFont(24),
+    fontWeight: '700',
     color: '#221E25',
     textAlign: 'center',
-    marginBottom: verticalScale(6),
+  },
+  subtitleRow: {
+    marginTop: verticalScale(8),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   subtitle: {
     fontSize: normalizeFont(14),
     color: '#221E25',
-    textAlign: 'center',
-    marginBottom: verticalScale(32),
-    alignSelf: 'center',
   },
-  brandText: {
-    color: '#B43AFC',
-    fontWeight: '600',
-  },
-  inputGroup: {
-    marginBottom: verticalScale(18),
-    width: '100%',
-    alignSelf: 'center',
-  },
-  label: {
-    fontSize: normalizeFont(12),
-    color: '#221E25',
-    marginBottom: verticalScale(6),
-    fontWeight: '500',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#AAAAAA',
-    borderRadius: scale(12),
-    backgroundColor: '#ffffff',
-    paddingHorizontal: scale(14),
-    height: verticalScale(40),
-    width: '100%',
-  },
-
-  inputContainerFocused: {
-    borderColor: '#221E25',
-  },
-  inputIcon: {
-    marginRight: scale(10),
-  },
-  input: {
-    flex: 1,
-    fontSize: normalizeFont(15),
-    fontWeight: '400',
-    color: '#221E25',
-    paddingLeft: scale(4),
-    height: '100%',
-  },
-
-  inputFilled: {
-    fontWeight: '600',
-  },
-  forgotPasswordContainer: {
-    alignItems: 'flex-end',
-    marginTop: verticalScale(8),
-  },
-  forgotPasswordText: {
-    color: '#B43AFC',
-    fontSize: normalizeFont(12),
-    fontWeight: '500',
-  },
-  errorText: {
-    marginTop: verticalScale(8),
-    fontSize: normalizeFont(12),
-    color: '#D93025',
-    textAlign: 'center',
-  },
-  buttonWrapper: {
-    marginTop: verticalScale(24),
-    borderRadius: scale(30),
-    overflow: 'hidden',
-    shadowColor: '#0265FB',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 4,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  signInButton: {
-    height: verticalScale(48),
-    borderRadius: scale(30),
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  signInButtonText: {
-    color: '#ffffff',
-    fontSize: normalizeFont(16),
-    fontWeight: '600',
-  },
-  newUserContainer: {
-    alignItems: 'center',
-    marginTop: verticalScale(20),
-  },
-  newUserText: {
-    color: '#B43AFC',
+  brand: {
     fontSize: normalizeFont(14),
-    fontWeight: '700',
+    fontWeight: '600',
+  },
+  form: {
+    marginTop: verticalScale(24),
+  },
+  field: {
+    marginBottom: verticalScale(24),
+  },
+  passwordField: {
+    marginBottom: verticalScale(8),
+  },
+  error: {
+    marginTop: verticalScale(12),
+    fontSize: normalizeFont(12),
+    color: '#FF2A2A',
+    textAlign: 'center',
+  },
+  button: {
+    marginTop: verticalScale(62),
+  },
+  footer: {
+    marginTop: verticalScale(24),
   },
 });

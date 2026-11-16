@@ -14,11 +14,7 @@ import DashboardHeader from '../../components/home/DashboardHeader';
 import BottomNavigation, {
   TabName,
 } from '../../components/shared/BottomNavigation';
-import {
-  normalizeFont,
-  scale,
-  verticalScale,
-} from '../../utils/responsive';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
 
 const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
@@ -53,9 +49,9 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
       >
         {/* Header Title Section */}
         <View style={styles.headerTitleSection}>
-          <Text style={styles.mainTitle}>Need Help?</Text>
+          <Text style={styles.mainTitle}>How can we help you?</Text>
           <Text style={styles.subtitle}>
-            Get assistance with your Admetrics devices, installation and
+            Get assistance with your AdMetrics devices, installation and
             technical issues.
           </Text>
         </View>
@@ -64,7 +60,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         <View style={styles.card}>
           <View style={styles.cardTopRow}>
             <View style={styles.iconContainer}>
-              <Icon name="alert-circle" size={scale(20)} color="#1F2937" />
+              <Icon name="alert-circle" size={scale(24)} color="#221E25" />
             </View>
           </View>
           <Text style={styles.cardTitle}>Raise a Complaint</Text>
@@ -76,7 +72,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color="#2563EB"
+              color="#0265FB"
               style={styles.arrowIcon}
             />
           </Pressable>
@@ -86,7 +82,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         <View style={styles.card}>
           <View style={styles.cardTopRow}>
             <View style={styles.iconContainer}>
-              <Icon name="monitor" size={scale(20)} color="#1F2937" />
+              <Icon name="monitor" size={scale(24)} color="#221E25" />
             </View>
           </View>
           <Text style={styles.cardTitle}>Installation Request</Text>
@@ -98,7 +94,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color="#2563EB"
+              color="#0265FB"
               style={styles.arrowIcon}
             />
           </Pressable>
@@ -118,7 +114,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
             <View style={styles.requestInfo}>
               <Text style={styles.requestTitle}>TV Display Not Working</Text>
               <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1024 • 02 Nov 2026
+                Ticket #ADM1024 · 02 Nov 2026
               </Text>
             </View>
             <Text style={styles.statusInProgress}>In Progress</Text>
@@ -129,7 +125,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
             <View style={styles.requestInfo}>
               <Text style={styles.requestTitle}>New Device Installation</Text>
               <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1021 • 28 Oct 2026
+                Ticket #ADM1021 · 28 Oct 2026
               </Text>
             </View>
             <Text style={styles.statusResolved}>Resolved</Text>
@@ -140,7 +136,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
             <View style={styles.requestInfo}>
               <Text style={styles.requestTitle}>TV Display Not Working</Text>
               <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1024 • 02 Nov 2026
+                Ticket #ADM1024 · 02 Nov 2026
               </Text>
             </View>
             <Text style={styles.statusResolved}>Resolved</Text>
@@ -149,12 +145,6 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
 
         {/* 4. Immediate Assistance Dark Banner Card */}
         <View style={styles.assistanceCard}>
-          <Icon
-            name="headphones"
-            size={scale(24)}
-            color="#FFFFFF"
-            style={styles.assistanceIcon}
-          />
           <Text style={styles.assistanceTitle}>Need immediate assistance?</Text>
           <Text style={styles.assistanceDescription}>
             Contact our support team for additional help.
@@ -183,174 +173,147 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F5F3EF',
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: scale(16),
-    paddingTop: verticalScale(12),
-    paddingBottom: verticalScale(20),
-    alignItems: 'center',
+    paddingTop: verticalScale(24),
+    paddingBottom: verticalScale(24),
   },
   headerTitleSection: {
-    width: '100%',
-    maxWidth: scale(345),
     marginBottom: verticalScale(16),
   },
   mainTitle: {
-    fontSize: normalizeFont(18),
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: verticalScale(4),
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
+    color: '#221E25',
+    marginBottom: scale(8),
   },
   subtitle: {
-    fontSize: normalizeFont(13),
-    color: '#4B5563',
-    lineHeight: normalizeFont(18),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(15),
+    color: '#221E25',
   },
+  // Figma: white card, 1px #DDD border, 6px radius, 16px padding.
   card: {
-    width: '100%',
-    maxWidth: scale(345),
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(12),
+    borderRadius: scale(6),
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#DDDDDD',
     padding: scale(16),
-    marginBottom: verticalScale(12),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: verticalScale(16),
   },
   cardTopRow: {
-    marginBottom: verticalScale(10),
+    marginBottom: scale(16),
   },
   iconContainer: {
-    width: scale(32),
-    height: scale(32),
-    borderRadius: scale(8),
-    backgroundColor: '#F3F4F6',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: scale(24),
+    height: scale(24),
   },
   cardTitle: {
-    fontSize: normalizeFont(15),
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: verticalScale(4),
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
+    color: '#221E25',
+    marginBottom: scale(8),
   },
   cardDescription: {
-    fontSize: normalizeFont(13),
-    color: '#6B7280',
-    marginBottom: verticalScale(12),
-    lineHeight: normalizeFont(18),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(15),
+    color: '#221E25',
+    marginBottom: scale(16),
   },
   actionLinkRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   actionLinkText: {
-    fontSize: normalizeFont(13),
-    fontWeight: '600',
-    color: '#2563EB',
-    marginRight: scale(4),
+    fontSize: normalizeFont(14),
+    fontWeight: '700',
+    color: '#0265FB',
+    marginRight: scale(8),
   },
   arrowIcon: {
-    marginTop: verticalScale(1),
+    marginTop: 1,
   },
   recentRequestsSection: {
-    width: '100%',
-    maxWidth: scale(345),
+    marginTop: verticalScale(8),
     marginBottom: verticalScale(16),
   },
   recentRequestsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: verticalScale(8),
+    marginBottom: scale(16),
   },
   sectionHeading: {
-    fontSize: normalizeFont(15),
-    fontWeight: '700',
-    color: '#1F2937',
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
+    color: '#221E25',
   },
   viewAllText: {
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(12),
     fontWeight: '600',
-    color: '#2563EB',
+    color: '#0265FB',
+    textDecorationLine: 'underline',
   },
   requestItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: verticalScale(10),
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    alignItems: 'flex-start',
+    marginBottom: scale(18),
   },
   requestInfo: {
     flex: 1,
     paddingRight: scale(8),
   },
   requestTitle: {
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(12),
     fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: verticalScale(2),
+    color: '#221E25',
+    marginBottom: scale(8),
   },
   requestTicketMeta: {
-    fontSize: normalizeFont(11),
-    color: '#6B7280',
+    fontSize: normalizeFont(12),
+    color: '#221E25',
   },
   statusInProgress: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#D97706',
+    color: '#F25C5C',
   },
   statusResolved: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#16A34A',
+    color: '#14AB00',
   },
+  // Figma: dark slate banner, 12px radius.
   assistanceCard: {
-    width: '100%',
-    maxWidth: scale(345),
-    backgroundColor: '#475569',
-    borderRadius: scale(14),
-    padding: scale(18),
+    backgroundColor: '#4C5263',
+    borderRadius: scale(12),
+    padding: scale(16),
     marginBottom: verticalScale(12),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  assistanceIcon: {
-    marginBottom: verticalScale(10),
   },
   assistanceTitle: {
-    fontSize: normalizeFont(15),
-    fontWeight: '700',
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: verticalScale(4),
+    marginBottom: scale(8),
   },
   assistanceDescription: {
     fontSize: normalizeFont(12),
-    color: '#CBD5E1',
-    marginBottom: verticalScale(14),
-    lineHeight: normalizeFont(16),
+    color: '#C9CCD3',
+    marginBottom: scale(16),
   },
   assistanceButtonRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   assistanceButtonText: {
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: '700',
     color: '#FFFFFF',
-    marginRight: scale(6),
+    marginRight: scale(8),
   },
 });
 

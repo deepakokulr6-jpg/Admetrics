@@ -1,148 +1,134 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import TvDisplayCard from './TvDisplayCard';
-import Icon from 'react-native-vector-icons/Feather';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
   onViewAll?: () => void;
 };
 
-const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => {
-  return (
-    <View style={styles.sectionContainer}>
-      <View style={styles.headerRow}>
-        <Text style={styles.sectionTitle}>Your TV displays</Text>
+const STAR =
+  'M12 2l2.9 6.26 6.85.66-5.16 4.55 1.52 6.71L12 16.77l-6.11 3.41 1.52-6.71L2.25 8.92l6.85-.66z';
 
-        <Pressable onPress={onViewAll} hitSlop={8}>
-          <Text style={styles.viewAllText}>View All</Text>
-        </Pressable>
+const Star: React.FC<{ size: number; lift?: number }> = ({
+  size,
+  lift = 0,
+}) => (
+  <Svg
+    width={scale(size)}
+    height={scale(size)}
+    viewBox="0 0 24 24"
+    style={{ marginBottom: scale(lift) }}
+  >
+    <Path d={STAR} fill="#F5BE0B" />
+  </Svg>
+);
+
+// Figma (Total Revenue): "Your TV displays" 14 semibold + underlined "View All",
+// display cards, then the "Top performing display" card with stars and a bar.
+const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => (
+  <View style={styles.section}>
+    <View style={styles.headerRow}>
+      <Text style={styles.title}>Your TV displays</Text>
+      <Pressable onPress={onViewAll} hitSlop={8} accessibilityRole="button">
+        <Text style={styles.viewAll}>View All</Text>
+      </Pressable>
+    </View>
+
+    <TvDisplayCard
+      title="Reception TV"
+      status="Online"
+      displayId="Display 01"
+      uptime="10 hours 56 minutes"
+      revenue="₹18,250"
+    />
+    <TvDisplayCard
+      title="Waiting Hall TV"
+      status="Online"
+      displayId="Display 02"
+      uptime="10 hours 39 minutes"
+      revenue="₹14,800"
+    />
+    <TvDisplayCard
+      title="Pharmacy TV"
+      status="Offline"
+      displayId="Display 03"
+      uptime="07 hours 39 minutes"
+      revenue="₹6,000"
+    />
+
+    <View style={styles.topCard}>
+      <View style={styles.stars}>
+        <Star size={14} />
+        <Star size={22} lift={6} />
+        <Star size={14} />
       </View>
-
-      <TvDisplayCard
-        title="Reception TV"
-        status="Online"
-        displayId="Display 01"
-        uptime="10 hours 56 minutes"
-        revenue="₹18,250"
-      />
-
-      <TvDisplayCard
-        title="Waiting Hall TV"
-        status="Online"
-        displayId="Display 02"
-        uptime="10 hours 39 minutes"
-        revenue="₹14,800"
-      />
-
-      <TvDisplayCard
-        title="Pharmacy TV"
-        status="Offline"
-        displayId="Display 03"
-        uptime="07 hours 39 minutes"
-        revenue="₹6,000"
-      />
-
-      <View style={styles.topPerformingCard}>
-        <View style={styles.starsRow}>
-          <Icon name="star" size={scale(16)} color="#F59E0B" />
-          <Icon name="star" size={scale(16)} color="#F59E0B" />
-          <Icon name="star" size={scale(16)} color="#F59E0B" />
-        </View>
-
-        <Text style={styles.topPerformingTitle}>Top performing display</Text>
-
-        <Text style={styles.topPerformingSubtitle}>
-          Reception TV generates the highest revenue
-        </Text>
-
-        <View style={styles.progressBarBg}>
-          <View style={styles.progressBarFill} />
-        </View>
+      <Text style={styles.topTitle}>Top performing display</Text>
+      <Text style={styles.topSubtitle}>
+        Reception TV generates the highest revenue
+      </Text>
+      <View style={styles.track}>
+        <View style={[styles.fill, { width: '34%' }]} />
       </View>
     </View>
-  );
-};
+  </View>
+);
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: verticalScale(20),
-    width: '100%',
-    paddingBottom: verticalScale(16),
+  section: {
+    marginTop: verticalScale(24),
   },
-
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: verticalScale(12),
-    width: '100%',
-    maxWidth: scale(390),
-    alignSelf: 'center',
-    paddingHorizontal: scale(4),
+    marginBottom: verticalScale(16),
   },
-
-  sectionTitle: {
-    fontSize: normalizeFont(16),
-    fontWeight: '700',
-    color: '#1F2937',
-  },
-
-  viewAllText: {
-    fontSize: normalizeFont(13),
-    fontWeight: '600',
-    color: '#2563EB',
-  },
-
-  topPerformingCard: {
-    width: '100%',
-    maxWidth: scale(390),
-    alignSelf: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: scale(12),
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: scale(16),
-    marginTop: verticalScale(4),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-
-  starsRow: {
-    flexDirection: 'row',
-    gap: scale(4),
-    marginBottom: verticalScale(6),
-  },
-
-  topPerformingTitle: {
+  title: {
     fontSize: normalizeFont(14),
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: verticalScale(2),
+    fontWeight: '600',
+    color: '#221E25',
   },
-
-  topPerformingSubtitle: {
+  viewAll: {
     fontSize: normalizeFont(12),
-    color: '#6B7280',
-    marginBottom: verticalScale(12),
+    fontWeight: '600',
+    color: '#0265FB',
+    textDecorationLine: 'underline',
   },
-
-  progressBarBg: {
-    width: '100%',
-    height: verticalScale(4),
-    backgroundColor: '#F3F4F6',
-    borderRadius: scale(2),
+  topCard: {
+    marginTop: verticalScale(16),
+    backgroundColor: '#FFFFFF',
+    borderRadius: scale(8),
+    paddingHorizontal: scale(16),
+    paddingTop: scale(14),
+    paddingBottom: scale(18),
+  },
+  stars: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: scale(4),
+  },
+  topTitle: {
+    fontSize: normalizeFont(14),
+    fontWeight: '600',
+    color: '#221E25',
+  },
+  topSubtitle: {
+    marginTop: scale(6),
+    fontSize: normalizeFont(12),
+    color: '#565656',
+    marginBottom: scale(10),
+  },
+  track: {
+    height: 2,
+    backgroundColor: '#DDDDDD',
+    borderRadius: 1,
     overflow: 'hidden',
   },
-
-  progressBarFill: {
-    width: '75%',
+  fill: {
     height: '100%',
-    backgroundColor: '#16A34A',
-    borderRadius: scale(2),
+    backgroundColor: '#14AB00',
   },
 });
 

@@ -114,7 +114,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         >
           <View style={styles.content}>
             <View style={styles.logo}>
-              <AppLogo width={scale(160)} />
+              <AppLogo width={scale(200)} />
             </View>
 
             <AuthHeader
@@ -128,12 +128,9 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
               }
             />
 
-            <Text style={styles.emailHint} numberOfLines={1}>
-              {email}
-            </Text>
-
             <View style={styles.form}>
               <InputField
+                containerStyle={styles.field}
                 label="Create Password"
                 placeholder="Enter your Password"
                 value={password}
@@ -227,10 +224,11 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: scale(24),
-    paddingVertical: verticalScale(32),
+    // Figma: logo top at y144 of 800 (status bar ≈ 24).
+    paddingTop: verticalScale(120),
+    paddingBottom: verticalScale(32),
   },
 
   content: {
@@ -241,20 +239,15 @@ const styles = StyleSheet.create({
 
   logo: {
     alignItems: 'center',
+    marginBottom: verticalScale(40),
+  },
+
+  field: {
     marginBottom: verticalScale(24),
   },
 
-  emailHint: {
-    marginTop: verticalScale(8),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontWeight: '600',
-    color: '#7B35FF',
-    textAlign: 'center',
-  },
-
   form: {
-    marginTop: verticalScale(20),
+    marginTop: verticalScale(24),
   },
 
   lastField: {
@@ -266,12 +259,12 @@ const styles = StyleSheet.create({
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
     fontWeight: '500',
-    color: '#D93025',
+    color: '#FF2A2A',
     textAlign: 'center',
   },
 
   button: {
-    marginTop: verticalScale(28),
+    marginTop: verticalScale(85),
   },
 });
 

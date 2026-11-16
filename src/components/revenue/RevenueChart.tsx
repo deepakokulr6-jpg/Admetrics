@@ -1,6 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Svg, { Path, Circle, Line } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  Line,
+  LinearGradient,
+  Path,
+  Stop,
+} from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
@@ -64,6 +71,12 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
             width="100%"
             viewBox={`0 0 ${chartWidth} ${chartHeight}`}
           >
+            <Defs>
+              <LinearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+                <Stop offset="0" stopColor="#0265FB" />
+                <Stop offset="1" stopColor="#B43AFC" />
+              </LinearGradient>
+            </Defs>
             {[1, 2, 3, 4, 5, 6].map(value => {
               const y = top + plotHeight - (value / 6) * plotHeight;
 
@@ -74,7 +87,7 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
                   y1={y}
                   x2={chartWidth}
                   y2={y}
-                  stroke="#F3F4F6"
+                  stroke="#EEEEEE"
                   strokeWidth={1}
                 />
               );
@@ -83,8 +96,8 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
             <Path
               d={pathData}
               fill="none"
-              stroke="#6366F1"
-              strokeWidth={2.5}
+              stroke="url(#line)"
+              strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
             />
@@ -94,10 +107,8 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
                 key={index}
                 cx={point.x}
                 cy={point.y}
-                r={4.5}
-                fill="#1E1B4B"
-                stroke="#FFFFFF"
-                strokeWidth={2}
+                r={5}
+                fill="#111111"
               />
             ))}
           </Svg>
@@ -118,16 +129,9 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    minHeight: verticalScale(305),
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(16),
+    borderRadius: scale(12),
     padding: scale(16),
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    marginTop: verticalScale(12),
   },
 
   chartContainer: {
@@ -151,7 +155,7 @@ const styles = StyleSheet.create({
   axisText: {
     fontSize: normalizeFont(10),
     fontWeight: '500',
-    color: '#000000',
+    color: '#221E25',
     width: scale(24),
   },
 
@@ -170,8 +174,8 @@ const styles = StyleSheet.create({
 
   xAxisText: {
     fontSize: normalizeFont(10),
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: '600',
+    color: '#221E25',
     textAlign: 'center',
   },
 });

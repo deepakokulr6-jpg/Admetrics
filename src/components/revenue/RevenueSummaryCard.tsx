@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import { normalizeFont, scale } from '../../utils/responsive';
 
 type Props = {
   totalRevenue?: string;
@@ -19,7 +19,7 @@ const RevenueSummaryCard: React.FC<Props> = ({
 }) => {
   return (
     <LinearGradient
-      colors={['#1A66FF', '#9E24FF']}
+      colors={['#0265FB', '#B43AFC']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.card}
@@ -75,11 +75,8 @@ const RevenueSummaryCard: React.FC<Props> = ({
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    minHeight: verticalScale(207),
     borderRadius: scale(12),
-    padding: scale(18),
-    justifyContent: 'space-between',
-    marginTop: verticalScale(4),
+    padding: scale(16),
   },
 
   topRow: {
@@ -93,24 +90,21 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontSize: normalizeFont(13),
-    fontWeight: '500',
-    marginBottom: verticalScale(4),
+    color: '#FFFFFF',
+    fontSize: normalizeFont(12),
+    marginTop: scale(6),
+    marginBottom: scale(8),
   },
 
   totalValue: {
     color: '#FFFFFF',
-    fontSize: normalizeFont(32),
-    fontWeight: '800',
-    letterSpacing: -0.5,
+    fontSize: normalizeFont(36),
+    fontWeight: '700',
   },
 
   walletContainer: {
     width: scale(32),
     height: scale(32),
-    borderRadius: scale(8),
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -118,43 +112,42 @@ const styles = StyleSheet.create({
   growthRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: verticalScale(-2),
+    marginTop: scale(10),
   },
 
   greenBadge: {
-    width: scale(49),
-    height: verticalScale(20),
+    paddingHorizontal: scale(5),
+    height: scale(18),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#14AB00',
-    borderRadius: scale(4),
+    borderRadius: scale(2),
     marginRight: scale(6),
   },
 
   growthArrow: {
     color: '#FFFFFF',
-    fontSize: normalizeFont(10),
-    fontWeight: '900',
-    marginRight: scale(2),
+    fontSize: normalizeFont(9),
+    marginRight: scale(3),
   },
 
   growthText: {
     color: '#FFFFFF',
-    fontSize: normalizeFont(11),
-    fontWeight: '700',
+    fontSize: normalizeFont(10),
+    fontWeight: '500',
   },
 
   growthSubtext: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontSize: normalizeFont(12),
-    fontWeight: '400',
+    color: '#FFFFFF',
+    fontSize: normalizeFont(10),
   },
 
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginVertical: verticalScale(2),
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    marginTop: scale(14),
+    marginBottom: scale(12),
   },
 
   bottomRow: {
@@ -173,10 +166,9 @@ const styles = StyleSheet.create({
   },
 
   subLabel: {
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: '#FFFFFF',
     fontSize: normalizeFont(12),
-    fontWeight: '500',
-    marginBottom: verticalScale(4),
+    marginBottom: scale(8),
   },
 
   subValue: {

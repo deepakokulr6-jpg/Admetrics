@@ -126,7 +126,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
         >
           <View style={styles.content}>
             <View style={styles.logo}>
-              <AppLogo width={scale(160)} />
+              <AppLogo width={scale(200)} />
             </View>
 
             <AuthHeader
@@ -136,6 +136,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
 
             <View style={styles.form}>
               <InputField
+                containerStyle={styles.field}
                 label="Email ID"
                 placeholder="Enter your email"
                 value={email}
@@ -158,7 +159,9 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
               />
 
               <View style={styles.otpHeader}>
-                <Text style={styles.otpLabel}>OTP</Text>
+                <Text style={[styles.otpLabel, !otpSent && styles.otpLabelDisabled]}>
+                  OTP
+                </Text>
 
                 {otpSent ? (
                   <Pressable
@@ -172,7 +175,11 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
                 ) : null}
               </View>
 
-              <OtpInput value={otp} onChangeText={setOtp} />
+              <OtpInput
+                value={otp}
+                onChangeText={setOtp}
+                disabled={!otpSent}
+              />
 
               {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -211,10 +218,11 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: scale(24),
-    paddingVertical: verticalScale(32),
+    // Figma: logo top at y144 of 800 (status bar ≈ 24).
+    paddingTop: verticalScale(120),
+    paddingBottom: verticalScale(32),
   },
 
   content: {
@@ -225,11 +233,15 @@ const styles = StyleSheet.create({
 
   logo: {
     alignItems: 'center',
+    marginBottom: verticalScale(40),
+  },
+
+  field: {
     marginBottom: verticalScale(24),
   },
 
   form: {
-    marginTop: verticalScale(28),
+    marginTop: verticalScale(24),
   },
 
   otpHeader: {
@@ -245,11 +257,15 @@ const styles = StyleSheet.create({
     color: '#221E25',
   },
 
+  otpLabelDisabled: {
+    color: '#DDDDDD',
+  },
+
   resend: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
     fontWeight: '600',
-    color: '#7B35FF',
+    color: '#0265FB',
   },
 
   error: {
@@ -257,12 +273,12 @@ const styles = StyleSheet.create({
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
     fontWeight: '500',
-    color: '#D93025',
+    color: '#FF2A2A',
     textAlign: 'center',
   },
 
   button: {
-    marginTop: verticalScale(28),
+    marginTop: verticalScale(85),
   },
 
   footer: {

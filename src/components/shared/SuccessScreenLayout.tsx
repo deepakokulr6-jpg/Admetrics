@@ -1,13 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Image, StyleSheet, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import AppLogo from './AppLogo';
+import AppText from './AppText';
 import GradientButton from './GradientButton';
-import SuccessMessage from './SuccessMessage';
-import { scale, verticalScale } from '../../utils/responsive';
+import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type SuccessScreenLayoutProps = {
   title: string;
@@ -16,6 +13,9 @@ type SuccessScreenLayoutProps = {
   onButtonPress: () => void;
 };
 
+// Figma (Frame 37 / Frame 38): a white sheet, 682px tall on an 800px frame,
+// with 40px top corners over the brand gradient. Check 80px, title 18px bold
+// #121212, two-line 12px #444 description, standard 160x36 button.
 const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
   title,
   description,
@@ -23,79 +23,65 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
   onButtonPress,
 }) => {
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" />
+    <LinearGradient
+      colors={['#0265FB', '#B43AFC']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.backdrop}
+    >
+      <StatusBar barStyle="light-content" />
 
-      <ScrollView
-        style={styles.flex}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.content}>
-          <View style={styles.logo}>
-            <AppLogo width={scale(160)} />
-          </View>
+      <View style={styles.sheet}>
+        <Image
+          source={require('../../../assets/images/figma/success_check.png')}
+          style={styles.check}
+          resizeMode="contain"
+        />
 
-          <LinearGradient
-            colors={['#0265FB', '#B43AFC']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.iconCircle}
-          >
-            <Ionicons name="checkmark-sharp" size={scale(34)} color="#FFFFFF" />
-          </LinearGradient>
+        <AppText variant="headline" color="textDark" align="center">
+          {title}
+        </AppText>
+        <AppText
+          variant="label"
+          color="bodyText"
+          align="center"
+          style={styles.description}
+        >
+          {description}
+        </AppText>
 
-          <SuccessMessage title={title} description={description} />
-
-          <View style={styles.button}>
-            <GradientButton title={buttonText} onPress={onButtonPress} />
-          </View>
+        <View style={styles.button}>
+          <GradientButton title={buttonText} onPress={onButtonPress} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  backdrop: {
     flex: 1,
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    height: '85.25%', // 682 / 800
     backgroundColor: '#FFFFFF',
-  },
-
-  flex: {
-    flex: 1,
-  },
-
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
+    borderTopLeftRadius: scale(40),
+    borderTopRightRadius: scale(40),
     alignItems: 'center',
-    paddingHorizontal: scale(24),
-    paddingVertical: verticalScale(32),
+    paddingTop: verticalScale(196),
+    paddingHorizontal: scale(16),
   },
-
-  content: {
-    width: '100%',
-    maxWidth: scale(360),
-    alignItems: 'center',
+  check: {
+    width: scale(80),
+    height: scale(80),
   },
-
-  logo: {
-    alignItems: 'center',
-    marginBottom: verticalScale(32),
+  description: {
+    marginTop: verticalScale(8),
+    lineHeight: normalizeFont(18),
   },
-
-  iconCircle: {
-    width: scale(72),
-    height: scale(72),
-    borderRadius: scale(36),
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: verticalScale(20),
-  },
-
   button: {
-    marginTop: verticalScale(36),
+    marginTop: verticalScale(18),
   },
 });
 

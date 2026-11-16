@@ -1,0 +1,16 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="mobile-svgrepo-com 1">
+<path id="Vector" d="M5.99975 6.99995C5.99975 5.11433 5.99975 4.17152 6.58554 3.58574C7.17132 2.99995 8.11413 2.99995 9.99975 2.99995H11.9998H13.9998C15.8854 2.99995 16.8282 2.99995 17.414 3.58574C17.9998 4.17152 17.9998 5.11433 17.9998 6.99995V11.9999V16.9999C17.9998 18.8855 17.9998 19.8283 17.414 20.4141C16.8282 20.9999 15.8854 20.9999 13.9998 20.9999H11.9998H9.99975C8.11413 20.9999 7.17132 20.9999 6.58554 20.4141C5.99975 19.8283 5.99975 18.8855 5.99975 16.9999V11.9999V6.99995Z" stroke-width="1.6" stroke-linejoin="round" stroke="url(#paint0_linear_0_16)"/>
+<path id="Vector_2" d="M11.4996 17.9998H12.4996" stroke-width="2" stroke-linecap="round" stroke="url(#paint1_linear_0_16)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_16" x1="4.26225" y1="20.9999" x2="17.7332" y2="20.8927" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0265FB"/>
+<stop offset="1" stop-color="#B43AFC"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_16" x1="11.3548" y1="18.9998" x2="12.4773" y2="18.9864" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0265FB"/>
+<stop offset="1" stop-color="#B43AFC"/>
+</linearGradient>
+</defs>
+</svg>

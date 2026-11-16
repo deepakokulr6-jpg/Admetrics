@@ -1,8 +1,7 @@
-//====================================================updated code for TV display card(1)=========================================================//
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import Svg, { Circle, Rect } from 'react-native-svg';
+import { normalizeFont, scale } from '../../utils/responsive';
 
 type Props = {
   title: string;
@@ -12,6 +11,35 @@ type Props = {
   revenue: string;
 };
 
+const GREEN = '#14AB00';
+const RED = '#FF2A2A';
+
+// TV outline from the Figma icon, drawn at the size used on this card.
+const TvIcon: React.FC<{ color: string }> = ({ color }) => (
+  <Svg width={scale(40)} height={scale(33)} viewBox="0 0 23.7 19.55">
+    <Rect
+      x={0.6}
+      y={0.6}
+      width={22.5}
+      height={16.575}
+      rx={1.4}
+      stroke={color}
+      strokeWidth={1.2}
+      fill="none"
+    />
+    <Circle
+      cx={11.85}
+      cy={17.18}
+      r={1.77}
+      fill="#FFFFFF"
+      stroke={color}
+      strokeWidth={1.2}
+    />
+  </Svg>
+);
+
+// Figma (Total Revenue): white card, 76px tinted icon tile, title 12 semibold,
+// "Online · Display 01" 12, uptime 12 #565656, revenue 16 bold on the right.
 const TvDisplayCard: React.FC<Props> = ({
   title,
   status,
@@ -22,132 +50,84 @@ const TvDisplayCard: React.FC<Props> = ({
   const isOnline = status === 'Online';
 
   return (
-    <View style={styles.cardContainer}>
-      {/* Left Icon Box */}
+    <View style={styles.card}>
       <View
-        style={[
-          styles.iconBox,
-          isOnline ? styles.onlineIconBox : styles.offlineIconBox,
-        ]}
+        style={[styles.tile, isOnline ? styles.tileOnline : styles.tileOffline]}
       >
-        <Icon
-          name="monitor"
-          size={scale(18)}
-          color={isOnline ? '#16A34A' : '#DC2626'}
-        />
+        <TvIcon color={isOnline ? GREEN : RED} />
       </View>
 
-      {/* Middle Text Details */}
-      <View style={styles.detailsContainer}>
-        <Text style={styles.titleText} numberOfLines={1}>
+      <View style={styles.details}>
+        <Text style={styles.title} numberOfLines={1}>
           {title}
         </Text>
-        <View style={styles.subtextRow}>
-          <Text
-            style={[
-              styles.statusText,
-              isOnline ? styles.onlineText : styles.offlineText,
-            ]}
-          >
+        <Text style={styles.meta} numberOfLines={1}>
+          <Text style={isOnline ? styles.online : styles.offline}>
             {status}
           </Text>
-          <Text style={styles.dotText}> • </Text>
-          <Text style={styles.displayIdText}>{displayId}</Text>
-        </View>
-        <Text style={styles.uptimeText} numberOfLines={1}>
+          {` · ${displayId}`}
+        </Text>
+        <Text style={styles.meta} numberOfLines={1}>
           {uptime}
         </Text>
       </View>
 
-      {/* Right Revenue Text */}
-      <View style={styles.rightContainer}>
-        <Text style={styles.revenueText}>{revenue}</Text>
-      </View>
+      <Text style={styles.revenue}>{revenue}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    width: '100%',
-    maxWidth: scale(390),
-    height: verticalScale(80),
-    alignSelf: 'center',
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(12),
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: scale(12),
-    paddingVertical: verticalScale(10),
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: verticalScale(10),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+    borderRadius: scale(8),
+    padding: scale(10),
+    marginBottom: scale(16),
   },
-  iconBox: {
-    width: scale(40),
-    height: scale(40),
-    borderRadius: scale(10),
+  tile: {
+    width: scale(76),
+    height: scale(76),
+    borderRadius: scale(6),
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: scale(10),
+    marginRight: scale(12),
   },
-  onlineIconBox: {
-    backgroundColor: '#DCFCE7',
+  tileOnline: {
+    backgroundColor: '#DDEFDA',
   },
-  offlineIconBox: {
-    backgroundColor: '#FEE2E2',
+  tileOffline: {
+    backgroundColor: '#F4DBDB',
   },
-  detailsContainer: {
+  details: {
     flex: 1,
-    justifyContent: 'center',
   },
-  titleText: {
-    fontSize: normalizeFont(13),
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: verticalScale(2),
-  },
-  subtextRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: verticalScale(2),
-  },
-  statusText: {
-    fontSize: normalizeFont(11),
+  title: {
+    fontSize: normalizeFont(12),
     fontWeight: '600',
+    color: '#221E25',
+    marginBottom: scale(8),
   },
-  onlineText: {
-    color: '#16A34A',
+  meta: {
+    fontSize: normalizeFont(12),
+    color: '#565656',
+    marginBottom: scale(4),
   },
-  offlineText: {
-    color: '#DC2626',
+  online: {
+    fontWeight: '500',
+    color: GREEN,
   },
-  dotText: {
-    color: '#9CA3AF',
-    fontSize: normalizeFont(10),
+  offline: {
+    fontWeight: '500',
+    color: RED,
   },
-  displayIdText: {
-    fontSize: normalizeFont(11),
-    color: '#6B7280',
-  },
-  uptimeText: {
-    fontSize: normalizeFont(10),
-    color: '#9CA3AF',
-  },
-  rightContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingLeft: scale(8),
-  },
-  revenueText: {
-    fontSize: normalizeFont(14),
+  revenue: {
+    marginLeft: scale(8),
+    marginRight: scale(14),
+    fontSize: normalizeFont(16),
     fontWeight: '700',
-    color: '#1F2937',
+    color: '#221E25',
   },
 });
 

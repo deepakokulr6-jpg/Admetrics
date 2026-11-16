@@ -1,17 +1,20 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import { normalizeFont, scale } from '../../utils/responsive';
 
 type OtpInputProps = {
   value: string;
   onChangeText: (otp: string) => void;
   length?: number;
+  // Figma: before the OTP is sent the boxes are greyed out with "*".
+  disabled?: boolean;
 };
 
 const OtpInput: React.FC<OtpInputProps> = ({
   value,
   onChangeText,
   length = 6,
+  disabled = false,
 }) => {
   const inputRefs = useRef<any[]>([]);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -68,7 +71,11 @@ const OtpInput: React.FC<OtpInputProps> = ({
             styles.otpBox,
             focusedIndex === index && styles.otpBoxFocused,
             value[index] ? styles.otpBoxFilled : null,
+            disabled && styles.otpBoxDisabled,
           ]}
+          editable={!disabled}
+          placeholder={disabled ? '*' : undefined}
+          placeholderTextColor="#DDDDDD"
           value={value[index] || ''}
           onChangeText={text => handleChange(text, index)}
           onKeyPress={event => handleKeyPress(event, index)}
@@ -93,15 +100,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: scale(8),
   },
 
   otpBox: {
-    flex: 1,
-    maxWidth: scale(40),
-    height: verticalScale(40),
+    width: scale(40),
+    height: scale(40),
     borderWidth: 1,
-    borderColor: '#DDDDDD',
+    borderColor: '#AAAAAA',
     borderRadius: scale(6),
     backgroundColor: '#FFFFFF',
     padding: 0,
@@ -115,6 +120,10 @@ const styles = StyleSheet.create({
   },
 
   otpBoxFilled: {
+    fontWeight: '600',
+  },
+  otpBoxDisabled: {
+    borderColor: '#DDDDDD',
     fontWeight: '600',
   },
 });

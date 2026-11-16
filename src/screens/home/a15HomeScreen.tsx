@@ -1,11 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  StatusBar,
-} from 'react-native';
+import { View, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,15 +12,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getClinicRegistrations } from '../../services/clinicService';
 import { ClinicRegistrationRecord } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
-import {
-  normalizeFont,
-  verticalScale,
-  wp,
-} from '../../utils/responsive';
+import { scale, verticalScale } from '../../utils/responsive';
 
-const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({
-  navigation,
-}) => {
+const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState<TabName>('Clinics');
   const [clinics, setClinics] = useState<ClinicRegistrationRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,25 +83,27 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({
     }
   };
 
+  const hasClinics = clinics.length > 0;
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
-      <View style={styles.screen}>
+      <View style={[styles.screen, !hasClinics && styles.screenEmpty]}>
         <HomeHeader name={user?.name ?? 'Ramkumar'} />
 
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={[
             styles.content,
-            { paddingHorizontal: wp(4) },
+            { paddingHorizontal: scale(16) },
           ]}
           showsVerticalScrollIndicator={false}
         >
-          {!isLoading && (
-            <View style={styles.clinicList}>
-              {clinics.length > 0 ? (
-                clinics.map(record => (
+          {hasClinics ? (
+            <>
+              <View style={styles.clinicList}>
+                {clinics.map(record => (
                   <ClinicCard
                     key={record.id}
                     status="Waiting for Approval"
@@ -125,47 +115,29 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({
                     photoOneUri={record.photos.entrance}
                     photoTwoUri={record.photos.reception}
                   />
-                ))
-              ) : (
-                <>
-                  <ClinicCard
-                    status="Waiting for Approval"
-                    clinicName="Xwell Clinic"
-                    contactName="Shivan"
-                    designation="Doctor"
-                    phone="9876543210"
-                    email="shivan@gmail.com"
-                    photoOneColor="#B8C8D4"
-                    photoTwoColor="#C8C3B8"
-                  />
+                ))}
+              </View>
 
-                  <ClinicCard
-                    displayCount={3}
-                    clinicName="Sai Shree Clinic"
-                    contactName="Shivan"
-                    designation="Doctor"
-                    phone="9876543210"
-                    email="shivan@gmail.com"
-                    photoOneColor="#D2B7AA"
-                    photoTwoColor="#C4D0C8"
-                  />
-                </>
-              )}
+              <View style={styles.registerContainer}>
+                <RegisterClinicButton
+                  onPress={() => navigation.navigate('RegisterClinic')}
+                />
+              </View>
+            </>
+          ) : !isLoading ? (
+            // Figma (Android Large - 6): no clinics yet → white page with only
+            // the centred "Register Your Clinic" button and no bottom nav.
+            <View style={styles.emptyState}>
+              <RegisterClinicButton
+                onPress={() => navigation.navigate('RegisterClinic')}
+              />
             </View>
-          )}
-
-          <View style={styles.registerContainer}>
-            <RegisterClinicButton
-              onPress={() => navigation.navigate('RegisterClinic')}
-            />
-          </View>
-
-          {activeTab !== 'Clinics' && (
-            <Text style={styles.tabMessage}>{activeTab} screen</Text>
-          )}
+          ) : null}
         </ScrollView>
 
-        <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
+        {hasClinics ? (
+          <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
+        ) : null}
       </View>
     </SafeAreaView>
   );
@@ -178,30 +150,31 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 1,
-    backgroundColor: '#F5F4F2',
+    backgroundColor: '#F5F3EF',
+  },
+  screenEmpty: {
+    backgroundColor: '#FFFFFF',
   },
   scrollView: {
     flex: 1,
   },
-  content: {
-    flexGrow: 1,
-    paddingTop: verticalScale(14),
-    paddingBottom: verticalScale(20),
-  },
-  clinicList: {
-    gap: verticalScale(14),
-  },
-  registerContainer: {
+  emptyState: {
     flex: 1,
-    minHeight: verticalScale(220),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tabMessage: {
-    textAlign: 'center',
-    color: '#666666',
-    fontSize: normalizeFont(13),
-    paddingVertical: verticalScale(15),
+  content: {
+    flexGrow: 1,
+    paddingTop: verticalScale(24),
+    paddingBottom: verticalScale(20),
+  },
+  clinicList: {
+    gap: verticalScale(16),
+  },
+  // Figma: the register button sits 80px under the last card.
+  registerContainer: {
+    marginTop: verticalScale(80),
+    alignItems: 'center',
   },
 });
 

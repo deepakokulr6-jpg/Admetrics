@@ -7,7 +7,7 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import Svg, { Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 
 type Props = {
@@ -67,7 +67,9 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
         onPress={handleOpen}
       >
         <Text style={styles.buttonText}>{currentValue}</Text>
-        <Icon name="chevron-down" size={scale(14)} color="#221E25" />
+        <Svg width={scale(10)} height={scale(6)} viewBox="0 0 10 6">
+          <Path d="M0 0h10L5 6z" fill="#221E25" />
+        </Svg>
       </Pressable>
 
       <Modal
@@ -96,14 +98,14 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
                 <Pressable
                   style={[
                     styles.option,
-                    item === value && styles.selectedOption,
+                    item === currentValue && styles.selectedOption,
                   ]}
                   onPress={() => handleSelect(item)}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      item === value && styles.selected,
+                      item === currentValue && styles.selected,
                     ]}
                   >
                     {item}
@@ -120,20 +122,20 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   button: {
-    minWidth: scale(76),
-    height: verticalScale(25),
+    minWidth: scale(80),
+    height: scale(26),
     borderWidth: 1,
-    borderColor: '#777777',
+    borderColor: '#221E25',
     borderRadius: scale(6),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: scale(6),
-    gap: scale(4),
+    paddingHorizontal: scale(8),
+    gap: scale(8),
   },
 
   buttonText: {
-    fontSize: normalizeFont(11),
+    fontSize: normalizeFont(14),
     color: '#221E25',
   },
 

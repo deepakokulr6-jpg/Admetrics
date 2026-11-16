@@ -163,17 +163,15 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
           <View style={styles.photoRow}>
             <PhotoUploadItem
-              title="Entrance Photo"
+              title="1. Entrance"
               imageUri={draft.photos.entrance}
               onPress={() => handlePhotoPress('entrance', 'Entrance Photo')}
-              onRemove={() => setPhoto('entrance', null)}
             />
 
             <PhotoUploadItem
-              title="Reception Photo"
+              title="2. Reception"
               imageUri={draft.photos.reception}
               onPress={() => handlePhotoPress('reception', 'Reception Photo')}
-              onRemove={() => setPhoto('reception', null)}
             />
           </View>
 
@@ -204,35 +202,37 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: scale(420),
     alignSelf: 'center',
-    paddingHorizontal: scale(20),
-    paddingTop: verticalScale(4),
-    paddingBottom: verticalScale(32),
+    flexGrow: 1,
+    paddingHorizontal: scale(16),
+    paddingTop: 0,
+    paddingBottom: verticalScale(110),
   },
 
   heading: {
     fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(22),
+    lineHeight: normalizeFont(19),
     fontWeight: '600',
     color: '#221E25',
-    marginBottom: verticalScale(4),
+    marginBottom: verticalScale(8),
   },
 
   instruction: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    color: '#777777',
-    marginBottom: verticalScale(20),
+    color: '#221E25',
+    marginBottom: verticalScale(16),
   },
 
   photoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: scale(16),
-    marginBottom: verticalScale(28),
+    gap: scale(24),
   },
 
+  // Figma pins the Register button at y634 of 800.
   button: {
-    marginTop: verticalScale(4),
+    marginTop: 'auto',
+    paddingTop: verticalScale(24),
   },
 });
 

@@ -33,7 +33,7 @@ export type AppStackParamList = {
   ClinicRegistered: undefined;
   EditDetails: undefined;
   RegisteredDetails: undefined;
-  PaymentDetails: undefined;
+  PaymentDetails: { month: string; paid: boolean; paidOn?: string } | undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

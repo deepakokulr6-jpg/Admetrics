@@ -15,20 +15,23 @@ import { Text, TextInput } from 'react-native';
 
 describe('responsive utilities', () => {
   it('exports valid base dimensions and screen measurements', () => {
-    expect(BASE_WIDTH).toBe(375);
-    expect(BASE_HEIGHT).toBe(812);
+    // Figma frames are 360x800.
+    expect(BASE_WIDTH).toBe(360);
+    expect(BASE_HEIGHT).toBe(800);
     expect(SCREEN_WIDTH).toBeGreaterThan(0);
     expect(SCREEN_HEIGHT).toBeGreaterThan(0);
   });
 
   it('calculates scale proportionally to SCREEN_WIDTH', () => {
-    const expected = (SCREEN_WIDTH / 375) * 100;
+    const expected = (SCREEN_WIDTH / 360) * 100;
     expect(scale(100)).toBeCloseTo(expected, 4);
   });
 
-  it('calculates verticalScale proportionally to SCREEN_HEIGHT', () => {
-    const expected = (SCREEN_HEIGHT / 812) * 100;
-    expect(verticalScale(100)).toBeCloseTo(expected, 4);
+  it('calculates verticalScale from SCREEN_HEIGHT, clamped to 0.85–1.12', () => {
+    const ratio = Math.min(Math.max(SCREEN_HEIGHT / 800, 0.85), 1.12);
+    expect(verticalScale(100)).toBeCloseTo(ratio * 100, 4);
+    expect(verticalScale(100)).toBeGreaterThanOrEqual(85);
+    expect(verticalScale(100)).toBeLessThanOrEqual(112.0001);
   });
 
   it('calculates moderateScale with default and custom factor', () => {
