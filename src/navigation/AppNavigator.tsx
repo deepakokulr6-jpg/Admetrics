@@ -10,6 +10,10 @@ import RegisterPersonalScreen from '../screens/clinic/RegisterPersonalScreen';
 import RegisterTimingsScreen from '../screens/clinic/RegisterTimingsScreen';
 import RegisterPhotoScreen from '../screens/clinic/RegisterPhotoScreen';
 import ClinicRegisteredScreen from '../screens/clinic/ClinicRegisteredScreen';
+import RegisterMouScreen from '../screens/clinic/RegisterMouScreen';
+import MouESignScreen from '../screens/clinic/MouESignScreen';
+import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
+import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
 import { ClinicRegistrationProvider } from '../contexts/ClinicRegistrationContext';
 import type { AppStackParamList } from './types';
 import colors from '../theme/colors';
@@ -30,6 +34,15 @@ const AppNavigator = () => {
         {/* Bottom tabs: Revenue · Clinics · Statement · Support */}
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
+        <Stack.Screen name="RegisterMou" component={RegisterMouScreen} />
+        {/* No swipe-back while signing: strokes must not drag the page. */}
+        <Stack.Screen
+          name="MouESign"
+          component={MouESignScreen}
+          options={{ gestureEnabled: false, fullScreenGestureEnabled: false }}
+        />
+        <Stack.Screen name="ClinicPreview" component={ClinicPreviewScreen} />
+        <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
         <Stack.Screen name="EditDetails" component={EditDetailsScreen} />
         <Stack.Screen
           name="RegisteredDetails"
@@ -49,7 +62,7 @@ const AppNavigator = () => {
           name="ClinicRegistered"
           component={ClinicRegisteredScreen}
           // Success sheet: no swipe-back into the finished registration.
-          options={{ animation: 'fade', gestureEnabled: false }}
+          options={{ animation: 'none', gestureEnabled: false }}
         />
       </Stack.Navigator>
     </ClinicRegistrationProvider>

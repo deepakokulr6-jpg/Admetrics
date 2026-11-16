@@ -67,7 +67,7 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
   } = sampleClinic;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
         title={strings.editDetails.editDetails}
         onBackPress={() => navigation.goBack()}

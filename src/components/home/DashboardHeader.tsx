@@ -9,6 +9,9 @@ import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { useProfileMenu } from '../../hooks/useProfileMenu';
 import ProfileDrawer from './ProfileDrawer';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { AppStackParamList } from '../../navigation/types';
 
 type Props = {
   userName?: string;
@@ -25,6 +28,8 @@ const DashboardHeader: React.FC<Props> = ({
 }) => {
   const { confirmLogout } = useProfileMenu();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   // Default: avatar / name opens the side menu on every tab.
   const handleProfilePress = onProfilePress ?? (() => setDrawerOpen(true));
   const displayName = userName ?? name ?? 'Ramkumar';
@@ -74,6 +79,7 @@ const DashboardHeader: React.FC<Props> = ({
         name={displayName}
         onClose={() => setDrawerOpen(false)}
         onLogout={confirmLogout}
+        onMouAgreement={() => navigation.navigate('MouAgreement')}
       />
     </View>
   );

@@ -52,7 +52,9 @@ const strings = {
       `This is a development build, so no email was sent. Use ${code} to reset your password.`,
     devIncorrectOtp: (code: string) =>
       `Incorrect OTP. Use ${code} in this development build.`,
-    otpDigit: (position: number) => `OTP digit ${position}`,
+    otpCode: (length: number) => `${length}-digit OTP`,
+    otpMask: '*',
+    resendOtpIn: (time: string) => `Resend OTP in ${time}`,
   },
   clinicForm: {
     clinicNameIsRequired: 'Clinic name is required.',
@@ -261,6 +263,75 @@ const strings = {
       'Please correct the highlighted working hours before continuing.',
     workingHours: 'Working Hours',
   },
+  steps: {
+    clinic: 'Clinic',
+    contact: 'Contact',
+    photos: 'Photos',
+    mou: 'MOU',
+  },
+  mou: {
+    memorandumOfUnderstanding: 'Memorandum of Understanding',
+    signature: 'Signature',
+    submit: 'Submit',
+    yourSignature: 'Your signature',
+    clear: 'Clear',
+    signatureArea: 'Signature area. Draw your signature with one finger.',
+    preview: 'Preview',
+    pageCount: (page: number, total: number) => `${page}/${total}`,
+    register: 'Register',
+    signatureRequired: 'Signature required',
+    pleaseSignTheMou: 'Please sign the MOU before registering your clinic.',
+    signingUnavailable: 'Signing unavailable',
+    checkConnection:
+      'The signing page could not be loaded. Check your internet connection and try again.',
+  },
+  /**
+   * MOU text shown on the MOU step and in the side menu.
+   * Placeholder copy from the design – replace with the real agreement.
+   */
+  mouDocument: [
+    {
+      heading: '1. Description of the System Requirements',
+      body: [
+        'The Didactic Coordinator orders a software system that supports the didactic activity and it includes a web app and a mobile app.',
+        'The web app provides specific functionalities based on the user that is logged in the system as Professor or as Secretary. Its main purpose is handling the reports sent by the professors and taken care of by the Secretary.',
+        'The mobile app provides further functionalities for the user that is logged in as Student or as Professor. These functionalities include the possibility of exchanging messages, receiving notifications, downloading documents and sending feedback.',
+      ],
+    },
+    {
+      heading: '2. Requirements Analysis',
+      body: [
+        'The actors that interact with the software requested by the didactic Coordinator are:',
+        '• Secretary',
+        '• Professor',
+        '• Student',
+        'Using the web app, the Secretary is able to insert:',
+        '• New courses of study',
+        '• New subjects for the existing study courses',
+        '• New classrooms, with information regarding the geolocation',
+        '• New activities, choosing between Lesson or Exam',
+        '• New Users, choosing between Student or Professor',
+        'Furthermore, it can handle the reports sent by the professors. When the reporting is taken care of, the Secretary add a note or motivation if the issue has been resolved or refused. Anyway, in both cases, the state of the reporting is notified to the professors by the mobile app.',
+        'Using the web app, the Professor can:',
+        '• Upload the teaching material',
+        '• Send to the Secretary the reporting about the issues concerning one specific classroom',
+        '• View the state of his reports',
+        '• View the state of the reports regarding a certain classroom, even if they are sent by different professors',
+        'Instead, using the mobile app, the Professor can:',
+        '• View the activities of the day, including the map of the classrooms',
+        '• Receive the notification regarding his reports or classrooms',
+        '• Receive the notification when a student send a message to him',
+        '• Receive the notification when a student send a feedback regarding the lessons or the teaching material',
+        'Using the mobile app, the Student can:',
+        '• Write messages in the channel chats of the subjects that he studies and the message can be public or private',
+        '• Download the teaching material',
+        '• Provide anonymously feedback about the lessons or the teaching material',
+        '• View the activities of the day, including the map of the classrooms',
+        '• Receive the notification when there has been a change of classroom for a lesson he has to attend',
+        '• Receive the notification when a professor send messages to him or when the professor uploads the teaching material',
+      ],
+    },
+  ],
   registeredDetails: {
     registeredDetails: 'Registered Details',
     editDetails: 'Edit details',

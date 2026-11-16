@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,6 +14,7 @@ import AppLogo from '../../components/shared/AppLogo';
 import AuthHeader from '../../components/auth/AuthHeader';
 import InputField from '../../components/shared/InputField';
 import OtpInput from '../../components/auth/OtpInput';
+import ResendOtp from '../../components/auth/ResendOtp';
 import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
@@ -38,6 +38,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+  const [otpSentAt, setOtpSentAt] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -73,6 +74,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
 
       // Stay on this screen: unlock the OTP boxes and tell the user.
       setOtpSent(true);
+      setOtpSentAt(Date.now());
       setOtp('');
       showOtpSent(trimmedEmail);
     } catch {
@@ -107,6 +109,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   };
 
   const handleResendOtp = () => {
+    setOtpSentAt(Date.now());
     setOtp('');
     setError(null);
     showOtpSent(email.trim());
@@ -169,18 +172,20 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
                 </Text>
 
                 {otpSent ? (
-                  <Pressable
-                    onPress={handleResendOtp}
-                    hitSlop={10}
-                    accessibilityRole="button"
-                    accessibilityLabel={strings.auth.resendOtp}
-                  >
-                    <Text style={styles.resend}>{strings.auth.resendOtp}</Text>
-                  </Pressable>
+                  <ResendOtp sentAt={otpSentAt} onResend={handleResendOtp} />
                 ) : null}
               </View>
 
-              <OtpInput value={otp} onChangeText={setOtp} disabled={!otpSent} />
+              <OtpInput
+                value={otp}
+                onChangeText={value => {
+                  setOtp(value);
+                  setError(null);
+                }}
+                disabled={!otpSent}
+                autoFocus={otpSent}
+                key={otpSentAt}
+              />
 
               {info && !error ? <Text style={styles.info}>{info}</Text> : null}
               {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -261,13 +266,6 @@ const styles = StyleSheet.create({
 
   otpLabelDisabled: {
     color: colors.borderLight,
-  },
-
-  resend: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
   },
 
   error: {

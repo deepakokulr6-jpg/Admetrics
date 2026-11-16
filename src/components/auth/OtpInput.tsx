@@ -1,5 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { normalizeFont, scale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import colors from '../../theme/colors';
@@ -11,89 +19,131 @@ type OtpInputProps = {
   length?: number;
   // Figma: before the OTP is sent the boxes are greyed out with "*".
   disabled?: boolean;
+  /** Called once all digits are entered (typed, pasted or autofilled). */
+  onComplete?: (otp: string) => void;
+  autoFocus?: boolean;
 };
 
+/**
+ * One real TextInput (invisible, stretched over the boxes) drives six visual
+ * boxes. A single input is what makes paste, iOS "From Messages" autofill and
+ * Android SMS autofill fill every box in one go, and backspace always walks
+ * back cleanly – per-box inputs drop or split pasted codes on both platforms.
+ */
 const OtpInput: React.FC<OtpInputProps> = ({
   value,
   onChangeText,
   length = 6,
   disabled = false,
+  onComplete,
+  autoFocus = false,
 }) => {
-  const inputRefs = useRef<any[]>([]);
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null);
+  const [focused, setFocused] = useState(false);
+  const caret = useRef(new Animated.Value(1)).current;
 
-  const setDigit = (index: number, digit: string) => {
-    const chars = value.padEnd(length, ' ').split('');
-    chars[index] = digit;
-    onChangeText(chars.join('').replace(/\s/g, ''));
-  };
-
-  const handleChange = (text: string, index: number) => {
-    const digits = text.replace(/\D/g, '');
-
-    if (digits.length === 0) {
-      setDigit(index, ' ');
+  // Blinking caret in the active box.
+  useEffect(() => {
+    if (!focused) {
       return;
     }
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.timing(caret, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(caret, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    blink.start();
+    return () => {
+      blink.stop();
+      caret.setValue(1);
+    };
+  }, [focused, caret]);
 
-    // Handle pasting a complete OTP into any box.
-    if (digits.length > 1) {
-      const chars = value.padEnd(length, ' ').split('');
-
-      for (let i = 0; i < digits.length && index + i < length; i++) {
-        chars[index + i] = digits[i];
-      }
-
-      onChangeText(chars.join('').replace(/\s/g, ''));
-      inputRefs.current[Math.min(index + digits.length, length - 1)]?.focus();
-      return;
+  // Clear focus when the boxes get locked (e.g. email edited).
+  useEffect(() => {
+    if (disabled) {
+      inputRef.current?.blur();
     }
+  }, [disabled]);
 
-    setDigit(index, digits);
+  const handleChange = (text: string) => {
+    // Keep digits only: pasted text may contain spaces, dashes or words
+    // ("Your code is 123-456").
+    const digits = text.replace(/\D/g, '').slice(0, length);
+    onChangeText(digits);
 
-    if (index < length - 1) {
-      inputRefs.current[index + 1]?.focus();
+    if (digits.length === length && value.length !== length) {
+      onComplete?.(digits);
     }
   };
 
-  const handleKeyPress = (event: any, index: number) => {
-    if (event.nativeEvent.key === 'Backspace' && !value[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
+  const activeIndex = Math.min(value.length, length - 1);
 
   return (
-    <View style={styles.container}>
-      {Array.from({ length }, (_, index) => (
-        <TextInput
-          key={index}
-          ref={ref => {
-            inputRefs.current[index] = ref;
-          }}
-          style={[
-            styles.otpBox,
-            focusedIndex === index && styles.otpBoxFocused,
-            value[index] ? styles.otpBoxFilled : null,
-            disabled && styles.otpBoxDisabled,
-          ]}
-          editable={!disabled}
-          placeholder={disabled ? '*' : undefined}
-          placeholderTextColor={colors.borderLight}
-          value={value[index] || ''}
-          onChangeText={text => handleChange(text, index)}
-          onKeyPress={event => handleKeyPress(event, index)}
-          onFocus={() => setFocusedIndex(index)}
-          onBlur={() => setFocusedIndex(null)}
-          keyboardType="number-pad"
-          selectTextOnFocus
-          textAlign="center"
-          autoCorrect={false}
-          autoComplete="one-time-code"
-          selectionColor={colors.primary}
-          accessibilityLabel={strings.auth.otpDigit(index + 1)}
-        />
-      ))}
-    </View>
+    <Pressable
+      style={styles.container}
+      onPress={() => inputRef.current?.focus()}
+      disabled={disabled}
+      accessible={false}
+    >
+      {Array.from({ length }, (_, index) => {
+        const digit = value[index];
+        const isActive = focused && !disabled && index === activeIndex;
+
+        return (
+          <View
+            key={index}
+            style={[
+              styles.otpBox,
+              isActive && styles.otpBoxFocused,
+              disabled && styles.otpBoxDisabled,
+            ]}
+          >
+            {digit ? (
+              <Text style={styles.digit}>{digit}</Text>
+            ) : disabled ? (
+              <Text style={styles.placeholder}>{strings.auth.otpMask}</Text>
+            ) : isActive ? (
+              <Animated.View style={[styles.caret, { opacity: caret }]} />
+            ) : null}
+          </View>
+        );
+      })}
+
+      <TextInput
+        ref={inputRef}
+        style={styles.hiddenInput}
+        value={value}
+        onChangeText={handleChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        editable={!disabled}
+        autoFocus={autoFocus}
+        maxLength={length}
+        keyboardType="number-pad"
+        // iOS: "From Messages / Mail" suggestion above the keyboard.
+        textContentType="oneTimeCode"
+        // Android: SMS / Google autofill suggestion.
+        autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
+        importantForAutofill="yes"
+        autoCorrect={false}
+        spellCheck={false}
+        contextMenuHidden={false}
+        caretHidden
+        selectionColor={colors.transparent}
+        cursorColor={colors.transparent}
+        accessibilityLabel={strings.auth.otpCode(length)}
+      />
+    </Pressable>
   );
 };
 
@@ -112,22 +162,45 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: scale(6),
     backgroundColor: colors.white,
-    padding: 0,
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.regular,
-    color: colors.text,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   otpBoxFocused: {
     borderColor: colors.primary,
   },
 
-  otpBoxFilled: {
-    fontFamily: fonts.semibold,
-  },
   otpBoxDisabled: {
     borderColor: colors.borderLight,
+  },
+
+  digit: {
+    fontSize: normalizeFont(14),
     fontFamily: fonts.semibold,
+    color: colors.text,
+  },
+
+  placeholder: {
+    fontSize: normalizeFont(14),
+    fontFamily: fonts.semibold,
+    color: colors.borderLight,
+  },
+
+  caret: {
+    width: 1.5,
+    height: scale(18),
+    backgroundColor: colors.primary,
+  },
+
+  // Covers the whole row so a tap or long-press (Paste) anywhere reaches it,
+  // but it is never visible. Not opacity 0: some Android versions skip
+  // touch / autofill on fully transparent views.
+  hiddenInput: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.011,
+    color: colors.transparent,
+    fontSize: 1,
+    padding: 0,
   },
 });
 

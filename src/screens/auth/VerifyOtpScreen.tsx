@@ -8,7 +8,6 @@ import {
   Platform,
   StatusBar,
   Alert,
-  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,6 +16,7 @@ import AppLogo from '../../components/shared/AppLogo';
 import AuthHeader from '../../components/auth/AuthHeader';
 import InputField from '../../components/shared/InputField';
 import OtpInput from '../../components/auth/OtpInput';
+import ResendOtp from '../../components/auth/ResendOtp';
 import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
@@ -59,6 +59,8 @@ function OtpVerification<RouteName extends OtpRouteName>({
   const [email, setEmail] = useState(initialEmail ?? '');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(!isReset);
+  // Sign-up arrives with the OTP already sent, so its timer starts now.
+  const [otpSentAt, setOtpSentAt] = useState(() => Date.now());
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -78,6 +80,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
     try {
       await requestPasswordReset(trimmedEmail);
       setOtpSent(true);
+      setOtpSentAt(Date.now());
       setOtp('');
       Alert.alert(
         strings.verifyOtp.otpSent,
@@ -153,7 +156,19 @@ function OtpVerification<RouteName extends OtpRouteName>({
   };
 
   const handleResendOtp = () => {
-    handleSendOtp();
+    if (isReset) {
+      handleSendOtp();
+      return;
+    }
+    // Sign-up (development): nothing is emailed – restart the timer and
+    // remind the tester of the code.
+    setOtp('');
+    setError(null);
+    setOtpSentAt(Date.now());
+    Alert.alert(
+      strings.verifyOtp.otpSent,
+      strings.auth.devOtpNotEmailed(DEVELOPMENT_OTP),
+    );
   };
 
   return (
@@ -205,24 +220,28 @@ function OtpVerification<RouteName extends OtpRouteName>({
                 }
               />
 
-              {isReset && otpSent ? (
+              {otpSent ? (
                 <View style={styles.otpHeader}>
                   <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
-
-                  <Pressable
-                    onPress={handleResendOtp}
-                    hitSlop={10}
-                    accessibilityRole="button"
-                    accessibilityLabel={strings.auth.resendOtp}
-                  >
-                    <Text style={styles.resend}>{strings.auth.resendOtp}</Text>
-                  </Pressable>
+                  <ResendOtp
+                    sentAt={otpSentAt}
+                    onResend={handleResendOtp}
+                    disabled={isSubmitting}
+                  />
                 </View>
               ) : (
                 <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
               )}
 
-              <OtpInput value={otp} onChangeText={setOtp} />
+              <OtpInput
+                key={otpSentAt}
+                value={otp}
+                onChangeText={value => {
+                  setOtp(value);
+                  setError(null);
+                }}
+                autoFocus={otpSent}
+              />
 
               {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -323,14 +342,6 @@ const styles = StyleSheet.create({
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
     color: colors.text,
-    marginBottom: verticalScale(8),
-  },
-
-  resend: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
     marginBottom: verticalScale(8),
   },
 

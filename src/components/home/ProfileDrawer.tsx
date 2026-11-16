@@ -78,6 +78,7 @@ const ProfileDrawer: React.FC<Props> = ({
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(visible);
   const progress = useRef(new Animated.Value(0)).current;
+  const pendingActionRef = useRef<(() => void) | undefined>(undefined);
 
   useEffect(() => {
     if (visible) {
@@ -94,14 +95,23 @@ const ProfileDrawer: React.FC<Props> = ({
         duration: 200,
         easing: Easing.in(Easing.cubic),
         useNativeDriver: true,
-      }).start(({ finished }) => finished && setMounted(false));
+      }).start(({ finished }) => {
+        if (finished) {
+          setMounted(false);
+          // Run the chosen item's action once the menu is fully gone, so the
+          // next screen opens cleanly instead of behind the closing menu.
+          const action = pendingActionRef.current;
+          pendingActionRef.current = undefined;
+          action?.();
+        }
+      });
     }
   }, [visible, progress]);
 
   // Close first, then run the action once the slide-out has started.
   const select = (action?: () => void) => () => {
+    pendingActionRef.current = action;
     onClose();
-    action?.();
   };
 
   const iconSize = scale(22);

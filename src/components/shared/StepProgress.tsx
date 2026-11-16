@@ -5,26 +5,37 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 interface StepProgressProps {
   currentStep: number;
 }
 
-const STEPS = ['Clinic', 'Contact', 'Photos'];
+const STEPS = [
+  strings.steps.clinic,
+  strings.steps.contact,
+  strings.steps.photos,
+  strings.steps.mou,
+];
 
 // Badge colours follow the brand gradient from left to right (Figma).
-const DONE_COLORS = [colors.stepBlue, colors.stepViolet, colors.secondary];
+const DONE_COLORS = [
+  colors.stepBlue,
+  colors.stepViolet,
+  colors.stepPurple,
+  colors.secondary,
+];
 const TICK =
   'M16.4877 9.00069C16.7057 9.21865 16.7057 9.57205 16.4877 9.79001L11.2784 14.9993C11.1738 15.104 11.0318 15.1628 10.8838 15.1628C10.7357 15.1628 10.5938 15.104 10.4891 14.9993L7.51235 12.0225C7.29439 11.8046 7.29439 11.4512 7.51235 11.2333C7.73032 11.0153 8.08371 11.0153 8.30168 11.2333L10.8838 13.8153L15.6984 9.00069C15.9164 8.78272 16.2697 8.78272 16.4877 9.00069Z';
 
 const BADGE = scale(24);
-const TRACK_WIDTH = scale(230);
-// Badge centres sit at 58 / 180 / 300 on a 360 wide frame; the bar runs
-// from 65 to 295, i.e. it starts 7px after the first centre.
-const CENTERS = [58, 180, 300].map(scale);
+// Figma (4 steps): badge centres at 58 / 140 / 220 / 300 on a 360 frame and
+// the bar runs from 65 to 300.
+const CENTERS = [58, 140, 220, 300].map(scale);
 const TRACK_LEFT = scale(65);
-// How far the gradient fills for each step (Figma: grey covers the rest).
-const FILL_TO = [75, 185, 295].map(scale);
+const TRACK_WIDTH = scale(235);
+// How far the gradient fills for each step (grey covers the rest).
+const FILL_TO = [75, 160, 240, 300].map(scale);
 
 const StepBadge: React.FC<{ index: number; done: boolean }> = ({
   index,

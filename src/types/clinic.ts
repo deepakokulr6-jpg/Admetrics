@@ -36,6 +36,8 @@ export type ClinicRegistrationDraft = {
   personal: PersonalInfo;
   workingHours: WorkingHour[];
   photos: ClinicPhotos;
+  /** MOU signature as SVG path data (drawn on the MOU step). */
+  signature: string | null;
 };
 
 export type ClinicRegistrationRecord = ClinicRegistrationDraft & {
@@ -93,4 +95,5 @@ export const createEmptyDraft = (): ClinicRegistrationDraft => ({
   personal: createEmptyPersonalInfo(),
   workingHours: createDefaultWorkingHours(),
   photos: createEmptyPhotos(),
+  signature: null,
 });

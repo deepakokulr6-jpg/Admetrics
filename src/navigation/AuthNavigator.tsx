@@ -45,7 +45,8 @@ const AuthNavigator = () => {
       <Stack.Screen
         name="AccountCreated"
         component={AccountCreatedScreen}
-        options={{ animation: 'fade', gestureEnabled: false }}
+        // The screen animates its own sheet (bottom → top).
+        options={{ animation: 'none', gestureEnabled: false }}
       />
     </Stack.Navigator>
   );

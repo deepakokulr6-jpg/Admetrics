@@ -39,6 +39,10 @@ export type AppStackParamList = {
   RegisterPersonal: undefined;
   RegisterTimings: undefined;
   RegisterPhotos: undefined;
+  RegisterMou: undefined;
+  MouESign: undefined;
+  ClinicPreview: undefined;
+  MouAgreement: undefined;
   ClinicRegistered: undefined;
   EditDetails: undefined;
   RegisteredDetails: undefined;

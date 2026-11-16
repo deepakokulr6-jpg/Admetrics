@@ -26,8 +26,8 @@ type SuccessScreenLayoutProps = {
 // with 40px top corners over the brand gradient. Check 80px, title 18px bold
 // #121212, two-line 12px #444 description, standard 160x36 button.
 //
-// Entrance: the gradient fades in, the sheet slides up from the bottom with a
-// light spring, then the check pops in. Skipped when Reduce Motion is on.
+// Entrance: the gradient fades in while the sheet glides up from the bottom
+// (ease-out, no bounce), then the check pops in. Skipped with Reduce Motion.
 const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
   title,
   description,
@@ -42,57 +42,56 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
   const checkOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Start on the first frame (no waiting), then jump to the end if the
+    // user has Reduce Motion on.
+    const entrance = Animated.sequence([
+      Animated.parallel([
+        Animated.timing(backdropOpacity, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        // Smooth glide up with a soft landing – no bounce.
+        Animated.timing(sheetOffset, {
+          toValue: 0,
+          duration: 520,
+          easing: Easing.bezier(0.16, 1, 0.3, 1),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.spring(checkScale, {
+          toValue: 1,
+          damping: 12,
+          stiffness: 220,
+          useNativeDriver: true,
+        }),
+        Animated.timing(checkOpacity, {
+          toValue: 1,
+          duration: 160,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]);
+    entrance.start();
+
     let cancelled = false;
-
     AccessibilityInfo.isReduceMotionEnabled()
-      .catch(() => false)
       .then(reduceMotion => {
-        if (cancelled) {
-          return;
-        }
-
-        if (reduceMotion) {
+        if (reduceMotion && !cancelled) {
+          entrance.stop();
           backdropOpacity.setValue(1);
           sheetOffset.setValue(0);
           checkScale.setValue(1);
           checkOpacity.setValue(1);
-          return;
         }
-
-        Animated.sequence([
-          Animated.parallel([
-            Animated.timing(backdropOpacity, {
-              toValue: 1,
-              duration: 250,
-              easing: Easing.out(Easing.quad),
-              useNativeDriver: true,
-            }),
-            Animated.spring(sheetOffset, {
-              toValue: 0,
-              damping: 20,
-              stiffness: 170,
-              mass: 1,
-              useNativeDriver: true,
-            }),
-          ]),
-          Animated.parallel([
-            Animated.spring(checkScale, {
-              toValue: 1,
-              damping: 10,
-              stiffness: 200,
-              useNativeDriver: true,
-            }),
-            Animated.timing(checkOpacity, {
-              toValue: 1,
-              duration: 150,
-              useNativeDriver: true,
-            }),
-          ]),
-        ]).start();
-      });
+      })
+      .catch(() => {});
 
     return () => {
       cancelled = true;
+      entrance.stop();
     };
   }, [backdropOpacity, sheetOffset, checkScale, checkOpacity]);
 
@@ -147,8 +146,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
-    // Shown for a moment before the gradient fades in.
-    backgroundColor: colors.white,
+    // Brand colour underneath, so nothing white flashes before the
+    // gradient fades in.
+    backgroundColor: colors.primary,
   },
   sheet: {
     height: '85.25%', // 682 / 800

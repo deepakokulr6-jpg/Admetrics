@@ -12,6 +12,7 @@ const colors = {
   /** Step badges along the brand gradient (Clinic → Contact → Photos). */
   stepBlue: '#1D5FFB',
   stepViolet: '#644EFB',
+  stepPurple: '#8B47FC',
   stepTick: '#ECEFF1',
 
   // Text
@@ -60,6 +61,8 @@ const colors = {
   // Translucent
   overlay: 'rgba(0, 0, 0, 0.05)',
   backdrop: 'rgba(0, 0, 0, 0.4)',
+  signatureOverlay: 'rgba(0, 0, 0, 0.78)',
+  transparent: 'transparent',
   whiteTranslucent: 'rgba(255, 255, 255, 0.3)',
 } as const;
 

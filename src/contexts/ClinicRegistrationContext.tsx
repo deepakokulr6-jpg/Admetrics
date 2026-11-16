@@ -29,6 +29,7 @@ type ClinicRegistrationContextValue = {
   updatePersonalInfo: (patch: Partial<PersonalInfo>) => void;
   updateWorkingHour: (index: number, patch: Partial<WorkingHour>) => void;
   setPhoto: (slot: keyof ClinicPhotos, uri: string | null) => void;
+  setSignature: (signature: string | null) => void;
   resetDraft: () => void;
 };
 
@@ -52,6 +53,7 @@ const restoreDraft = (
         ? storedDraft.workingHours
         : empty.workingHours,
     photos: { ...empty.photos, ...storedDraft.photos },
+    signature: storedDraft.signature ?? null,
   };
 };
 
@@ -162,6 +164,10 @@ export const ClinicRegistrationProvider: React.FC<{
     [],
   );
 
+  const setSignature = useCallback((signature: string | null) => {
+    setDraft(previous => ({ ...previous, signature }));
+  }, []);
+
   const resetDraft = useCallback(() => {
     skipNextPersistRef.current = true;
     setDraft(createEmptyDraft());
@@ -180,9 +186,11 @@ export const ClinicRegistrationProvider: React.FC<{
       updatePersonalInfo,
       updateWorkingHour,
       setPhoto,
+      setSignature,
       resetDraft,
     }),
     [
+      setSignature,
       draft,
       updateClinicInfo,
       updatePersonalInfo,

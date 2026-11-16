@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -16,8 +16,6 @@ import StepProgress from '../../components/shared/StepProgress';
 import PhotoUploadItem from '../../components/clinic/PhotoUploadItem';
 import GradientButton from '../../components/shared/GradientButton';
 import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { saveClinicRegistration } from '../../services/clinicService';
 import { ClinicPhotos } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
@@ -34,10 +32,7 @@ type PhotoSlot = keyof ClinicPhotos;
 const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   navigation,
 }) => {
-  const { draft, resetDraft, setPhoto } = useClinicRegistration();
-  const { user } = useAuth();
-
-  const [isSaving, setIsSaving] = useState(false);
+  const { draft, setPhoto } = useClinicRegistration();
 
   const pickPhoto = async (slot: PhotoSlot) => {
     try {
@@ -117,36 +112,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
     pickPhoto(slot);
   };
 
-  const handleRegister = async () => {
-    if (!user) {
-      Alert.alert(
-        strings.registerPhoto.sessionExpired,
-        strings.registerPhoto.pleaseSignInAgainBefore,
-      );
-      return;
-    }
-
-    setIsSaving(true);
-
-    try {
-      await saveClinicRegistration(user.email, draft);
-      resetDraft();
-      navigation.reset({
-        index: 1,
-        routes: [
-          { name: 'MainTabs', params: { screen: 'Clinics' } },
-          { name: 'ClinicRegistered' },
-        ],
-      });
-    } catch {
-      Alert.alert(
-        strings.registerPhoto.registrationFailed,
-        strings.registerPhoto.theClinicDetailsCouldNot,
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const handleNext = () => navigation.navigate('RegisterMou');
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -195,11 +161,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
           </View>
 
           <View style={styles.button}>
-            <GradientButton
-              title={strings.registerPhoto.register}
-              onPress={handleRegister}
-              loading={isSaving}
-            />
+            <GradientButton title={strings.common.next} onPress={handleNext} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -248,7 +210,7 @@ const styles = StyleSheet.create({
     gap: scale(24),
   },
 
-  // Figma pins the Register button at y634 of 800.
+  // Figma pins the Next button at y634 of 800.
   button: {
     marginTop: 'auto',
     paddingTop: verticalScale(24),
