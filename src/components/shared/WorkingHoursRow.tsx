@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, Switch, TextInput, StyleSheet } from 'react-native';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 interface WorkingHoursRowProps {
   day: string;
@@ -25,16 +28,14 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
     <View style={styles.row}>
       {/* Day name and toggle */}
       <View style={styles.dayColumn}>
-        <Text style={styles.dayText}>
-          {day}
-        </Text>
+        <Text style={styles.dayText}>{day}</Text>
 
         <Switch
           value={enabled}
           onValueChange={onToggle}
-          trackColor={{ false: '#E5E5E5', true: '#221E25' }}
-          thumbColor={enabled ? '#FFFFFF' : '#FFFFFF'}
-          ios_backgroundColor="#E5E5E5"
+          trackColor={{ false: colors.switchTrack, true: colors.text }}
+          thumbColor={enabled ? colors.white : colors.white}
+          ios_backgroundColor={colors.switchTrack}
           style={styles.switch}
         />
       </View>
@@ -44,11 +45,11 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
         value={startTime}
         onChangeText={onStartTimeChange}
         editable={enabled}
-        placeholder="09:30AM"
-        placeholderTextColor="#AAAAAA"
+        placeholder={strings.workingHoursRow.startPlaceholder}
+        placeholderTextColor={colors.border}
         style={[styles.timeInput, !enabled && styles.disabledInput]}
         textAlign="center"
-        accessibilityLabel={`${day} start time`}
+        accessibilityLabel={strings.workingHoursRow.startTime(day)}
       />
 
       {/* End time */}
@@ -56,11 +57,11 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
         value={endTime}
         onChangeText={onEndTimeChange}
         editable={enabled}
-        placeholder="09:30PM"
-        placeholderTextColor="#AAAAAA"
+        placeholder={strings.workingHoursRow.endPlaceholder}
+        placeholderTextColor={colors.border}
         style={[styles.timeInput, !enabled && styles.disabledInput]}
         textAlign="center"
-        accessibilityLabel={`${day} end time`}
+        accessibilityLabel={strings.workingHoursRow.endTime(day)}
       />
     </View>
   );
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   },
   dayText: {
     fontSize: normalizeFont(12),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(4),
   },
   switch: {
@@ -92,19 +93,19 @@ const styles = StyleSheet.create({
     width: scale(120),
     height: verticalScale(40),
     borderWidth: 1,
-    borderColor: '#AAAAAA',
+    borderColor: colors.border,
     borderRadius: scale(6),
     paddingHorizontal: scale(3),
     paddingVertical: 0,
-    color: '#221E25',
+    color: colors.text,
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    backgroundColor: '#FFFFFF',
+    fontFamily: fonts.semibold,
+    backgroundColor: colors.white,
   },
   disabledInput: {
-    borderColor: '#EEEEEE',
-    color: '#AAAAAA',
-    backgroundColor: '#FFFFFF',
+    borderColor: colors.disabled,
+    color: colors.border,
+    backgroundColor: colors.white,
   },
 });
 

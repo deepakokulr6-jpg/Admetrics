@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type Props = {
   value?: string;
@@ -68,7 +70,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
       >
         <Text style={styles.buttonText}>{currentValue}</Text>
         <Svg width={scale(10)} height={scale(6)} viewBox="0 0 10 6">
-          <Path d="M0 0h10L5 6z" fill="#221E25" />
+          <Path d="M0 0h10L5 6z" fill={colors.text} />
         </Svg>
       </Pressable>
 
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     minWidth: scale(80),
     height: scale(26),
     borderWidth: 1,
-    borderColor: '#221E25',
+    borderColor: colors.text,
     borderRadius: scale(6),
     flexDirection: 'row',
     alignItems: 'center',
@@ -136,23 +138,23 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontSize: normalizeFont(14),
-    color: '#221E25',
+    color: colors.text,
   },
 
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: colors.overlay,
   },
 
   menu: {
     position: 'absolute',
     width: scale(150),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: scale(8),
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.divider,
     paddingVertical: verticalScale(5),
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.15,
     shadowRadius: 5,
@@ -165,17 +167,17 @@ const styles = StyleSheet.create({
   },
 
   selectedOption: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.surfaceMuted,
   },
 
   optionText: {
-    color: '#221E25',
+    color: colors.text,
     fontSize: normalizeFont(14),
   },
 
   selected: {
-    color: '#0265FB',
-    fontWeight: '700',
+    color: colors.primary,
+    fontFamily: fonts.bold,
   },
 });
 

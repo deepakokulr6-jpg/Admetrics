@@ -5,47 +5,35 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
-
-// Sample statement from the Figma design (Android Large - 19 / 20).
-const CLINICS = [
-  {
-    name: 'Xwell Clinic - Rajajinagar',
-    displays: [
-      ['Display 1 - Reception TV', '₹7,565.31'],
-      ['Display 2- Waiting Hall TV', '₹3,846.43'],
-    ],
-  },
-  {
-    name: 'Xwell Clinic - Kamalanagar',
-    displays: [
-      ['Display 1 - Reception TV', '₹2,675.90'],
-      ['Display 2- Waiting Hall TV', '₹6,212.01'],
-    ],
-  },
-];
-const TOTAL = '₹19,411.74';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { samplePayout } from '../../constants/mockData';
 
 const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
   navigation,
   route,
 }) => {
-  const month = route.params?.month ?? 'October 2026';
+  const month = route.params?.month ?? samplePayout.month;
   const paid = route.params?.paid ?? true;
 
   const details: [string, string][] = [
-    ['Paid By', 'Okulr Techminds'],
-    ['Paid To', 'Xwell Clinic'],
-    ['Payout Period', month],
-    ['Payment Date', route.params?.paidOn ?? '12 Nov 2026'],
-    ['Transaction ID', 'ADM1026001'],
-    ['Payment Method', 'Bank Transfer'],
+    [strings.paymentDetails.paidBy, samplePayout.paidBy],
+    [strings.paymentDetails.paidTo, samplePayout.paidTo],
+    [strings.paymentDetails.payoutPeriod, month],
+    [
+      strings.paymentDetails.paymentDate,
+      route.params?.paidOn ?? samplePayout.paymentDate,
+    ],
+    [strings.paymentDetails.transactionId, samplePayout.transactionId],
+    [strings.paymentDetails.paymentMethod, samplePayout.paymentMethod],
   ];
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <StatusBar barStyle="dark-content" />
       <ScreenHeader
-        title="Payment Details"
+        title={strings.paymentDetails.paymentDetails}
         onBackPress={() => navigation.goBack()}
       />
 
@@ -56,9 +44,11 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
         {/* Title + status */}
         <View style={styles.titleRow}>
           <View style={styles.flex}>
-            <Text style={styles.title}>Monthly Payout Statement</Text>
+            <Text style={styles.title}>
+              {strings.common.monthlyPayoutStatement}
+            </Text>
             <Text style={styles.period}>
-              PAYMENT PERIOD: {month.toUpperCase()}
+              {strings.paymentDetails.paymentPeriod(month)}
             </Text>
           </View>
           <View
@@ -70,7 +60,9 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
                 paid ? styles.paidText : styles.unpaidText,
               ]}
             >
-              {paid ? 'Payment Processed' : 'Not Paid'}
+              {paid
+                ? strings.paymentDetails.paymentProcessed
+                : strings.common.notPaid}
             </Text>
           </View>
         </View>
@@ -78,11 +70,13 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
         <View style={styles.divider} />
 
         {/* Breakdown */}
-        <Text style={styles.caption}>TOTAL PAYOUT AMOUNT</Text>
-        {CLINICS.map(clinic => (
+        <Text style={styles.caption}>
+          {strings.paymentDetails.totalPayoutAmount}
+        </Text>
+        {samplePayout.clinics.map(clinic => (
           <View key={clinic.name}>
             <Text style={styles.clinic}>{clinic.name}</Text>
-            {clinic.displays.map(([label, amount]) => (
+            {clinic.displays.map(({ name: label, amount }) => (
               <View key={label} style={styles.row}>
                 <Text style={styles.rowLabel}>{label}</Text>
                 <Text style={styles.rowLabel}>{amount}</Text>
@@ -91,15 +85,15 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
           </View>
         ))}
         <View style={[styles.row, styles.totalRow]}>
-          <Text style={styles.totalLabel}>TOTAL</Text>
-          <Text style={styles.totalValue}>{TOTAL}</Text>
+          <Text style={styles.totalLabel}>{strings.paymentDetails.total}</Text>
+          <Text style={styles.totalValue}>{samplePayout.total}</Text>
         </View>
 
         <View style={styles.divider} />
 
         {/* Payment details – shown as "-" until the payout is made */}
         <Text style={[styles.caption, styles.detailsCaption]}>
-          Payment Details
+          {strings.paymentDetails.paymentDetails}
         </Text>
         {details.map(([label, value]) => (
           <View key={label} style={styles.row}>
@@ -117,7 +111,7 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   flex: {
     flex: 1,
@@ -133,13 +127,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   period: {
     marginTop: scale(8),
     fontSize: normalizeFont(10),
-    color: '#0265FB',
+    color: colors.primary,
   },
   badge: {
     height: scale(20),
@@ -149,29 +143,29 @@ const styles = StyleSheet.create({
     marginLeft: scale(8),
   },
   badgePaid: {
-    backgroundColor: '#DDF0D9',
+    backgroundColor: colors.successBackground,
   },
   badgeUnpaid: {
-    backgroundColor: '#F6DADA',
+    backgroundColor: colors.errorBackground,
   },
   badgeText: {
     fontSize: normalizeFont(10),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
   paidText: {
-    color: '#14AB00',
+    color: colors.green,
   },
   unpaidText: {
-    color: '#FF2A2A',
+    color: colors.red,
   },
   divider: {
     height: 1,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.borderLight,
     marginVertical: scale(16),
   },
   caption: {
     fontSize: normalizeFont(10),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: scale(10),
   },
   detailsCaption: {
@@ -180,8 +174,8 @@ const styles = StyleSheet.create({
   },
   clinic: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(4),
   },
   row: {
@@ -192,25 +186,25 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: normalizeFont(12),
-    color: '#221E25',
+    color: colors.text,
   },
   totalRow: {
     marginTop: scale(2),
   },
   totalLabel: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   totalValue: {
     fontSize: normalizeFont(16),
-    fontWeight: '700',
-    color: '#000000',
+    fontFamily: fonts.bold,
+    color: colors.black,
   },
   detailValue: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#000000',
+    fontFamily: fonts.semibold,
+    color: colors.black,
   },
   dash: {
     marginRight: scale(40),

@@ -2,17 +2,20 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
 import { normalizeFont, scale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
+import { fonts } from '../../theme/typography';
 
 type Props = {
   title: string;
-  status: 'Online' | 'Offline';
+  online: boolean;
   displayId: string;
   uptime: string;
   revenue: string;
 };
 
-const GREEN = '#14AB00';
-const RED = '#FF2A2A';
+const GREEN = colors.green;
+const RED = colors.red;
 
 // TV outline from the Figma icon, drawn at the size used on this card.
 const TvIcon: React.FC<{ color: string }> = ({ color }) => (
@@ -31,7 +34,7 @@ const TvIcon: React.FC<{ color: string }> = ({ color }) => (
       cx={11.85}
       cy={17.18}
       r={1.77}
-      fill="#FFFFFF"
+      fill={colors.white}
       stroke={color}
       strokeWidth={1.2}
     />
@@ -42,12 +45,12 @@ const TvIcon: React.FC<{ color: string }> = ({ color }) => (
 // "Online · Display 01" 12, uptime 12 #565656, revenue 16 bold on the right.
 const TvDisplayCard: React.FC<Props> = ({
   title,
-  status,
+  online,
   displayId,
   uptime,
   revenue,
 }) => {
-  const isOnline = status === 'Online';
+  const isOnline = online;
 
   return (
     <View style={styles.card}>
@@ -63,7 +66,7 @@ const TvDisplayCard: React.FC<Props> = ({
         </Text>
         <Text style={styles.meta} numberOfLines={1}>
           <Text style={isOnline ? styles.online : styles.offline}>
-            {status}
+            {isOnline ? strings.common.online : strings.common.offline}
           </Text>
           {` · ${displayId}`}
         </Text>
@@ -81,53 +84,53 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: scale(8),
     padding: scale(10),
     marginBottom: scale(16),
   },
   tile: {
-    width: scale(76),
-    height: scale(76),
+    width: scale(72),
+    height: scale(72),
     borderRadius: scale(6),
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: scale(12),
   },
   tileOnline: {
-    backgroundColor: '#DDEFDA',
+    backgroundColor: colors.successTint,
   },
   tileOffline: {
-    backgroundColor: '#F4DBDB',
+    backgroundColor: colors.errorTint,
   },
   details: {
     flex: 1,
   },
   title: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(8),
   },
   meta: {
     fontSize: normalizeFont(12),
-    color: '#565656',
+    color: colors.secondaryText,
     marginBottom: scale(4),
   },
   online: {
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     color: GREEN,
   },
   offline: {
-    fontWeight: '500',
+    fontFamily: fonts.medium,
     color: RED,
   },
   revenue: {
     marginLeft: scale(8),
     marginRight: scale(14),
     fontSize: normalizeFont(16),
-    fontWeight: '700',
-    color: '#221E25',
+    fontFamily: fonts.bold,
+    color: colors.text,
   },
 });
 

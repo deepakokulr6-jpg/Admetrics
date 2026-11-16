@@ -1,46 +1,31 @@
-import { AppStackParamList } from '../src/navigation/types';
+import type {
+  AppStackParamList,
+  MainTabParamList,
+} from '../src/navigation/types';
 
-describe('AppStackParamList route definitions', () => {
-  it('contains all required bottom navigation tabs and stack screens', () => {
-    const validRoutes: (keyof AppStackParamList)[] = [
-      'Home',
-      'A15Home',
+describe('navigation route definitions', () => {
+  it('has the four bottom tabs, in Figma order', () => {
+    const tabs: (keyof MainTabParamList)[] = [
       'Revenue',
+      'Clinics',
       'Statement',
       'Support',
-      'RegisterClinic',
-      'RegisterPersonal',
-      'RegisterTimings',
-      'RegisterPhotos',
-      'ClinicRegistered',
-      'EditDetails',
     ];
-
-    expect(validRoutes).toContain('Statement');
-    expect(validRoutes).toContain('Support');
-    expect(validRoutes).toContain('Revenue');
-    expect(validRoutes).toContain('A15Home');
+    expect(tabs).toHaveLength(4);
   });
 
-  it('ensures no screen attempts to navigate to unhandled routes like Logs or Receipt', () => {
-    const deprecatedOrInvalid = ['Logs', 'Receipt', 'TVDisplays'];
-    const validRoutes = [
-      'Home',
-      'A15Home',
-      'Revenue',
-      'Statement',
-      'Support',
+  it('puts the tabs and every pushed screen in the app stack', () => {
+    const routes: (keyof AppStackParamList)[] = [
+      'MainTabs',
       'RegisterClinic',
       'RegisterPersonal',
       'RegisterTimings',
       'RegisterPhotos',
       'ClinicRegistered',
       'EditDetails',
+      'RegisteredDetails',
+      'PaymentDetails',
     ];
-
-    deprecatedOrInvalid.forEach(route => {
-      expect(validRoutes).not.toContain(route);
-    });
+    expect(routes).toContain('MainTabs');
   });
 });
-

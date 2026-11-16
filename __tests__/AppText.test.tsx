@@ -18,17 +18,15 @@ const styleOf = (element: React.ReactElement) => {
 };
 
 describe('AppText', () => {
-  it('always renders Inter', () => {
-    expect(styleOf(<AppText>Hi</AppText>).fontFamily).toBe('Inter');
-    expect(
-      styleOf(<AppText style={{ fontFamily: 'Other' }}>Hi</AppText>).fontFamily,
-    ).toBe('Inter');
+  it('renders Inter-Regular by default', () => {
+    expect(styleOf(<AppText>Hi</AppText>).fontFamily).toBe('Inter-Regular');
   });
 
   it('applies a variant', () => {
     const style = styleOf(<AppText variant="label">Hi</AppText>);
-    expect(style.fontWeight).toBe('400');
+    expect(style.fontFamily).toBe('Inter-Regular');
     expect(style.color).toBe('#221E25');
+    expect(style.fontWeight).toBeUndefined();
   });
 
   it('lets weight, colour token and size override the variant', () => {
@@ -37,13 +35,15 @@ describe('AppText', () => {
         Hi
       </AppText>,
     );
-    expect(style.fontWeight).toBe('600');
+    expect(style.fontFamily).toBe('Inter-SemiBold');
     expect(style.color).toBe('#FF2A2A');
     expect(style.fontSize).toBeGreaterThan(12);
   });
 
-  it('has weight shorthands', () => {
-    expect(styleOf(<MediumText>Hi</MediumText>).fontWeight).toBe('500');
-    expect(styleOf(<BoldText>Hi</BoldText>).fontWeight).toBe('700');
+  it('has weight shorthands that pick the font file', () => {
+    expect(styleOf(<MediumText>Hi</MediumText>).fontFamily).toBe(
+      'Inter-Medium',
+    );
+    expect(styleOf(<BoldText>Hi</BoldText>).fontFamily).toBe('Inter-Bold');
   });
 });

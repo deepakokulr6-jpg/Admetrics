@@ -12,6 +12,9 @@ import {
 import EmailIcon from '../../../assets/images/figma/mail.svg';
 import PasswordIcon from '../../../assets/images/figma/lock.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
+import { fonts } from '../../theme/typography';
 
 type InputFieldProps = {
   label: string;
@@ -82,7 +85,9 @@ const InputField: React.FC<InputFieldProps> = ({
       {label ? (
         <Text style={styles.label}>
           {label}
-          {required ? <Text style={styles.required}> *</Text> : null}
+          {required ? (
+            <Text style={styles.required}>{strings.common.requiredMark}</Text>
+          ) : null}
         </Text>
       ) : null}
 
@@ -112,14 +117,14 @@ const InputField: React.FC<InputFieldProps> = ({
             value.length > 0 && styles.inputFilled,
           ]}
           placeholder={placeholder}
-          placeholderTextColor="#AAAAAA"
+          placeholderTextColor={colors.border}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
           autoCorrect={false}
-          selectionColor="#0265FB"
+          selectionColor={colors.primary}
           textContentType={textContentType}
           autoComplete={autoComplete}
           maxLength={maxLength}
@@ -149,21 +154,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '400',
-    color: '#221E25',
+    fontFamily: fonts.regular,
+    color: colors.text,
     marginBottom: verticalScale(8),
   },
 
   required: {
-    color: '#FF2A2A',
+    color: colors.red,
   },
 
   inputBox: {
     width: '100%',
     minHeight: verticalScale(40),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#AAAAAA',
+    borderColor: colors.border,
     borderRadius: scale(6),
     flexDirection: 'row',
     alignItems: 'center',
@@ -171,16 +176,16 @@ const styles = StyleSheet.create({
   },
 
   inputBoxError: {
-    borderColor: '#D93025',
+    borderColor: colors.red,
   },
 
   inputBoxFocused: {
-    borderColor: '#221E25',
+    borderColor: colors.text,
   },
 
   inputBoxDisabled: {
-    backgroundColor: '#EEEEEE',
-    borderColor: '#EEEEEE',
+    backgroundColor: colors.disabled,
+    borderColor: colors.disabled,
   },
 
   input: {
@@ -188,13 +193,13 @@ const styles = StyleSheet.create({
     minHeight: verticalScale(38),
     paddingVertical: 0,
     fontSize: normalizeFont(14),
-    fontWeight: '400',
-    color: '#221E25',
+    fontFamily: fonts.regular,
+    color: colors.text,
   },
 
   inputFilled: {
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
 
   icon: {
@@ -229,7 +234,7 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(4),
     fontSize: normalizeFont(11),
     lineHeight: normalizeFont(15),
-    color: '#D93025',
+    color: colors.red,
   },
 });
 

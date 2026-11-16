@@ -3,6 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import VerifiedIcon from '../../../assets/images/figma/email_verified.svg';
 import { scale } from '../../utils/responsive';
+import colors from '../../theme/colors';
 
 type Props = {
   status: 'loading' | 'success' | 'error' | 'none';
@@ -16,7 +17,7 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
   if (status === 'loading') {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="small" color="#0265FB" />
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   }
@@ -36,7 +37,11 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
         isSuccess ? styles.success : styles.error,
       ]}
     >
-      <Icon name={isSuccess ? 'check' : 'x'} size={scale(12)} color="#FFFFFF" />
+      <Icon
+        name={isSuccess ? 'check' : 'x'}
+        size={scale(12)}
+        color={colors.white}
+      />
     </View>
   );
 };
@@ -54,11 +59,11 @@ const styles = StyleSheet.create({
   },
 
   success: {
-    backgroundColor: '#7B35FF',
+    backgroundColor: colors.primary,
   },
 
   error: {
-    backgroundColor: '#FF2A2A',
+    backgroundColor: colors.red,
   },
 });
 

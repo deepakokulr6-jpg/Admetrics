@@ -17,6 +17,10 @@ import GradientButton from '../../components/shared/GradientButton';
 import MapPreview from '../../components/clinic/MapPreview';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { sampleClinic } from '../../constants/mockData';
 
 const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
   navigation,
@@ -27,19 +31,19 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
     const nextErrors: Record<string, string> = {};
 
     if (!clinicName.trim()) {
-      nextErrors.clinicName = 'Clinic name is required.';
+      nextErrors.clinicName = strings.clinicForm.clinicNameIsRequired;
     }
     if (!medicalRegistrationNumber.trim()) {
       nextErrors.medicalRegistrationNumber =
-        'Medical registration number is required.';
+        strings.clinicForm.medicalRegistrationNumberIsRequired;
     }
 
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
       Alert.alert(
-        'Check clinic details',
-        'Please complete the required clinic information before continuing.',
+        strings.clinicForm.checkClinicDetails,
+        strings.clinicForm.pleaseCompleteTheRequiredClinic,
       );
       return;
     }
@@ -47,22 +51,25 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
     navigation.navigate('RegisterPersonal');
   };
 
-  const clinicName = 'Sai Shree Clinic';
-  const medicalRegistrationNumber = '195934';
-  const establishmentYear = '2023';
-  const licenceNumber = 'KMC/BLR/2024/45892';
-  const gstNumber = '29ABCDE1234F1Z5';
-  const panNumber = 'ABCDE1234F';
-  const address = 'No. 27, 2nd Main Road, Near';
-  const street = '1st Cross, Indhra Nagar';
-  const city = 'Mysore';
-  const state = 'Karnataka';
-  const pincode = '568902';
+  // Demo data until the API is connected (constants/mockData).
+  const {
+    clinicName,
+    medicalRegistrationNumber,
+    establishmentYear,
+    licenceNumber,
+    gstNumber,
+    panNumber,
+    address,
+    street,
+    city,
+    state,
+    pincode,
+  } = sampleClinic;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScreenHeader
-        title="Edit Details"
+        title={strings.editDetails.editDetails}
         onBackPress={() => navigation.goBack()}
       />
       <StepProgress currentStep={1} />
@@ -77,11 +84,11 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Clinic Information</Text>
+          <Text style={styles.heading}>{strings.common.clinicInformation}</Text>
 
           <InputField
-            label="Clinic Name"
-            placeholder="Enter clinic name"
+            label={strings.clinicForm.clinicName}
+            placeholder={strings.clinicForm.enterClinicName}
             value={clinicName}
             onChangeText={() => {}}
             required
@@ -90,8 +97,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Medical Registration Number"
-            placeholder="Enter medical registration number"
+            label={strings.clinicForm.medicalRegistrationNumber}
+            placeholder={strings.clinicForm.enterMedicalRegistrationNumber}
             value={medicalRegistrationNumber}
             onChangeText={() => {}}
             required
@@ -99,8 +106,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Establishment Year"
-            placeholder="e.g. 2023"
+            label={strings.clinicForm.establishmentYear}
+            placeholder={strings.clinicForm.eG2023}
             value={establishmentYear}
             onChangeText={() => {}}
             keyboardType="number-pad"
@@ -109,8 +116,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Registration/Licence Number"
-            placeholder="Enter registration or licence number"
+            label={strings.clinicForm.registrationLicenceNumber}
+            placeholder={strings.clinicForm.enterRegistrationOrLicenceNumber}
             value={licenceNumber}
             onChangeText={() => {}}
             required
@@ -119,8 +126,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="GST Number"
-            placeholder="Enter GST number"
+            label={strings.clinicForm.gstNumber}
+            placeholder={strings.clinicForm.enterGstNumber}
             value={gstNumber}
             onChangeText={() => {}}
             required
@@ -130,8 +137,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="PAN Number"
-            placeholder="Enter PAN number"
+            label={strings.clinicForm.panNumber}
+            placeholder={strings.clinicForm.enterPanNumber}
             value={panNumber}
             onChangeText={() => {}}
             autoCapitalize="characters"
@@ -140,8 +147,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Address"
-            placeholder="Enter clinic address"
+            label={strings.clinicForm.address}
+            placeholder={strings.clinicForm.enterClinicAddress}
             value={address}
             onChangeText={() => {}}
             autoCapitalize="sentences"
@@ -149,8 +156,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Street *"
-            placeholder="Enter street"
+            label={strings.clinicForm.street}
+            placeholder={strings.clinicForm.enterStreet}
             value={street}
             onChangeText={() => {}}
             autoCapitalize="sentences"
@@ -158,8 +165,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="City"
-            placeholder="Enter city"
+            label={strings.clinicForm.city}
+            placeholder={strings.clinicForm.enterCity}
             value={city}
             onChangeText={() => {}}
             autoCapitalize="words"
@@ -167,8 +174,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="State"
-            placeholder="Enter state"
+            label={strings.clinicForm.state}
+            placeholder={strings.clinicForm.enterState}
             value={state}
             onChangeText={() => {}}
             autoCapitalize="words"
@@ -176,8 +183,8 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           />
 
           <InputField
-            label="Pincode *"
-            placeholder="Enter pincode"
+            label={strings.clinicForm.pincode}
+            placeholder={strings.clinicForm.enterPincode}
             value={pincode}
             onChangeText={() => {}}
             keyboardType="number-pad"
@@ -188,7 +195,7 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
           <MapPreview />
 
           <View style={styles.button}>
-            <GradientButton title="Next" onPress={handleNext} />
+            <GradientButton title={strings.common.next} onPress={handleNext} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -199,7 +206,7 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -218,8 +225,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: normalizeFont(16),
     lineHeight: normalizeFont(19),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
 

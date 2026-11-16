@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 interface StepProgressProps {
   currentStep: number;
@@ -11,7 +13,7 @@ interface StepProgressProps {
 const STEPS = ['Clinic', 'Contact', 'Photos'];
 
 // Badge colours follow the brand gradient from left to right (Figma).
-const DONE_COLORS = ['#1D5FFB', '#644EFB', '#B43AFC'];
+const DONE_COLORS = [colors.stepBlue, colors.stepViolet, colors.secondary];
 const TICK =
   'M16.4877 9.00069C16.7057 9.21865 16.7057 9.57205 16.4877 9.79001L11.2784 14.9993C11.1738 15.104 11.0318 15.1628 10.8838 15.1628C10.7357 15.1628 10.5938 15.104 10.4891 14.9993L7.51235 12.0225C7.29439 11.8046 7.29439 11.4512 7.51235 11.2333C7.73032 11.0153 8.08371 11.0153 8.30168 11.2333L10.8838 13.8153L15.6984 9.00069C15.9164 8.78272 16.2697 8.78272 16.4877 9.00069Z';
 
@@ -32,12 +34,17 @@ const StepBadge: React.FC<{ index: number; done: boolean }> = ({
     {done ? (
       <>
         <Circle cx={12} cy={12} r={8} fill={DONE_COLORS[index]} />
-        <Path d={TICK} fill="#ECEFF1" fillRule="evenodd" clipRule="evenodd" />
+        <Path
+          d={TICK}
+          fill={colors.stepTick}
+          fillRule="evenodd"
+          clipRule="evenodd"
+        />
       </>
     ) : (
       <>
-        <Circle cx={12} cy={12} r={8} fill="#DDDDDD" />
-        <Circle cx={12} cy={12} r={3} fill="#FFFFFF" />
+        <Circle cx={12} cy={12} r={8} fill={colors.borderLight} />
+        <Circle cx={12} cy={12} r={3} fill={colors.white} />
       </>
     )}
   </Svg>
@@ -50,16 +57,13 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
     <View style={styles.container}>
       <View style={styles.track}>
         <LinearGradient
-          colors={['#0265FB', '#B43AFC']}
+          colors={[colors.primary, colors.secondary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.trackFill}
         />
         <View
-          style={[
-            styles.trackRest,
-            { left: fillEnd - TRACK_LEFT, right: 0 },
-          ]}
+          style={[styles.trackRest, { left: fillEnd - TRACK_LEFT, right: 0 }]}
         />
       </View>
 
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     bottom: 0,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.borderLight,
   },
   step: {
     position: 'absolute',
@@ -112,8 +116,8 @@ const styles = StyleSheet.create({
   label: {
     marginTop: scale(4),
     fontSize: normalizeFont(12),
-    fontWeight: '500',
-    color: '#221E25',
+    fontFamily: fonts.medium,
+    color: colors.text,
   },
 });
 

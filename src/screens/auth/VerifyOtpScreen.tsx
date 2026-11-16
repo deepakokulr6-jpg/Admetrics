@@ -28,6 +28,9 @@ import type {
   AuthStackParamList,
 } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
@@ -66,7 +69,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
     setError(null);
 
     if (!isEmailValid) {
-      setError('Please enter a valid email address.');
+      setError(strings.auth.pleaseEnterAValidEmail);
       return;
     }
 
@@ -77,14 +80,14 @@ function OtpVerification<RouteName extends OtpRouteName>({
       setOtpSent(true);
       setOtp('');
       Alert.alert(
-        'OTP Sent',
-        `This is a development build, so no email was sent. Use ${DEVELOPMENT_OTP} to reset your password.`,
+        strings.verifyOtp.otpSent,
+        strings.auth.devOtpNotEmailed(DEVELOPMENT_OTP),
       );
     } catch (sendError) {
       setError(
         sendError instanceof AuthError
           ? sendError.message
-          : 'Unable to send the OTP right now. Please try again.',
+          : strings.verifyOtp.unableToSendTheOtp,
       );
     } finally {
       setIsSubmitting(false);
@@ -96,19 +99,17 @@ function OtpVerification<RouteName extends OtpRouteName>({
     setError(null);
 
     if (!isEmailValid) {
-      setError('Please enter a valid email address.');
+      setError(strings.auth.pleaseEnterAValidEmail);
       return;
     }
 
     if (otp.length !== 6) {
-      setError('Please enter all six OTP digits.');
+      setError(strings.auth.pleaseEnterAllSixOtp);
       return;
     }
 
     if (!isReset && otp !== DEVELOPMENT_OTP) {
-      setError(
-        `Incorrect OTP. Use ${DEVELOPMENT_OTP} in this development build.`,
-      );
+      setError(strings.auth.devIncorrectOtp(DEVELOPMENT_OTP));
       return;
     }
 
@@ -134,7 +135,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
       setError(
         verifyError instanceof AuthError
           ? verifyError.message
-          : 'Unable to verify the OTP right now. Please try again.',
+          : strings.verifyOtp.unableToVerifyTheOtp,
       );
     } finally {
       setIsSubmitting(false);
@@ -175,19 +176,23 @@ function OtpVerification<RouteName extends OtpRouteName>({
             </View>
 
             <AuthHeader
-              title={isReset ? 'Forgot Password' : 'Create Your Account'}
+              title={
+                isReset
+                  ? strings.verifyOtp.forgotPassword
+                  : strings.common.createYourAccount
+              }
               subtitle={
                 isReset
-                  ? 'Enter your registered email to reset your password'
-                  : 'Enter your email address to get started'
+                  ? strings.verifyOtp.enterYourRegisteredEmailTo
+                  : strings.common.enterYourEmailAddressTo
               }
             />
 
             <View style={styles.form}>
               <InputField
                 containerStyle={styles.field}
-                label="Email ID"
-                placeholder="Enter your email"
+                label={strings.common.emailId}
+                placeholder={strings.common.enterYourEmail}
                 value={email}
                 onChangeText={handleEmailChange}
                 iconName="email"
@@ -195,26 +200,26 @@ function OtpVerification<RouteName extends OtpRouteName>({
                 textContentType="emailAddress"
                 rightElement={
                   isEmailValid ? (
-                    <InputStatusIcon status="success" />
+                    <InputStatusIcon status={'success'} />
                   ) : undefined
                 }
               />
 
               {isReset && otpSent ? (
                 <View style={styles.otpHeader}>
-                  <Text style={styles.otpLabel}>OTP</Text>
+                  <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
 
                   <Pressable
                     onPress={handleResendOtp}
                     hitSlop={10}
                     accessibilityRole="button"
-                    accessibilityLabel="Resend OTP"
+                    accessibilityLabel={strings.auth.resendOtp}
                   >
-                    <Text style={styles.resend}>Resend OTP</Text>
+                    <Text style={styles.resend}>{strings.auth.resendOtp}</Text>
                   </Pressable>
                 </View>
               ) : (
-                <Text style={styles.otpLabel}>OTP</Text>
+                <Text style={styles.otpLabel}>{strings.auth.otp}</Text>
               )}
 
               <OtpInput value={otp} onChangeText={setOtp} />
@@ -223,7 +228,11 @@ function OtpVerification<RouteName extends OtpRouteName>({
 
               <View style={styles.button}>
                 <GradientButton
-                  title={isReset && !otpSent ? 'Get OTP' : 'Verify'}
+                  title={
+                    isReset && !otpSent
+                      ? strings.auth.getOtp
+                      : strings.common.verify
+                  }
                   onPress={isReset && !otpSent ? handleSendOtp : handleVerify}
                   loading={isSubmitting}
                 />
@@ -233,11 +242,11 @@ function OtpVerification<RouteName extends OtpRouteName>({
                 <AuthFooter
                   text={
                     isReset
-                      ? 'Remember your password?'
-                      : 'Already have an account?'
+                      ? strings.verifyOtp.rememberYourPassword
+                      : strings.auth.alreadyHaveAnAccount
                   }
-                  highlight="Log In"
-                  onPress={() => navigation.navigate('Login')}
+                  highlight={strings.auth.logIn}
+                  onPress={() => navigation.popTo('Login')}
                 />
               </View>
             </View>
@@ -268,7 +277,7 @@ export const ForgotPasswordScreen: React.FC<
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -313,15 +322,15 @@ const styles = StyleSheet.create({
   otpLabel: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(8),
   },
 
   resend: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '600',
-    color: '#0265FB',
+    fontFamily: fonts.semibold,
+    color: colors.primary,
     marginBottom: verticalScale(8),
   },
 
@@ -329,8 +338,8 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(12),
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '500',
-    color: '#FF2A2A',
+    fontFamily: fonts.medium,
+    color: colors.red,
     textAlign: 'center',
   },
 

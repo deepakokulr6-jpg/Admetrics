@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type SuccessMessageProps = {
   title: string;
@@ -30,8 +32,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: normalizeFont(20),
     lineHeight: normalizeFont(26),
-    fontWeight: '700',
-    color: '#221E25',
+    fontFamily: fonts.bold,
+    color: colors.text,
     textAlign: 'center',
     marginBottom: verticalScale(8),
   },
@@ -39,8 +41,8 @@ const styles = StyleSheet.create({
   description: {
     fontSize: normalizeFont(14),
     lineHeight: normalizeFont(20),
-    fontWeight: '400',
-    color: '#666666',
+    fontFamily: fonts.regular,
+    color: colors.secondaryText,
     textAlign: 'center',
     paddingHorizontal: scale(8),
   },

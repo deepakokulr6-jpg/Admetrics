@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
+import strings from '../constants/strings';
 
 /**
  * TEMPORARY LOCAL AUTHENTICATION
@@ -119,9 +120,7 @@ const readAccounts = async (): Promise<StoredAccount[]> => {
     return Array.isArray(parsed) ? (parsed as StoredAccount[]) : [];
   } catch (error) {
     console.warn('[authService] Unable to read local accounts', error);
-    throw new AuthError(
-      'Unable to access local storage. Please restart the app and try again.',
-    );
+    throw new AuthError(strings.authService.unableToAccessLocalStorage);
   }
 };
 
@@ -130,7 +129,7 @@ const writeAccounts = async (accounts: StoredAccount[]): Promise<void> => {
     await AsyncStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
   } catch (error) {
     console.warn('[authService] Unable to save local accounts', error);
-    throw new AuthError('Unable to save your account on this device.');
+    throw new AuthError(strings.authService.unableToSaveYourAccount);
   }
 };
 
@@ -207,9 +206,7 @@ export const registerAccount = async (
   const accounts = await readAccounts();
 
   if (findAccount(accounts, normalizedEmail)) {
-    throw new AuthError(
-      'An account with this email already exists. Please sign in instead.',
-    );
+    throw new AuthError(strings.authService.anAccountWithThisEmail);
   }
 
   const account: StoredAccount = {
@@ -238,9 +235,7 @@ export const requestPasswordReset = async (email: string): Promise<void> => {
   const accounts = await readAccounts();
 
   if (!findAccount(accounts, email)) {
-    throw new AuthError(
-      'No account found for this email. Please create an account first.',
-    );
+    throw new AuthError(strings.authService.noAccountFoundForThis);
   }
 };
 
@@ -257,13 +252,11 @@ export const verifyPasswordResetOtp = async (
   const accounts = await readAccounts();
 
   if (!findAccount(accounts, normalizedEmail)) {
-    throw new AuthError(
-      'No account found for this email. Please create an account first.',
-    );
+    throw new AuthError(strings.authService.noAccountFoundForThis);
   }
 
   if (otp.trim() !== DEVELOPMENT_OTP) {
-    throw new AuthError('Incorrect OTP. Please try again.');
+    throw new AuthError(strings.authService.incorrectOtpPleaseTryAgain);
   }
 
   const token = createToken();
@@ -294,9 +287,7 @@ export const resetPassword = async (
     ticket.expiresAt <= Date.now()
   ) {
     passwordResetTickets.delete(normalizedEmail);
-    throw new AuthError(
-      'Your password reset session has expired. Please start again.',
-    );
+    throw new AuthError(strings.authService.yourPasswordResetSessionHas);
   }
 
   const accounts = await readAccounts();
@@ -306,9 +297,7 @@ export const resetPassword = async (
 
   if (accountIndex === -1) {
     passwordResetTickets.delete(normalizedEmail);
-    throw new AuthError(
-      'No account found for this email. Please create an account first.',
-    );
+    throw new AuthError(strings.authService.noAccountFoundForThis);
   }
 
   const updatedAccounts = [...accounts];
@@ -332,13 +321,11 @@ export const login = async (
   const account = findAccount(accounts, email);
 
   if (!account) {
-    throw new AuthError(
-      'No account found for this email. Please create an account first.',
-    );
+    throw new AuthError(strings.authService.noAccountFoundForThis);
   }
 
   if (account.passwordHash !== hashPassword(email, password)) {
-    throw new AuthError('Incorrect password. Please try again.');
+    throw new AuthError(strings.authService.incorrectPasswordPleaseTryAgain);
   }
 
   await persistSession({

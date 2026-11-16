@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,29 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
-import type { AppScreenProps } from '../../navigation/types';
+import type { TabScreenProps } from '../../navigation/types';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { sampleSupportRequests } from '../../constants/mockData';
 
-const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState<TabName>('Support');
-
-  const handleTabPress = (tab: TabName) => {
-    setActiveTab(tab);
-
-    if (tab === 'Clinics') {
-      navigation.navigate('Home');
-    } else if (tab === 'Statement') {
-      navigation.navigate('Statement');
-    } else if (tab === 'Revenue') {
-      navigation.navigate('Revenue');
-    } else if (tab === 'Support') {
-      // Already on Support screen.
-    }
-  };
-
+const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
@@ -49,10 +34,11 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
       >
         {/* Header Title Section */}
         <View style={styles.headerTitleSection}>
-          <Text style={styles.mainTitle}>How can we help you?</Text>
+          <Text style={styles.mainTitle}>
+            {strings.support.howCanWeHelpYou}
+          </Text>
           <Text style={styles.subtitle}>
-            Get assistance with your AdMetrics devices, installation and
-            technical issues.
+            {strings.support.getAssistanceWithYourAdmetrics}
           </Text>
         </View>
 
@@ -60,19 +46,23 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         <View style={styles.card}>
           <View style={styles.cardTopRow}>
             <View style={styles.iconContainer}>
-              <Icon name="alert-circle" size={scale(24)} color="#221E25" />
+              <Icon name="alert-circle" size={scale(24)} color={colors.text} />
             </View>
           </View>
-          <Text style={styles.cardTitle}>Raise a Complaint</Text>
+          <Text style={styles.cardTitle}>
+            {strings.support.raiseAComplaint}
+          </Text>
           <Text style={styles.cardDescription}>
-            Report device issues, TV offline status or technical problems.
+            {strings.support.reportDeviceIssuesTvOffline}
           </Text>
           <Pressable style={styles.actionLinkRow} accessibilityRole="button">
-            <Text style={styles.actionLinkText}>Create Complaint</Text>
+            <Text style={styles.actionLinkText}>
+              {strings.support.createComplaint}
+            </Text>
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color="#0265FB"
+              color={colors.primary}
               style={styles.arrowIcon}
             />
           </Pressable>
@@ -82,19 +72,23 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         <View style={styles.card}>
           <View style={styles.cardTopRow}>
             <View style={styles.iconContainer}>
-              <Icon name="monitor" size={scale(24)} color="#221E25" />
+              <Icon name="monitor" size={scale(24)} color={colors.text} />
             </View>
           </View>
-          <Text style={styles.cardTitle}>Installation Request</Text>
+          <Text style={styles.cardTitle}>
+            {strings.support.installationRequest}
+          </Text>
           <Text style={styles.cardDescription}>
-            Request new device installation or relocation.
+            {strings.support.requestNewDeviceInstallationOr}
           </Text>
           <Pressable style={styles.actionLinkRow} accessibilityRole="button">
-            <Text style={styles.actionLinkText}>Request Installation</Text>
+            <Text style={styles.actionLinkText}>
+              {strings.support.requestInstallation}
+            </Text>
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color="#0265FB"
+              color={colors.primary}
               style={styles.arrowIcon}
             />
           </Pressable>
@@ -103,69 +97,61 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
         {/* 3. Recent Requests Section (Clean flat layout matching Figma) */}
         <View style={styles.recentRequestsSection}>
           <View style={styles.recentRequestsHeader}>
-            <Text style={styles.sectionHeading}>Recent Requests</Text>
+            <Text style={styles.sectionHeading}>
+              {strings.support.recentRequests}
+            </Text>
             <Pressable accessibilityRole="button">
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>{strings.common.viewAll}</Text>
             </Pressable>
           </View>
 
-          {/* Request Item 1 */}
-          <View style={styles.requestItem}>
-            <View style={styles.requestInfo}>
-              <Text style={styles.requestTitle}>TV Display Not Working</Text>
-              <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1024 · 02 Nov 2026
+          {sampleSupportRequests.map((request, index) => (
+            <View key={`${request.ticket}-${index}`} style={styles.requestItem}>
+              <View style={styles.requestInfo}>
+                <Text style={styles.requestTitle}>{request.title}</Text>
+                <Text style={styles.requestTicketMeta}>
+                  {strings.support.ticketLine(request.ticket, request.date)}
+                </Text>
+              </View>
+              <Text
+                style={
+                  request.resolved
+                    ? styles.statusResolved
+                    : styles.statusInProgress
+                }
+              >
+                {request.resolved
+                  ? strings.support.resolved
+                  : strings.support.inProgress}
               </Text>
             </View>
-            <Text style={styles.statusInProgress}>In Progress</Text>
-          </View>
-
-          {/* Request Item 2 */}
-          <View style={styles.requestItem}>
-            <View style={styles.requestInfo}>
-              <Text style={styles.requestTitle}>New Device Installation</Text>
-              <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1021 · 28 Oct 2026
-              </Text>
-            </View>
-            <Text style={styles.statusResolved}>Resolved</Text>
-          </View>
-
-          {/* Request Item 3 */}
-          <View style={styles.requestItem}>
-            <View style={styles.requestInfo}>
-              <Text style={styles.requestTitle}>TV Display Not Working</Text>
-              <Text style={styles.requestTicketMeta}>
-                Ticket #ADM1024 · 02 Nov 2026
-              </Text>
-            </View>
-            <Text style={styles.statusResolved}>Resolved</Text>
-          </View>
+          ))}
         </View>
 
         {/* 4. Immediate Assistance Dark Banner Card */}
         <View style={styles.assistanceCard}>
-          <Text style={styles.assistanceTitle}>Need immediate assistance?</Text>
+          <Text style={styles.assistanceTitle}>
+            {strings.support.needImmediateAssistance}
+          </Text>
           <Text style={styles.assistanceDescription}>
-            Contact our support team for additional help.
+            {strings.support.contactOurSupportTeamFor}
           </Text>
           <Pressable
             style={styles.assistanceButtonRow}
             accessibilityRole="button"
           >
-            <Text style={styles.assistanceButtonText}>Contact Support</Text>
+            <Text style={styles.assistanceButtonText}>
+              {strings.support.contactSupport}
+            </Text>
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color="#FFFFFF"
+              color={colors.white}
               style={styles.arrowIcon}
             />
           </Pressable>
         </View>
       </ScrollView>
-
-      {/* Bottom Navigation */}
-      <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
     </SafeAreaView>
   );
 };
@@ -173,7 +159,7 @@ const SupportScreen: React.FC<AppScreenProps<'Support'>> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F3EF',
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -188,21 +174,21 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(8),
   },
   subtitle: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(15),
-    color: '#221E25',
+    color: colors.text,
   },
   // Figma: white card, 1px #DDD border, 6px radius, 16px padding.
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: scale(6),
     borderWidth: 1,
-    borderColor: '#DDDDDD',
+    borderColor: colors.borderLight,
     padding: scale(16),
     marginBottom: verticalScale(16),
   },
@@ -215,14 +201,14 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(8),
   },
   cardDescription: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(15),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: scale(16),
   },
   actionLinkRow: {
@@ -231,8 +217,8 @@ const styles = StyleSheet.create({
   },
   actionLinkText: {
     fontSize: normalizeFont(14),
-    fontWeight: '700',
-    color: '#0265FB',
+    fontFamily: fonts.bold,
+    color: colors.primary,
     marginRight: scale(8),
   },
   arrowIcon: {
@@ -250,13 +236,13 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   viewAllText: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#0265FB',
+    fontFamily: fonts.semibold,
+    color: colors.primary,
     textDecorationLine: 'underline',
   },
   requestItem: {
@@ -271,38 +257,38 @@ const styles = StyleSheet.create({
   },
   requestTitle: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(8),
   },
   requestTicketMeta: {
     fontSize: normalizeFont(12),
-    color: '#221E25',
+    color: colors.text,
   },
   statusInProgress: {
     fontSize: normalizeFont(12),
-    color: '#F25C5C',
+    color: colors.pending,
   },
   statusResolved: {
     fontSize: normalizeFont(12),
-    color: '#14AB00',
+    color: colors.green,
   },
   // Figma: dark slate banner, 12px radius.
   assistanceCard: {
-    backgroundColor: '#4C5263',
+    backgroundColor: colors.slate,
     borderRadius: scale(12),
     padding: scale(16),
     marginBottom: verticalScale(12),
   },
   assistanceTitle: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontFamily: fonts.semibold,
+    color: colors.white,
     marginBottom: scale(8),
   },
   assistanceDescription: {
     fontSize: normalizeFont(12),
-    color: '#C9CCD3',
+    color: colors.slateText,
     marginBottom: scale(16),
   },
   assistanceButtonRow: {
@@ -311,8 +297,8 @@ const styles = StyleSheet.create({
   },
   assistanceButtonText: {
     fontSize: normalizeFont(14),
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontFamily: fonts.bold,
+    color: colors.white,
     marginRight: scale(8),
   },
 });

@@ -3,10 +3,9 @@ import { Text, TextProps, TextStyle } from 'react-native';
 
 import colors from '../../theme/colors';
 import {
-  FONT_FAMILY,
-  FontWeightName,
+  FontName,
   TextVariant,
-  fontWeights,
+  fonts,
   textVariants,
 } from '../../theme/typography';
 import { normalizeFont } from '../../utils/responsive';
@@ -15,16 +14,17 @@ export type AppTextProps = TextProps & {
   /** A Figma text style – sets size, weight and colour in one go. */
   variant?: TextVariant;
   /** Override the weight: 'regular' | 'medium' | 'semibold' | 'bold'. */
-  weight?: FontWeightName;
+  weight?: FontName;
   /** Override the size (in Figma px; scaled for the screen). */
   size?: number;
-  /** Colour value or a key from theme/colors, e.g. "red" or "#FF2A2A". */
+  /** Colour value or a key from theme/colors, e.g. "red" or colors.red. */
   color?: keyof typeof colors | string;
   align?: TextStyle['textAlign'];
 };
 
 /**
- * The app's text component. Always renders Inter.
+ * The app's text component. Renders the Inter font file for the chosen
+ * weight (Inter-Regular / -Medium / -SemiBold / -Bold).
  *
  *   <AppText variant="heading">Clinic Information</AppText>
  *   <AppText variant="label" color="red">*</AppText>
@@ -45,14 +45,13 @@ const AppText: React.FC<AppTextProps> = ({
     {...rest}
     style={[
       textVariants[variant],
-      weight ? { fontWeight: fontWeights[weight] } : null,
+      weight ? { fontFamily: fonts[weight] } : null,
       size ? { fontSize: normalizeFont(size) } : null,
       color
         ? { color: (colors as Record<string, string>)[color] ?? color }
         : null,
       align ? { textAlign: align } : null,
       style,
-      { fontFamily: FONT_FAMILY },
     ]}
   />
 );

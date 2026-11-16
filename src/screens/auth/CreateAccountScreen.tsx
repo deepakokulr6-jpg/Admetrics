@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Alert,
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,11 +19,16 @@ import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
 import { useAuth } from '../../contexts/AuthContext';
+import { DEVELOPMENT_OTP } from '../../services/authService';
 import { isValidEmail } from '../../utils/validation';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
-const TEST_OTP = '123456';
+// No email service yet: the local auth flow accepts this fixed code.
+const TEST_OTP = DEVELOPMENT_OTP;
 
 const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   navigation,
@@ -36,22 +40,24 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   const [otpSent, setOtpSent] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   const isEmailValid = isValidEmail(email);
 
-  const showDevelopmentOtp = () => {
-    Alert.alert(
-      'OTP Sent',
-      `This is a development build, so no email was sent. Use ${TEST_OTP} to verify your email.`,
+  const showOtpSent = (target: string) => {
+    setInfo(
+      strings.auth.otpSentTo(target) +
+        (__DEV__ ? strings.auth.testCode(TEST_OTP) : ''),
     );
   };
 
   const handleGetOtp = async () => {
     const trimmedEmail = email.trim();
     setError(null);
+    setInfo(null);
 
     if (!isValidEmail(trimmedEmail)) {
-      setError('Please enter a valid email address.');
+      setError(strings.auth.pleaseEnterAValidEmail);
       return;
     }
 
@@ -61,20 +67,16 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
       const alreadyRegistered = await isEmailRegistered(trimmedEmail);
 
       if (alreadyRegistered) {
-        setError(
-          'An account with this email already exists. Please log in instead.',
-        );
+        setError(strings.createAccount.anAccountWithThisEmail);
         return;
       }
 
+      // Stay on this screen: unlock the OTP boxes and tell the user.
       setOtpSent(true);
       setOtp('');
-      showDevelopmentOtp();
-      navigation.navigate('VerifyOtp', { email: trimmedEmail });
+      showOtpSent(trimmedEmail);
     } catch {
-      setError(
-        'Unable to check this email right now. Please try again in a moment.',
-      );
+      setError(strings.createAccount.unableToCheckThisEmail);
     } finally {
       setIsChecking(false);
     }
@@ -84,17 +86,17 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
     setError(null);
 
     if (!isEmailValid) {
-      setError('Please enter a valid email address.');
+      setError(strings.auth.pleaseEnterAValidEmail);
       return;
     }
 
     if (otp.length !== 6) {
-      setError('Please enter all six OTP digits.');
+      setError(strings.auth.pleaseEnterAllSixOtp);
       return;
     }
 
     if (otp !== TEST_OTP) {
-      setError(`Incorrect OTP. Use ${TEST_OTP} in this development build.`);
+      setError(strings.createAccount.incorrectOtpPleaseCheckThe);
       return;
     }
 
@@ -107,7 +109,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   const handleResendOtp = () => {
     setOtp('');
     setError(null);
-    showDevelopmentOtp();
+    showOtpSent(email.trim());
   };
 
   return (
@@ -130,19 +132,20 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
             </View>
 
             <AuthHeader
-              title="Create Your Account"
-              subtitle="Enter your email address to get started"
+              title={strings.common.createYourAccount}
+              subtitle={strings.common.enterYourEmailAddressTo}
             />
 
             <View style={styles.form}>
               <InputField
                 containerStyle={styles.field}
-                label="Email ID"
-                placeholder="Enter your email"
+                label={strings.common.emailId}
+                placeholder={strings.common.enterYourEmail}
                 value={email}
                 onChangeText={value => {
                   setEmail(value);
                   setError(null);
+                  setInfo(null);
                   setOtpSent(false);
                   setOtp('');
                 }}
@@ -151,16 +154,18 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
                 textContentType="emailAddress"
                 rightElement={
                   isChecking ? (
-                    <InputStatusIcon status="loading" />
+                    <InputStatusIcon status={'loading'} />
                   ) : isEmailValid ? (
-                    <InputStatusIcon status="success" />
+                    <InputStatusIcon status={'success'} />
                   ) : undefined
                 }
               />
 
               <View style={styles.otpHeader}>
-                <Text style={[styles.otpLabel, !otpSent && styles.otpLabelDisabled]}>
-                  OTP
+                <Text
+                  style={[styles.otpLabel, !otpSent && styles.otpLabelDisabled]}
+                >
+                  {strings.auth.otp}
                 </Text>
 
                 {otpSent ? (
@@ -168,24 +173,21 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
                     onPress={handleResendOtp}
                     hitSlop={10}
                     accessibilityRole="button"
-                    accessibilityLabel="Resend OTP"
+                    accessibilityLabel={strings.auth.resendOtp}
                   >
-                    <Text style={styles.resend}>Resend OTP</Text>
+                    <Text style={styles.resend}>{strings.auth.resendOtp}</Text>
                   </Pressable>
                 ) : null}
               </View>
 
-              <OtpInput
-                value={otp}
-                onChangeText={setOtp}
-                disabled={!otpSent}
-              />
+              <OtpInput value={otp} onChangeText={setOtp} disabled={!otpSent} />
 
+              {info && !error ? <Text style={styles.info}>{info}</Text> : null}
               {error ? <Text style={styles.error}>{error}</Text> : null}
 
               <View style={styles.button}>
                 <GradientButton
-                  title={otpSent ? 'Verify' : 'Get OTP'}
+                  title={otpSent ? strings.common.verify : strings.auth.getOtp}
                   onPress={otpSent ? handleVerify : handleGetOtp}
                   loading={isChecking}
                 />
@@ -193,9 +195,9 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
 
               <View style={styles.footer}>
                 <AuthFooter
-                  text="Already have an account?"
-                  highlight="Log In"
-                  onPress={() => navigation.navigate('Login')}
+                  text={strings.auth.alreadyHaveAnAccount}
+                  highlight={strings.auth.logIn}
+                  onPress={() => navigation.popTo('Login')}
                 />
               </View>
             </View>
@@ -209,7 +211,7 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -254,26 +256,34 @@ const styles = StyleSheet.create({
   otpLabel: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    color: '#221E25',
+    color: colors.text,
   },
 
   otpLabelDisabled: {
-    color: '#DDDDDD',
+    color: colors.borderLight,
   },
 
   resend: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '600',
-    color: '#0265FB',
+    fontFamily: fonts.semibold,
+    color: colors.primary,
   },
 
   error: {
     marginTop: verticalScale(12),
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '500',
-    color: '#FF2A2A',
+    fontFamily: fonts.medium,
+    color: colors.red,
+    textAlign: 'center',
+  },
+
+  info: {
+    marginTop: verticalScale(12),
+    fontSize: normalizeFont(12),
+    lineHeight: normalizeFont(16),
+    color: colors.green,
     textAlign: 'center',
   },
 

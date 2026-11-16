@@ -3,6 +3,9 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Placeholder from '../../../assets/images/figma/photo_placeholder.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import strings from '../../constants/strings';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 interface PhotoUploadProps {
   title: string;
@@ -29,7 +32,11 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
       onPress={onPress}
       style={styles.box}
       accessibilityRole="button"
-      accessibilityLabel={imageUri ? `Replace ${title} photo` : `Upload ${title} photo`}
+      accessibilityLabel={
+        imageUri
+          ? strings.photoUploadItem.replacePhoto(title)
+          : strings.photoUploadItem.uploadPhoto(title)
+      }
     >
       {imageUri ? (
         <>
@@ -40,7 +47,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
           />
           <View style={styles.overlay} pointerEvents="none">
             <Svg width={scale(24)} height={scale(24)} viewBox="0 0 24 24">
-              <Path d={PLUS} fill="#AAAAAA" />
+              <Path d={PLUS} fill={colors.border} />
             </Svg>
           </View>
         </>
@@ -58,8 +65,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(15),
-    fontWeight: '500',
-    color: '#221E25',
+    fontFamily: fonts.medium,
+    color: colors.text,
     marginBottom: verticalScale(8),
   },
   box: {

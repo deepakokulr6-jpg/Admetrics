@@ -2,6 +2,8 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import GradientText from '../shared/GradientText';
 import { normalizeFont, verticalScale } from '../../utils/responsive';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 type ForgotPasswordLinkProps = {
   onPress: () => void;
@@ -13,10 +15,12 @@ const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({ onPress }) => (
     onPress={onPress}
     activeOpacity={0.7}
     accessibilityRole="button"
-    accessibilityLabel="Forgot Password?"
+    accessibilityLabel={strings.auth.forgotPassword}
     style={styles.container}
   >
-    <GradientText style={styles.text}>Forgot Password?</GradientText>
+    <GradientText style={styles.text}>
+      {strings.auth.forgotPassword}
+    </GradientText>
   </TouchableOpacity>
 );
 
@@ -27,7 +31,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: normalizeFont(12),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
 });
 

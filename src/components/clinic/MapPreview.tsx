@@ -2,6 +2,8 @@ import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapPin from '../../../assets/images/figma/map_pin.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
 
 type MapPreviewProps = {
   onPress?: () => void;
@@ -11,12 +13,12 @@ type MapPreviewProps = {
 // and a 24px pin in the middle.
 const MapPreview: React.FC<MapPreviewProps> = ({ onPress }) => (
   <View>
-    <Text style={styles.label}>Locate on Map *</Text>
+    <Text style={styles.label}>{strings.mapPreview.locateOnMap}</Text>
     <Pressable
       onPress={onPress}
       style={styles.map}
       accessibilityRole="button"
-      accessibilityLabel="Open clinic address in Google Maps"
+      accessibilityLabel={strings.mapPreview.openClinicAddressInGoogle}
     >
       <Image
         source={require('../../../assets/images/figma/map.png')}
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(15),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(8),
   },
   map: {

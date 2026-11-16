@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, type LayoutChangeEvent } from 'react-native';
 import Svg, {
   Circle,
   Defs,
@@ -7,8 +7,12 @@ import Svg, {
   LinearGradient,
   Path,
   Stop,
+  Text as SvgText,
 } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import { useTween } from '../../hooks/useTween';
 
 type Props = {
   period: string;
@@ -29,69 +33,115 @@ const chartData: Record<string, { days: string[]; values: number[] }> = {
   },
 };
 
+// Grid runs 1K (bottom) → 6K (top); values are in thousands.
+const Y_MIN = 1;
+const Y_MAX = 6;
+const Y_TICKS = [6, 5, 4, 3, 2, 1];
+
 const RevenueChart: React.FC<Props> = ({ period }) => {
   const data = chartData[period] ?? chartData['7 days'];
+  const [width, setWidth] = useState(0);
 
-  const chartWidth = 280;
-  const chartHeight = 190;
-  const top = 8;
-  const bottom = 12;
-  const left = 0;
-  const right = 0;
+  // Every time the chart opens or the period changes, it grows from the
+  // baseline: the points rise while the line draws left → right and each dot
+  // pops in as the line reaches it.
+  const progress = useTween(period, 800);
 
-  const plotWidth = chartWidth - left - right;
-  const plotHeight = chartHeight - top - bottom;
+  // Everything (labels, grid, line, dots) shares one coordinate space in real
+  // pixels, so each label sits exactly on its grid line / under its point.
+  const height = verticalScale(190);
+  const axisWidth = scale(28); // room for "6K"
+  const dotR = scale(5);
+  const plotLeft = axisWidth + dotR + scale(4);
+  const plotRight = width - dotR - scale(2);
+  const plotTop = dotR + scale(4);
+  const xLabelGap = scale(22);
+  const plotBottom = height - xLabelGap;
 
-  const points = data.values.map((value, index) => {
-    const x = left + (index * plotWidth) / (data.values.length - 1);
+  const yFor = (value: number) =>
+    plotBottom - ((value - Y_MIN) / (Y_MAX - Y_MIN)) * (plotBottom - plotTop);
+  const lastIndex = data.values.length - 1;
+  const xFor = (index: number) =>
+    plotLeft + (index * (plotRight - plotLeft)) / lastIndex;
 
-    const y = top + plotHeight - (value / 6) * plotHeight;
-
-    return { x, y };
-  });
+  const points = data.values.map((value, index) => ({
+    x: xFor(index),
+    y: yFor(Y_MIN + (value - Y_MIN) * progress),
+  }));
 
   const pathData = points
     .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
     .join(' ');
 
+  const lineLength = points.reduce(
+    (total, point, index) =>
+      index === 0
+        ? 0
+        : total +
+          Math.hypot(
+            point.x - points[index - 1].x,
+            point.y - points[index - 1].y,
+          ),
+    0,
+  );
+  const dotRadius = (index: number) =>
+    dotR * Math.min(1, Math.max(0, (progress * lastIndex - index) * 2 + 1));
+
+  const labelSize = normalizeFont(10);
+
+  const onLayout = (event: LayoutChangeEvent) =>
+    setWidth(event.nativeEvent.layout.width);
+
   return (
     <View style={styles.card}>
-      <View style={styles.chartContainer}>
-        <View style={styles.yAxis}>
-          {['6K', '5K', '4K', '3K', '2K', '1K'].map((label, index) => (
-            <View key={index} style={styles.yAxisRow}>
-              <Text style={styles.axisText}>{label}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.svgWrapper}>
-          <Svg
-            height={verticalScale(chartHeight)}
-            width="100%"
-            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-          >
+      <View onLayout={onLayout} style={{ height }}>
+        {width > 0 && (
+          <Svg width={width} height={height}>
             <Defs>
               <LinearGradient id="line" x1="0" y1="0" x2="1" y2="0">
-                <Stop offset="0" stopColor="#0265FB" />
-                <Stop offset="1" stopColor="#B43AFC" />
+                <Stop offset="0" stopColor={colors.primary} />
+                <Stop offset="1" stopColor={colors.secondary} />
               </LinearGradient>
             </Defs>
-            {[1, 2, 3, 4, 5, 6].map(value => {
-              const y = top + plotHeight - (value / 6) * plotHeight;
 
+            {Y_TICKS.map(tick => {
+              const y = yFor(tick);
               return (
-                <Line
-                  key={value}
-                  x1={0}
-                  y1={y}
-                  x2={chartWidth}
-                  y2={y}
-                  stroke="#EEEEEE"
-                  strokeWidth={1}
-                />
+                <React.Fragment key={tick}>
+                  <SvgText
+                    x={0}
+                    y={y + labelSize * 0.35}
+                    fontSize={labelSize}
+                    fontFamily={fonts.medium}
+                    fill={colors.text}
+                  >
+                    {`${tick}K`}
+                  </SvgText>
+                  <Line
+                    x1={axisWidth}
+                    y1={y}
+                    x2={width}
+                    y2={y}
+                    stroke={colors.disabled}
+                    strokeWidth={1}
+                  />
+                </React.Fragment>
               );
             })}
+
+            {data.days.map((day, index) => (
+              <SvgText
+                key={day}
+                x={xFor(index)}
+                y={height - scale(4)}
+                fontSize={labelSize}
+                fontFamily={fonts.semibold}
+                fill={colors.text}
+                textAnchor="middle"
+              >
+                {day}
+              </SvgText>
+            ))}
 
             <Path
               d={pathData}
@@ -100,6 +150,8 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
               strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
+              strokeDasharray={[lineLength, lineLength]}
+              strokeDashoffset={lineLength * (1 - progress)}
             />
 
             {points.map((point, index) => (
@@ -107,20 +159,12 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
                 key={index}
                 cx={point.x}
                 cy={point.y}
-                r={5}
-                fill="#111111"
+                r={dotRadius(index)}
+                fill={colors.textStrong}
               />
             ))}
           </Svg>
-        </View>
-      </View>
-
-      <View style={styles.xAxis}>
-        {data.days.map((day, index) => (
-          <Text key={index} style={styles.xAxisText}>
-            {day}
-          </Text>
-        ))}
+        )}
       </View>
     </View>
   );
@@ -129,54 +173,9 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: scale(12),
     padding: scale(16),
-  },
-
-  chartContainer: {
-    flexDirection: 'row',
-    height: verticalScale(220),
-    alignItems: 'center',
-  },
-
-  yAxis: {
-    width: scale(32),
-    height: '100%',
-    justifyContent: 'space-between',
-    paddingVertical: verticalScale(10),
-  },
-
-  yAxisRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  axisText: {
-    fontSize: normalizeFont(10),
-    fontWeight: '500',
-    color: '#221E25',
-    width: scale(24),
-  },
-
-  svgWrapper: {
-    flex: 1,
-    height: '100%',
-    justifyContent: 'center',
-  },
-
-  xAxis: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: scale(28),
-    marginTop: verticalScale(4),
-  },
-
-  xAxisText: {
-    fontSize: normalizeFont(10),
-    fontWeight: '600',
-    color: '#221E25',
-    textAlign: 'center',
   },
 });
 

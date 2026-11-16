@@ -11,6 +11,7 @@ import ConfirmPasswordScreen from '../screens/auth/ConfirmPasswordScreen';
 import AccountCreatedScreen from '../screens/account/AccountCreatedScreen';
 
 import type { AuthStackParamList } from './types';
+import colors from '../theme/colors';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -18,11 +19,11 @@ export const navigationTheme: Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#0265FB',
-    background: '#FFFFFF',
-    card: '#FFFFFF',
-    text: '#221E25',
-    border: '#EEEEEE',
+    primary: colors.primary,
+    background: colors.white,
+    card: colors.white,
+    text: colors.text,
+    border: colors.disabled,
   },
 };
 
@@ -33,7 +34,7 @@ const AuthNavigator = () => {
       screenOptions={{
         headerShown: false,
         animation: 'slide_from_right',
-        contentStyle: { backgroundColor: '#FFFFFF' },
+        contentStyle: { backgroundColor: colors.white },
       }}
     >
       <Stack.Screen name="Login" component={WelcomeBackScreen} />
@@ -44,7 +45,7 @@ const AuthNavigator = () => {
       <Stack.Screen
         name="AccountCreated"
         component={AccountCreatedScreen}
-        options={{ animation: 'fade' }}
+        options={{ animation: 'fade', gestureEnabled: false }}
       />
     </Stack.Navigator>
   );

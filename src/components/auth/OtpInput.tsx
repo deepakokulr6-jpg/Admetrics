@@ -1,6 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { normalizeFont, scale } from '../../utils/responsive';
+import strings from '../../constants/strings';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type OtpInputProps = {
   value: string;
@@ -75,7 +78,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
           ]}
           editable={!disabled}
           placeholder={disabled ? '*' : undefined}
-          placeholderTextColor="#DDDDDD"
+          placeholderTextColor={colors.borderLight}
           value={value[index] || ''}
           onChangeText={text => handleChange(text, index)}
           onKeyPress={event => handleKeyPress(event, index)}
@@ -86,8 +89,8 @@ const OtpInput: React.FC<OtpInputProps> = ({
           textAlign="center"
           autoCorrect={false}
           autoComplete="one-time-code"
-          selectionColor="#0265FB"
-          accessibilityLabel={`OTP digit ${index + 1}`}
+          selectionColor={colors.primary}
+          accessibilityLabel={strings.auth.otpDigit(index + 1)}
         />
       ))}
     </View>
@@ -106,25 +109,25 @@ const styles = StyleSheet.create({
     width: scale(40),
     height: scale(40),
     borderWidth: 1,
-    borderColor: '#AAAAAA',
+    borderColor: colors.border,
     borderRadius: scale(6),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     padding: 0,
     fontSize: normalizeFont(14),
-    fontWeight: '400',
-    color: '#221E25',
+    fontFamily: fonts.regular,
+    color: colors.text,
   },
 
   otpBoxFocused: {
-    borderColor: '#0265FB',
+    borderColor: colors.primary,
   },
 
   otpBoxFilled: {
-    fontWeight: '600',
+    fontFamily: fonts.semibold,
   },
   otpBoxDisabled: {
-    borderColor: '#DDDDDD',
-    fontWeight: '600',
+    borderColor: colors.borderLight,
+    fontFamily: fonts.semibold,
   },
 });
 

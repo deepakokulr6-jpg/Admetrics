@@ -19,6 +19,9 @@ import { isBlank, isValidTime } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 const validateHours = (
   hours: ReturnType<typeof useClinicRegistration>['draft']['workingHours'],
@@ -34,17 +37,17 @@ const validateHours = (
     const end = item.endTime.trim();
 
     if (isBlank(start) || isBlank(end)) {
-      errors[index] = 'Start and end time are required.';
+      errors[index] = strings.registerTimings.startAndEndTimeAre;
       return;
     }
 
     if (!isValidTime(start) || !isValidTime(end)) {
-      errors[index] = 'Use a time like 09:30AM or 06:30PM.';
+      errors[index] = strings.registerTimings.useATimeLike09;
       return;
     }
 
     if (start.toLowerCase() === end.toLowerCase()) {
-      errors[index] = 'Start and end time cannot be the same.';
+      errors[index] = strings.registerTimings.startAndEndTimeCannot;
     }
   });
 
@@ -101,8 +104,8 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
 
     if (Object.keys(nextErrors).length > 0) {
       Alert.alert(
-        'Check working hours',
-        'Please correct the highlighted working hours before continuing.',
+        strings.registerTimings.checkWorkingHours,
+        strings.registerTimings.pleaseCorrectTheHighlightedWorking,
       );
       return;
     }
@@ -113,7 +116,7 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
-        title="Register Your Clinic"
+        title={strings.common.registerYourClinic}
         onBackPress={() => navigation.goBack()}
       />
       {/* Legacy standalone route: the primary flow skips timings, so this
@@ -133,7 +136,9 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
           onLayout={onLayout}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Working Hours</Text>
+          <Text style={styles.heading}>
+            {strings.registerTimings.workingHours}
+          </Text>
 
           {workingHours.map((item, index) => (
             <View key={item.day} style={styles.rowWrapper}>
@@ -158,7 +163,7 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
           ))}
 
           <View style={styles.button}>
-            <GradientButton title="Next" onPress={handleNext} />
+            <GradientButton title={strings.common.next} onPress={handleNext} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -169,7 +174,7 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -188,8 +193,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: normalizeFont(16),
     lineHeight: normalizeFont(19),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
 
@@ -203,7 +208,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(70),
     fontSize: normalizeFont(11),
     lineHeight: normalizeFont(15),
-    color: '#D93025',
+    color: colors.red,
   },
 
   button: {

@@ -17,32 +17,36 @@ import MobileIcon from '../../../assets/images/figma/contact_mobile.svg';
 import EmailIcon from '../../../assets/images/figma/contact_email.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import {
+  sampleClinic,
+  sampleContact,
+  sampleDisplays,
+} from '../../constants/mockData';
 
-// Sample data from the Figma design (Android Large - 21).
+// Demo data until the API is connected (constants/mockData).
 const clinic = {
-  name: 'Sai Shree Clinic',
-  address:
-    'No. 27, 2nd Main Road, Near 1st Cross, Indira Nagar, Mysore, Karnataka – 568902',
+  name: sampleClinic.clinicName,
+  address: sampleClinic.fullAddress,
   fields: [
-    ['Medical Registration Number', '195934'],
-    ['Establishment Year', '2023'],
-    ['Registration/Licence Number', 'KMC/BLR/2026/45892'],
-    ['GST Number', '29ABCDE1234F1Z5'],
-    ['PAN Number', 'ABCDE1234F'],
+    [
+      strings.clinicForm.medicalRegistrationNumber,
+      sampleClinic.medicalRegistrationNumber,
+    ],
+    [strings.clinicForm.establishmentYear, sampleClinic.establishmentYear],
+    [strings.clinicForm.registrationLicenceNumber, sampleClinic.licenceNumber],
+    [strings.clinicForm.gstNumber, sampleClinic.gstNumber],
+    [strings.clinicForm.panNumber, sampleClinic.panNumber],
   ],
 };
 
 const contact = [
-  { Icon: PersonIcon, value: 'Shivan' },
-  { Icon: IdIcon, value: 'Doctor' },
-  { Icon: MobileIcon, value: '9876543210' },
-  { Icon: EmailIcon, value: 'shivan@gmail.com' },
-];
-
-const displays = [
-  { name: 'Reception TV', online: true, id: 'Display 01' },
-  { name: 'Waiting Hall TV', online: true, id: 'Display 02' },
-  { name: 'Pharmacy TV', online: false, id: 'Display 03' },
+  { Icon: PersonIcon, value: sampleContact.contactPerson },
+  { Icon: IdIcon, value: sampleContact.designation },
+  { Icon: MobileIcon, value: sampleContact.mobile },
+  { Icon: EmailIcon, value: sampleContact.email },
 ];
 
 const photos = [
@@ -55,7 +59,7 @@ const RegisteredDetailsScreen: React.FC<
 > = ({ navigation }) => (
   <SafeAreaView style={styles.safeArea} edges={['bottom']}>
     <ScreenHeader
-      title="Registered Details"
+      title={strings.registeredDetails.registeredDetails}
       onBackPress={() => navigation.goBack()}
       rightElement={
         <Pressable
@@ -63,7 +67,7 @@ const RegisteredDetailsScreen: React.FC<
           hitSlop={10}
           style={styles.editButton}
           accessibilityRole="button"
-          accessibilityLabel="Edit details"
+          accessibilityLabel={strings.registeredDetails.editDetails}
         >
           <EditIcon width={scale(19.5)} height={scale(19.5)} />
         </Pressable>
@@ -75,7 +79,9 @@ const RegisteredDetailsScreen: React.FC<
       showsVerticalScrollIndicator={false}
     >
       {/* Clinic information */}
-      <Text style={styles.sectionTitle}>Clinic Information</Text>
+      <Text style={styles.sectionTitle}>
+        {strings.common.clinicInformation}
+      </Text>
       <Text style={styles.clinicName}>{clinic.name}</Text>
       <Text style={styles.address}>{clinic.address}</Text>
       {clinic.fields.map(([label, value]) => (
@@ -88,7 +94,9 @@ const RegisteredDetailsScreen: React.FC<
       <View style={styles.divider} />
 
       {/* Contact information */}
-      <Text style={styles.sectionTitle}>Contact Information</Text>
+      <Text style={styles.sectionTitle}>
+        {strings.common.contactInformation}
+      </Text>
       {contact.map(({ Icon, value }) => (
         <View key={value} style={styles.contactRow}>
           <Icon width={scale(24)} height={scale(24)} />
@@ -99,7 +107,9 @@ const RegisteredDetailsScreen: React.FC<
       <View style={styles.divider} />
 
       {/* Photos */}
-      <Text style={styles.sectionTitle}>Photos</Text>
+      <Text style={styles.sectionTitle}>
+        {strings.registeredDetails.photos}
+      </Text>
       <View style={styles.photoRow}>
         {photos.map((source, index) => (
           <Image
@@ -114,15 +124,17 @@ const RegisteredDetailsScreen: React.FC<
       <View style={styles.divider} />
 
       {/* Displays */}
-      <Text style={styles.sectionTitle}>Displays</Text>
-      {displays.map(display => (
+      <Text style={styles.sectionTitle}>
+        {strings.registeredDetails.displays}
+      </Text>
+      {sampleDisplays.map(display => (
         <View key={display.id} style={styles.display}>
           <Text style={styles.displayName}>{display.name}</Text>
           <Text style={styles.displayMeta}>
             <Text style={display.online ? styles.online : styles.offline}>
-              {display.online ? 'Online' : 'Offline'}
+              {display.online ? strings.common.online : strings.common.offline}
             </Text>
-            {` · ${display.id}`}
+            {strings.registeredDetails.displayId(display.id)}
           </Text>
         </View>
       ))}
@@ -133,7 +145,7 @@ const RegisteredDetailsScreen: React.FC<
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   editButton: {
     width: scale(24),
@@ -149,19 +161,19 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(15),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
   clinicName: {
     fontSize: normalizeFont(14),
     lineHeight: normalizeFont(24),
-    fontWeight: '700',
-    color: '#000000',
+    fontFamily: fonts.bold,
+    color: colors.black,
   },
   address: {
     marginTop: verticalScale(1),
     fontSize: normalizeFont(14),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(12),
   },
   field: {
@@ -170,17 +182,17 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(24),
-    color: '#000000',
+    color: colors.black,
   },
   fieldValue: {
     fontSize: normalizeFont(14),
     lineHeight: normalizeFont(24),
-    fontWeight: '700',
-    color: '#000000',
+    fontFamily: fonts.bold,
+    color: colors.black,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.borderLight,
     marginTop: verticalScale(4),
     marginBottom: verticalScale(16),
   },
@@ -193,8 +205,8 @@ const styles = StyleSheet.create({
   contactText: {
     marginLeft: scale(12),
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   photoRow: {
     flexDirection: 'row',
@@ -211,21 +223,21 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   displayMeta: {
     marginTop: verticalScale(4),
     fontSize: normalizeFont(12),
-    color: '#565656',
+    color: colors.secondaryText,
   },
   online: {
-    fontWeight: '500',
-    color: '#14AB00',
+    fontFamily: fonts.medium,
+    color: colors.green,
   },
   offline: {
-    fontWeight: '500',
-    color: '#FF2A2A',
+    fontFamily: fonts.medium,
+    color: colors.red,
   },
 });
 

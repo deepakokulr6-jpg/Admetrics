@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 import ProfileAvatar from '../shared/ProfileAvatar';
 import AppLogo from '../shared/AppLogo';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { useProfileMenu } from '../../hooks/useProfileMenu';
+import ProfileDrawer from './ProfileDrawer';
 
 type Props = {
   userName?: string;
@@ -18,55 +23,58 @@ const DashboardHeader: React.FC<Props> = ({
   onProfilePress,
   onLogoPress,
 }) => {
+  const { confirmLogout } = useProfileMenu();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // Default: avatar / name opens the side menu on every tab.
+  const handleProfilePress = onProfilePress ?? (() => setDrawerOpen(true));
   const displayName = userName ?? name ?? 'Ramkumar';
   const logoSize = scale(40);
   const logo = <AppLogo width={logoSize} height={logoSize} />;
 
   return (
     <View style={styles.container}>
-      {onProfilePress ? (
-        <Pressable
-          style={styles.profileSection}
-          onPress={onProfilePress}
-          accessibilityRole="button"
-          accessibilityLabel="Open profile"
-        >
-          <ProfileAvatar size={logoSize} />
+      <Pressable
+        style={styles.profileSection}
+        onPress={handleProfilePress}
+        accessibilityRole="button"
+        accessibilityLabel={strings.dashboardHeader.openProfile}
+      >
+        <ProfileAvatar size={logoSize} />
 
-          <View style={styles.textContainer}>
-            <Text style={styles.greeting}>Good Morning!</Text>
-            <Text style={styles.userName} numberOfLines={1}>
-              {displayName}
-            </Text>
-          </View>
-        </Pressable>
-      ) : (
-        <View style={styles.profileSection}>
-          <ProfileAvatar size={logoSize} />
-
-          <View style={styles.textContainer}>
-            <Text style={styles.greeting}>Good Morning!</Text>
-            <Text style={styles.userName} numberOfLines={1}>
-              {displayName}
-            </Text>
-          </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.greeting}>
+            {strings.dashboardHeader.goodMorning}
+          </Text>
+          <Text style={styles.userName} numberOfLines={1}>
+            {displayName}
+          </Text>
         </View>
-      )}
+      </Pressable>
 
       {onLogoPress ? (
         <Pressable
           onPress={onLogoPress}
           accessibilityRole="button"
-          accessibilityLabel="Admetrics home"
+          accessibilityLabel={strings.dashboardHeader.admetricsHome}
           hitSlop={8}
         >
           {logo}
         </Pressable>
       ) : (
-        <View accessible accessibilityLabel="Admetrics logo">
+        <View
+          accessible
+          accessibilityLabel={strings.dashboardHeader.admetricsLogo}
+        >
           {logo}
         </View>
       )}
+
+      <ProfileDrawer
+        visible={drawerOpen}
+        name={displayName}
+        onClose={() => setDrawerOpen(false)}
+        onLogout={confirmLogout}
+      />
     </View>
   );
 };
@@ -81,9 +89,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     // Figma: soft shadow instead of a divider line.
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
@@ -105,15 +113,15 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '500',
-    color: '#111111',
+    fontFamily: fonts.medium,
+    color: colors.textStrong,
   },
 
   userName: {
     fontSize: normalizeFont(18),
     lineHeight: normalizeFont(22),
-    fontWeight: '700',
-    color: '#111111',
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
   },
 });
 

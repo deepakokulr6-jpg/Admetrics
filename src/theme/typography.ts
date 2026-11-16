@@ -2,28 +2,32 @@ import { TextStyle } from 'react-native';
 import colors from './colors';
 import { normalizeFont } from '../utils/responsive';
 
-/** The app font (bundled Inter files, see utils/applyAppFont). */
-export const FONT_FAMILY = 'Inter';
-
-/** Inter weights bundled with the app. */
-export const fontWeights = {
-  regular: '400',
-  medium: '500',
-  semibold: '600',
-  bold: '700',
+/**
+ * Inter font files bundled with the app (ios/Admetrics/Fonts and
+ * android/app/src/main/assets/fonts). Each weight is its own font, so use
+ * `fontFamily: fonts.semibold` – never `fontWeight` – to pick a weight.
+ * The names are the fonts' PostScript names, which work on iOS and Android.
+ */
+export const fonts = {
+  regular: 'Inter-Regular',
+  medium: 'Inter-Medium',
+  semibold: 'Inter-SemiBold',
+  bold: 'Inter-Bold',
 } as const;
 
-export type FontWeightName = keyof typeof fontWeights;
+export type FontName = keyof typeof fonts;
+
+/** Default app font. */
+export const FONT_FAMILY = fonts.regular;
 
 const font = (
   size: number,
-  weight: FontWeightName,
+  weight: FontName,
   color: string = colors.text,
   lineHeight?: number,
 ): TextStyle => ({
-  fontFamily: FONT_FAMILY,
+  fontFamily: fonts[weight],
   fontSize: normalizeFont(size),
-  fontWeight: fontWeights[weight],
   color,
   ...(lineHeight ? { lineHeight: normalizeFont(lineHeight) } : null),
 });
@@ -61,7 +65,7 @@ export const textVariants = {
 
 export type TextVariant = keyof typeof textVariants;
 
-/** Build a one-off style: typography.make(13, 'medium', '#444'). */
+/** Build a one-off style: typography.make(13, 'medium', colors.bodyText). */
 export const typography = {
   ...textVariants,
   make: font,

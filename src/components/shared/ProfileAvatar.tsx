@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import ProfilePic from '../../../assets/images/profile_pic.svg';
 import { scale } from '../../utils/responsive';
+import colors from '../../theme/colors';
 
 type Props = {
   size?: number;
@@ -28,7 +29,7 @@ const ProfileAvatar: React.FC<Props> = ({ size }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#EBEBEB',
+    backgroundColor: colors.divider,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',

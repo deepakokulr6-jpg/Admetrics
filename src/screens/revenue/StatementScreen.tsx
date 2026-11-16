@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,44 +10,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
-import BottomNavigation, {
-  TabName,
-} from '../../components/shared/BottomNavigation';
 import CalendarIcon from '../../../assets/images/figma/calendar.svg';
 import ArrowCircle from '../../../assets/images/figma/arrow_circle.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
-import type { AppScreenProps } from '../../navigation/types';
+import type { TabScreenProps } from '../../navigation/types';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { sampleStatements } from '../../constants/mockData';
 
-// Sample data from the Figma design (Android Large - 17).
-const STATEMENTS: { amount: string; paidOn?: string; month: string }[] = [
-  { amount: '₹7,561.60', month: 'October 2026' },
-  { amount: '₹32,411.74', month: 'September 2026' },
-  { amount: '₹17,123.00', paidOn: '12 September 2026', month: 'August 2026' },
-  { amount: '₹10,161.60', paidOn: '12 August 2026', month: 'July 2026' },
-  { amount: '₹19,021.17', paidOn: '12 July 2026', month: 'June 2026' },
-  { amount: '₹17,571.60', paidOn: '12 June 2026', month: 'May 2026' },
-  { amount: '₹32,411.74', paidOn: '12 May 2026', month: 'April 2026' },
-  { amount: '₹17,123.00', paidOn: '12 April 2026', month: 'March 2026' },
-  { amount: '₹10,161.60', paidOn: '12 March 2026', month: 'February 2026' },
-];
-
-const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
+const StatementScreen: React.FC<TabScreenProps<'Statement'>> = ({
   navigation,
 }) => {
-  const [activeTab, setActiveTab] = useState<TabName>('Statement');
-
-  const handleTabPress = (tab: TabName) => {
-    setActiveTab(tab);
-
-    if (tab === 'Clinics') {
-      navigation.navigate('Home');
-    } else if (tab === 'Revenue') {
-      navigation.navigate('Revenue');
-    } else if (tab === 'Support') {
-      navigation.navigate('Support');
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
@@ -58,9 +32,11 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Monthly Payout Statement</Text>
+        <Text style={styles.title}>
+          {strings.common.monthlyPayoutStatement}
+        </Text>
 
-        {STATEMENTS.map(item => (
+        {sampleStatements.map(item => (
           <Pressable
             key={item.month}
             style={styles.card}
@@ -76,9 +52,11 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
             <View style={styles.cardText}>
               <Text style={styles.amount}>{item.amount}</Text>
               {item.paidOn ? (
-                <Text style={styles.paid}>Paid on {item.paidOn}</Text>
+                <Text style={styles.paid}>
+                  {strings.statement.paidOn(item.paidOn)}
+                </Text>
               ) : (
-                <Text style={styles.notPaid}>Not Paid</Text>
+                <Text style={styles.notPaid}>{strings.common.notPaid}</Text>
               )}
               <View style={styles.monthRow}>
                 <CalendarIcon width={scale(16)} height={scale(16)} />
@@ -89,8 +67,6 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
           </Pressable>
         ))}
       </ScrollView>
-
-      <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
     </SafeAreaView>
   );
 };
@@ -100,7 +76,7 @@ const StatementScreen: React.FC<AppScreenProps<'Statement'>> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F3EF',
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -112,17 +88,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: scale(98),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#DDDDDD',
+    borderColor: colors.borderLight,
     borderRadius: scale(6),
     paddingLeft: scale(16),
     paddingRight: scale(24),
@@ -134,19 +110,19 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: normalizeFont(16),
-    fontWeight: '700',
-    color: '#221E25',
+    fontFamily: fonts.bold,
+    color: colors.text,
   },
   paid: {
     marginTop: scale(8),
     fontSize: normalizeFont(12),
-    fontWeight: '500',
-    color: '#14AB00',
+    fontFamily: fonts.medium,
+    color: colors.green,
   },
   notPaid: {
     marginTop: scale(8),
     fontSize: normalizeFont(12),
-    color: '#FF2A2A',
+    color: colors.red,
   },
   monthRow: {
     marginTop: scale(8),
@@ -156,7 +132,7 @@ const styles = StyleSheet.create({
   month: {
     marginLeft: scale(8),
     fontSize: normalizeFont(12),
-    color: '#565656',
+    color: colors.secondaryText,
   },
 });
 

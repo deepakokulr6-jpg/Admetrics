@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RevenueIcon from '../../../assets/images/figma/nav_revenue.svg';
-import ClinicsIcon from '../../../assets/images/figma/nav_clinics_active.svg';
-import StatementIcon from '../../../assets/images/figma/nav_statement.svg';
-import SupportIcon from '../../../assets/images/figma/nav_support.svg';
+import TabIcon from './TabIcon';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
 
 export type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
 
@@ -14,18 +13,13 @@ type Props = {
   onTabPress: (tab: TabName) => void;
 };
 
-const tabs: { name: TabName; Icon: typeof RevenueIcon; size: number }[] = [
-  { name: 'Revenue', Icon: RevenueIcon, size: 20 },
-  { name: 'Clinics', Icon: ClinicsIcon, size: 24 },
-  { name: 'Statement', Icon: StatementIcon, size: 24 },
-  { name: 'Support', Icon: SupportIcon, size: 24 },
-];
+const tabs: TabName[] = ['Revenue', 'Clinics', 'Statement', 'Support'];
 
-const ACTIVE = '#221E25';
-const INACTIVE = '#787878';
+const ACTIVE = colors.text;
+const INACTIVE = colors.mutedText;
 
 // Figma: white 56px bar, 24px icons with 10px labels 2px below; the active
-// tab is #221E25 and the rest #787878.
+// tab is #221E25 with a filled icon, the rest #787878 outlines.
 const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => {
   const insets = useSafeAreaInsets();
 
@@ -36,22 +30,28 @@ const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => {
         { paddingBottom: Math.max(insets.bottom, verticalScale(8)) },
       ]}
     >
-      {tabs.map(({ name, Icon, size }) => {
-        const color = activeTab === name ? ACTIVE : INACTIVE;
+      {tabs.map(name => {
+        const active = activeTab === name;
+        const color = active ? ACTIVE : INACTIVE;
 
         return (
           <TouchableOpacity
             key={name}
             onPress={() => onTabPress(name)}
             accessibilityRole="button"
-            accessibilityLabel={name}
-            accessibilityState={{ selected: activeTab === name }}
+            accessibilityLabel={strings.tabs[name]}
+            accessibilityState={{ selected: active }}
             style={styles.tab}
           >
             <View style={styles.icon}>
-              <Icon width={scale(size)} height={scale(size)} color={color} />
+              <TabIcon
+                name={name}
+                active={active}
+                color={color}
+                size={scale(24)}
+              />
             </View>
-            <Text style={[styles.label, { color }]}>{name}</Text>
+            <Text style={[styles.label, { color }]}>{strings.tabs[name]}</Text>
           </TouchableOpacity>
         );
       })}
@@ -62,7 +62,7 @@ const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     paddingTop: verticalScale(9),
   },
   tab: {

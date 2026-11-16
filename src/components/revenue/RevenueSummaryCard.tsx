@@ -3,6 +3,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { normalizeFont, scale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { sampleRevenue } from '../../constants/mockData';
+import { useCountUp } from '../../hooks/useCountUp';
 
 type Props = {
   totalRevenue?: string;
@@ -12,22 +17,33 @@ type Props = {
 };
 
 const RevenueSummaryCard: React.FC<Props> = ({
-  totalRevenue = '₹48,650',
-  growth = '12.8%',
-  monthlyRevenue = '₹13,580',
-  pendingPayout = '₹3,710',
+  totalRevenue = sampleRevenue.totalRevenue,
+  growth = sampleRevenue.growth,
+  monthlyRevenue = sampleRevenue.monthlyRevenue,
+  pendingPayout = sampleRevenue.pendingPayout,
 }) => {
+  // Amounts count up from 0 when the screen opens.
+  const totalText = useCountUp(totalRevenue);
+  const growthText = useCountUp(growth);
+  const monthlyText = useCountUp(monthlyRevenue);
+  const pendingText = useCountUp(pendingPayout);
+
   return (
-    <LinearGradient
-      colors={['#0265FB', '#B43AFC']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.card}
-    >
+    <View style={styles.card}>
+      {/* Gradient is a background layer only – wrapping content in
+          LinearGradient mis-sizes and clips it on iOS. */}
+      <LinearGradient
+        colors={[colors.primary, colors.secondary]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <View style={styles.topRow}>
         <View style={styles.topLeft}>
-          <Text style={styles.label}>Total revenue</Text>
-          <Text style={styles.totalValue}>{totalRevenue}</Text>
+          <Text style={styles.label}>
+            {strings.revenueSummaryCard.totalRevenue}
+          </Text>
+          <Text style={styles.totalValue}>{totalText}</Text>
         </View>
 
         <View style={styles.walletContainer}>
@@ -49,26 +65,34 @@ const RevenueSummaryCard: React.FC<Props> = ({
 
       <View style={styles.growthRow}>
         <View style={styles.greenBadge}>
-          <Text style={styles.growthArrow}>↗</Text>
-          <Text style={styles.growthText}>{growth}</Text>
+          <Text style={styles.growthArrow}>
+            {strings.revenueSummaryCard.growthArrow}
+          </Text>
+          <Text style={styles.growthText}>{growthText}</Text>
         </View>
-        <Text style={styles.growthSubtext}>vs. previous month</Text>
+        <Text style={styles.growthSubtext}>
+          {strings.revenueSummaryCard.vsPreviousMonth}
+        </Text>
       </View>
 
       <View style={styles.divider} />
 
       <View style={styles.bottomRow}>
         <View style={styles.bottomColumn}>
-          <Text style={styles.subLabel}>This Month</Text>
-          <Text style={styles.subValue}>{monthlyRevenue}</Text>
+          <Text style={styles.subLabel}>
+            {strings.revenueSummaryCard.thisMonth}
+          </Text>
+          <Text style={styles.subValue}>{monthlyText}</Text>
         </View>
 
         <View style={styles.bottomColumnRight}>
-          <Text style={styles.subLabel}>Pending Payout</Text>
-          <Text style={styles.subValue}>{pendingPayout}</Text>
+          <Text style={styles.subLabel}>
+            {strings.revenueSummaryCard.pendingPayout}
+          </Text>
+          <Text style={styles.subValue}>{pendingText}</Text>
         </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -77,6 +101,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: scale(12),
     padding: scale(16),
+    overflow: 'hidden',
   },
 
   topRow: {
@@ -90,16 +115,16 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(12),
     marginTop: scale(6),
     marginBottom: scale(8),
   },
 
   totalValue: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(36),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
 
   walletContainer: {
@@ -121,31 +146,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#14AB00',
+    backgroundColor: colors.green,
     borderRadius: scale(2),
     marginRight: scale(6),
   },
 
   growthArrow: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(9),
     marginRight: scale(3),
   },
 
   growthText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(10),
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
 
   growthSubtext: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(10),
   },
 
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: colors.whiteTranslucent,
     marginTop: scale(14),
     marginBottom: scale(12),
   },
@@ -166,15 +191,15 @@ const styles = StyleSheet.create({
   },
 
   subLabel: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(12),
     marginBottom: scale(8),
   },
 
   subValue: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: normalizeFont(18),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
 });
 

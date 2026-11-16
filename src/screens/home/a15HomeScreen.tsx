@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,16 +6,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeHeader from '../../components/home/HomeHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
-import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { getClinicRegistrations } from '../../services/clinicService';
 import { ClinicRegistrationRecord } from '../../types/clinic';
-import type { AppScreenProps } from '../../navigation/types';
+import type { TabScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
 
-const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState<TabName>('Clinics');
+const A15HomeScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   const [clinics, setClinics] = useState<ClinicRegistrationRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,26 +64,16 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
     }, [ownerEmail]),
   );
 
-  const handleTabPress = (tab: TabName) => {
-    setActiveTab(tab);
-
-    switch (tab) {
-      case 'Clinics':
-        navigation.navigate('Home');
-        break;
-      case 'Statement':
-        navigation.navigate('Statement');
-        break;
-      case 'Revenue':
-        navigation.navigate('Revenue');
-        break;
-      case 'Support':
-        navigation.navigate('Support');
-        break;
-    }
-  };
-
   const hasClinics = clinics.length > 0;
+
+  // Figma: no clinics yet → hide the bottom bar until the first registration.
+  // It stays hidden during the first load and only appears once clinics
+  // exist; on later reloads the previous list is kept, so it never flickers.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: hasClinics ? undefined : { display: 'none' },
+    });
+  }, [navigation, hasClinics]);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -106,7 +96,7 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
                 {clinics.map(record => (
                   <ClinicCard
                     key={record.id}
-                    status="Waiting for Approval"
+                    status={strings.a15Home.waitingForApproval}
                     clinicName={record.clinic.clinicName || 'Clinic'}
                     contactName={record.personal.contactPerson || '—'}
                     designation={record.personal.designation || '—'}
@@ -114,6 +104,7 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
                     email={record.personal.email}
                     photoOneUri={record.photos.entrance}
                     photoTwoUri={record.photos.reception}
+                    onPress={() => navigation.navigate('RegisteredDetails')}
                   />
                 ))}
               </View>
@@ -134,10 +125,6 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
             </View>
           ) : null}
         </ScrollView>
-
-        {hasClinics ? (
-          <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
-        ) : null}
       </View>
     </SafeAreaView>
   );
@@ -146,14 +133,14 @@ const A15HomeScreen: React.FC<AppScreenProps<'A15Home'>> = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   screen: {
     flex: 1,
-    backgroundColor: '#F5F3EF',
+    backgroundColor: colors.background,
   },
   screenEmpty: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   scrollView: {
     flex: 1,

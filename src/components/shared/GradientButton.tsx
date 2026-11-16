@@ -5,9 +5,12 @@ import {
   StyleSheet,
   ViewStyle,
   ActivityIndicator,
+  View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type GradientButtonProps = {
   title: string;
@@ -35,18 +38,25 @@ const GradientButton: React.FC<GradientButtonProps> = ({
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       style={[styles.wrapper, style]}
     >
-      <LinearGradient
-        colors={isDisabled ? ['#D9D9D9', '#D9D9D9'] : ['#0265FB', '#B43AFC']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.button}
-      >
+      <View style={styles.button}>
+        {/* Background layer only – content wrapped in LinearGradient can be
+            mis-sized/clipped on iOS. */}
+        <LinearGradient
+          colors={
+            isDisabled
+              ? [colors.disabledButton, colors.disabledButton]
+              : [colors.primary, colors.secondary]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
         {loading ? (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>{title}</Text>
         )}
-      </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -66,13 +76,14 @@ const styles = StyleSheet.create({
     borderRadius: scale(30),
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
 
   buttonText: {
     fontSize: normalizeFont(14),
     lineHeight: normalizeFont(18),
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontFamily: fonts.bold,
+    color: colors.white,
     textAlign: 'center',
   },
 });

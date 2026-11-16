@@ -1,7 +1,15 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, ViewStyle } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
 import GradientText from '../shared/GradientText';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type AuthFooterProps = {
   text: string;
@@ -54,14 +62,14 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: normalizeFont(14),
-    color: '#221E25',
+    color: colors.text,
   },
   highlight: {
     marginLeft: scale(4),
   },
   link: {
     fontSize: normalizeFont(14),
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
 });
 

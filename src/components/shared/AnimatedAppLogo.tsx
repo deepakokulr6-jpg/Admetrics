@@ -1,13 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  Animated,
-  Easing,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { Animated, Easing, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import { scale } from '../../utils/responsive';
+import colors from '../../theme/colors';
 
 export interface AnimatedAppLogoProps {
   width?: number;
@@ -175,7 +170,8 @@ export default function AnimatedAppLogo({
     outputRange: [0, 1, 1],
   });
 
-  const fillColor = colorScheme === 'gradient' ? 'url(#animLogoGradient)' : '#FFFFFF';
+  const fillColor =
+    colorScheme === 'gradient' ? 'url(#animLogoGradient)' : colors.white;
 
   return (
     <View
@@ -191,11 +187,7 @@ export default function AnimatedAppLogo({
       <Animated.View
         shouldRasterizeIOS={false}
         renderToHardwareTextureAndroid={false}
-        style={[
-          StyleSheet.absoluteFill,
-          styles.layer,
-          { opacity: aOpacity },
-        ]}
+        style={[StyleSheet.absoluteFill, styles.layer, { opacity: aOpacity }]}
       >
         <Svg
           width={pixelWidth}
@@ -215,8 +207,8 @@ export default function AnimatedAppLogo({
                 y2="131.317"
                 gradientUnits="userSpaceOnUse"
               >
-                <Stop offset="0" stopColor="#0265FB" />
-                <Stop offset="1" stopColor="#B43AFC" />
+                <Stop offset="0" stopColor={colors.primary} />
+                <Stop offset="1" stopColor={colors.secondary} />
               </LinearGradient>
             </Defs>
           )}

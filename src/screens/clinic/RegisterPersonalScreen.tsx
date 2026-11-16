@@ -21,6 +21,9 @@ import { isBlank, isValidEmail, isValidMobile } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 type PersonalErrors = Partial<Record<keyof PersonalInfo, string>>;
 
@@ -32,17 +35,17 @@ const validatePersonal = (personal: PersonalInfo): PersonalErrors => {
   const errors: PersonalErrors = {};
 
   if (isBlank(personal.contactPerson)) {
-    errors.contactPerson = 'Contact person is required.';
+    errors.contactPerson = strings.registerPersonal.contactPersonIsRequired;
   }
 
   if (!isBlank(personal.mobile) && !isValidMobile(personal.mobile)) {
-    errors.mobile = 'Enter a valid 10-digit mobile number.';
+    errors.mobile = strings.registerPersonal.enterAValid10Digit;
   }
 
   if (isBlank(personal.email)) {
-    errors.email = 'Email ID is required.';
+    errors.email = strings.registerPersonal.emailIdIsRequired;
   } else if (!isValidEmail(personal.email)) {
-    errors.email = 'Enter a valid email address.';
+    errors.email = strings.registerPersonal.enterAValidEmailAddress;
   }
 
   return errors;
@@ -90,8 +93,8 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
 
     if (Object.keys(nextErrors).length > 0) {
       Alert.alert(
-        'Check personal details',
-        'Please complete the required personal information before continuing.',
+        strings.registerPersonal.checkPersonalDetails,
+        strings.registerPersonal.pleaseCompleteTheRequiredPersonal,
       );
       return;
     }
@@ -104,7 +107,7 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
-        title="Register Your Clinic"
+        title={strings.common.registerYourClinic}
         onBackPress={() => navigation.goBack()}
       />
       <StepProgress currentStep={2} />
@@ -123,11 +126,13 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Contact Information</Text>
+          <Text style={styles.heading}>
+            {strings.common.contactInformation}
+          </Text>
 
           <InputField
-            label="Contact Person Number *"
-            placeholder="Enter contact person name"
+            label={strings.registerPersonal.contactPersonNumber}
+            placeholder={strings.registerPersonal.enterContactPersonName}
             value={personal.contactPerson}
             onChangeText={value => update('contactPerson', value)}
             {...focusProps('contactPerson')}
@@ -136,8 +141,8 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           />
 
           <InputField
-            label="Designation"
-            placeholder="Enter designation"
+            label={strings.registerPersonal.designation}
+            placeholder={strings.registerPersonal.enterDesignation}
             value={personal.designation}
             onChangeText={value => update('designation', value)}
             {...focusProps('designation')}
@@ -146,8 +151,8 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           />
 
           <InputField
-            label="Mobile Number"
-            placeholder="Enter mobile number"
+            label={strings.registerPersonal.mobileNumber}
+            placeholder={strings.registerPersonal.enterMobileNumber}
             value={personal.mobile}
             onChangeText={value =>
               update('mobile', value.replace(/[^\d+\s-]/g, ''))
@@ -159,8 +164,8 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           />
 
           <InputField
-            label="Email ID *"
-            placeholder="Enter email address"
+            label={strings.registerPersonal.emailId}
+            placeholder={strings.registerPersonal.enterEmailAddress}
             value={personal.email}
             onChangeText={value => update('email', value.trim())}
             {...focusProps('email')}
@@ -171,7 +176,7 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           />
 
           <View style={styles.button}>
-            <GradientButton title="Next" onPress={handleNext} />
+            <GradientButton title={strings.common.next} onPress={handleNext} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -182,7 +187,7 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -202,8 +207,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: normalizeFont(16),
     lineHeight: normalizeFont(19),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
 

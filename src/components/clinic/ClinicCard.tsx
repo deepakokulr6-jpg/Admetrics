@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import TvOn from '../../../assets/images/figma/tv_on.svg';
 import TvOff from '../../../assets/images/figma/tv_off.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import strings from '../../constants/strings';
+import { fonts } from '../../theme/typography';
 
 type Props = {
   status?: string;
@@ -17,6 +20,7 @@ type Props = {
   photoTwoUri?: string | null;
   displayCount?: number;
   onlineDisplays?: number;
+  onPress?: () => void;
 };
 
 // Figma (Android Large - 15): 328x144 white card, 1px #DDD border, 6px radius.
@@ -29,14 +33,20 @@ const ClinicCard: React.FC<Props> = ({
   designation,
   phone,
   email,
-  photoOneColor = '#B8C8D4',
-  photoTwoColor = '#C8C3B8',
+  photoOneColor = colors.photoPlaceholder1,
+  photoTwoColor = colors.photoPlaceholder2,
   photoOneUri,
   photoTwoUri,
   displayCount,
   onlineDisplays = 1,
+  onPress,
 }) => (
-  <View style={styles.card}>
+  <Pressable
+    style={({ pressed }) => [styles.card, pressed && onPress && styles.pressed]}
+    onPress={onPress}
+    disabled={!onPress}
+    accessibilityRole={onPress ? 'button' : undefined}
+  >
     <View style={styles.strip}>
       {status ? (
         <View style={styles.row}>
@@ -45,7 +55,9 @@ const ClinicCard: React.FC<Props> = ({
         </View>
       ) : displayCount ? (
         <>
-          <Text style={styles.displays}>{displayCount} Displays</Text>
+          <Text style={styles.displays}>
+            {strings.clinicCard.displaysCount(displayCount)}
+          </Text>
           <View style={styles.tvs}>
             {Array.from({ length: displayCount }, (_, index) => {
               // Online screens are listed from the right, as in Figma.
@@ -67,10 +79,18 @@ const ClinicCard: React.FC<Props> = ({
         <Text style={styles.clinicName} numberOfLines={1}>
           {clinicName}
         </Text>
-        <Text style={styles.detail} numberOfLines={1}>{contactName}</Text>
-        <Text style={styles.detail} numberOfLines={1}>{designation}</Text>
-        <Text style={styles.detail} numberOfLines={1}>{phone}</Text>
-        <Text style={styles.detail} numberOfLines={1}>{email}</Text>
+        <Text style={styles.detail} numberOfLines={1}>
+          {contactName}
+        </Text>
+        <Text style={styles.detail} numberOfLines={1}>
+          {designation}
+        </Text>
+        <Text style={styles.detail} numberOfLines={1}>
+          {phone}
+        </Text>
+        <Text style={styles.detail} numberOfLines={1}>
+          {email}
+        </Text>
       </View>
 
       <View style={styles.photos}>
@@ -89,14 +109,17 @@ const ClinicCard: React.FC<Props> = ({
         ))}
       </View>
     </View>
-  </View>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.7,
+  },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#DDDDDD',
+    borderColor: colors.borderLight,
     borderRadius: scale(6),
     paddingHorizontal: scale(16),
     paddingBottom: verticalScale(16),
@@ -115,18 +138,18 @@ const styles = StyleSheet.create({
     width: scale(8),
     height: scale(8),
     borderRadius: scale(4),
-    backgroundColor: '#FF2A2A',
+    backgroundColor: colors.red,
     marginRight: scale(8),
   },
   status: {
     fontSize: normalizeFont(12),
-    fontWeight: '500',
-    color: '#FF2A2A',
+    fontFamily: fonts.medium,
+    color: colors.red,
   },
   displays: {
     fontSize: normalizeFont(12),
-    fontWeight: '500',
-    color: '#221E25',
+    fontFamily: fonts.medium,
+    color: colors.text,
   },
   tvs: {
     flexDirection: 'row',
@@ -148,14 +171,14 @@ const styles = StyleSheet.create({
   },
   clinicName: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: scale(6),
   },
   detail: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(17),
-    color: '#565656',
+    color: colors.secondaryText,
   },
   photos: {
     flexDirection: 'row',

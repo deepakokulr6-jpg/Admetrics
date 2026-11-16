@@ -6,6 +6,8 @@ import Svg, {
   Stop,
   Text as SvgText,
 } from 'react-native-svg';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
 
 type GradientTextProps = {
   children: string;
@@ -40,15 +42,14 @@ const GradientText: React.FC<GradientTextProps> = ({ children, style }) => {
         >
           <Defs>
             <LinearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
-              <Stop offset="0.143" stopColor="#0265FB" />
-              <Stop offset="0.966" stopColor="#B43AFC" />
+              <Stop offset="0.143" stopColor={colors.primary} />
+              <Stop offset="0.966" stopColor={colors.secondary} />
             </LinearGradient>
           </Defs>
           <SvgText
             fill="url(#brand)"
-            fontFamily="Inter"
+            fontFamily={(flat.fontFamily as string) ?? fonts.regular}
             fontSize={fontSize}
-            fontWeight={flat.fontWeight as any}
             x={0}
             y={size.height / 2 + fontSize * 0.36}
           >

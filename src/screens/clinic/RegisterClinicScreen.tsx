@@ -28,6 +28,9 @@ import {
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 type ClinicErrors = Partial<Record<keyof ClinicInfo, string>>;
 
@@ -39,46 +42,47 @@ const validateClinic = (clinic: ClinicInfo): ClinicErrors => {
   const errors: ClinicErrors = {};
 
   if (isBlank(clinic.clinicName)) {
-    errors.clinicName = 'Clinic name is required.';
+    errors.clinicName = strings.clinicForm.clinicNameIsRequired;
   }
 
   if (isBlank(clinic.medicalRegistrationNumber)) {
     errors.medicalRegistrationNumber =
-      'Medical registration number is required.';
+      strings.clinicForm.medicalRegistrationNumberIsRequired;
   }
 
   if (
     !isBlank(clinic.establishmentYear) &&
     !isValidYear(clinic.establishmentYear)
   ) {
-    errors.establishmentYear = 'Enter a valid four-digit year.';
+    errors.establishmentYear = strings.registerClinic.enterAValidFourDigit;
   }
 
   if (isBlank(clinic.licenceNumber)) {
-    errors.licenceNumber = 'Registration/licence number is required.';
+    errors.licenceNumber =
+      strings.registerClinic.registrationLicenceNumberIsRequired;
   }
 
   if (isBlank(clinic.gstNumber)) {
-    errors.gstNumber = 'GST number is required.';
+    errors.gstNumber = strings.registerClinic.gstNumberIsRequired;
   } else if (!GST_PATTERN.test(clinic.gstNumber.trim())) {
-    errors.gstNumber = 'Enter a valid 15-character GST number.';
+    errors.gstNumber = strings.registerClinic.enterAValid15Character;
   }
 
   if (
     !isBlank(clinic.panNumber) &&
     !PAN_PATTERN.test(clinic.panNumber.trim())
   ) {
-    errors.panNumber = 'Enter a valid 10-character PAN.';
+    errors.panNumber = strings.registerClinic.enterAValid10Character;
   }
 
   if (isBlank(clinic.street)) {
-    errors.street = 'Street is required.';
+    errors.street = strings.registerClinic.streetIsRequired;
   }
 
   if (isBlank(clinic.pincode)) {
-    errors.pincode = 'Pincode is required.';
+    errors.pincode = strings.registerClinic.pincodeIsRequired;
   } else if (!isValidPincode(clinic.pincode)) {
-    errors.pincode = 'Enter a valid six-digit pincode.';
+    errors.pincode = strings.registerClinic.enterAValidSixDigit;
   }
 
   return errors;
@@ -118,8 +122,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
 
     if (Object.keys(nextErrors).length > 0) {
       Alert.alert(
-        'Check clinic details',
-        'Please complete the required clinic information before continuing.',
+        strings.clinicForm.checkClinicDetails,
+        strings.clinicForm.pleaseCompleteTheRequiredClinic,
       );
       return;
     }
@@ -141,8 +145,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
 
     if (!query) {
       Alert.alert(
-        'Address required',
-        'Enter the clinic address before opening it on the map.',
+        strings.registerClinic.addressRequired,
+        strings.registerClinic.enterTheClinicAddressBefore,
       );
       return;
     }
@@ -155,8 +159,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
       await Linking.openURL(url);
     } catch {
       Alert.alert(
-        'Map unavailable',
-        'No map application could be opened on this device.',
+        strings.registerClinic.mapUnavailable,
+        strings.registerClinic.noMapApplicationCouldBe,
       );
     }
   };
@@ -164,7 +168,7 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
-        title="Register Your Clinic"
+        title={strings.common.registerYourClinic}
         onBackPress={() => navigation.goBack()}
       />
       <StepProgress currentStep={1} />
@@ -183,11 +187,11 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Clinic Information</Text>
+          <Text style={styles.heading}>{strings.common.clinicInformation}</Text>
 
           <InputField
-            label="Clinic Name"
-            placeholder="Enter clinic name"
+            label={strings.clinicForm.clinicName}
+            placeholder={strings.clinicForm.enterClinicName}
             value={clinic.clinicName}
             onChangeText={value => update('clinicName', value)}
             {...focusProps('clinicName')}
@@ -197,8 +201,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Medical Registration Number"
-            placeholder="Enter medical registration number"
+            label={strings.clinicForm.medicalRegistrationNumber}
+            placeholder={strings.clinicForm.enterMedicalRegistrationNumber}
             value={clinic.medicalRegistrationNumber}
             onChangeText={value => update('medicalRegistrationNumber', value)}
             {...focusProps('medicalRegistrationNumber')}
@@ -207,8 +211,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Establishment Year"
-            placeholder="e.g. 2023"
+            label={strings.clinicForm.establishmentYear}
+            placeholder={strings.clinicForm.eG2023}
             value={clinic.establishmentYear}
             onChangeText={value => update('establishmentYear', value)}
             {...focusProps('establishmentYear')}
@@ -218,8 +222,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Registration/Licence Number"
-            placeholder="Enter registration or licence number"
+            label={strings.clinicForm.registrationLicenceNumber}
+            placeholder={strings.clinicForm.enterRegistrationOrLicenceNumber}
             value={clinic.licenceNumber}
             onChangeText={value => update('licenceNumber', value)}
             {...focusProps('licenceNumber')}
@@ -229,8 +233,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="GST Number"
-            placeholder="Enter GST number"
+            label={strings.clinicForm.gstNumber}
+            placeholder={strings.clinicForm.enterGstNumber}
             value={clinic.gstNumber}
             onChangeText={value => update('gstNumber', value.toUpperCase())}
             {...focusProps('gstNumber')}
@@ -241,8 +245,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="PAN Number"
-            placeholder="Enter PAN number"
+            label={strings.clinicForm.panNumber}
+            placeholder={strings.clinicForm.enterPanNumber}
             value={clinic.panNumber}
             onChangeText={value => update('panNumber', value.toUpperCase())}
             {...focusProps('panNumber')}
@@ -252,8 +256,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Address"
-            placeholder="Enter clinic address"
+            label={strings.clinicForm.address}
+            placeholder={strings.clinicForm.enterClinicAddress}
             value={clinic.address}
             onChangeText={value => update('address', value)}
             {...focusProps('address')}
@@ -262,8 +266,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Street *"
-            placeholder="Enter street"
+            label={strings.clinicForm.street}
+            placeholder={strings.clinicForm.enterStreet}
             value={clinic.street}
             onChangeText={value => update('street', value)}
             {...focusProps('street')}
@@ -272,8 +276,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="City"
-            placeholder="Enter city"
+            label={strings.clinicForm.city}
+            placeholder={strings.clinicForm.enterCity}
             value={clinic.city}
             onChangeText={value => update('city', value)}
             {...focusProps('city')}
@@ -282,8 +286,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="State"
-            placeholder="Enter state"
+            label={strings.clinicForm.state}
+            placeholder={strings.clinicForm.enterState}
             value={clinic.state}
             onChangeText={value => update('state', value)}
             {...focusProps('state')}
@@ -292,8 +296,8 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           />
 
           <InputField
-            label="Pincode *"
-            placeholder="Enter pincode"
+            label={strings.clinicForm.pincode}
+            placeholder={strings.clinicForm.enterPincode}
             value={clinic.pincode}
             onChangeText={value => update('pincode', value)}
             {...focusProps('pincode')}
@@ -305,7 +309,7 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           <MapPreview onPress={handleOpenMap} />
 
           <View style={styles.button}>
-            <GradientButton title="Next" onPress={handleNext} />
+            <GradientButton title={strings.common.next} onPress={handleNext} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -316,7 +320,7 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -335,8 +339,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: normalizeFont(16),
     lineHeight: normalizeFont(19),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
 

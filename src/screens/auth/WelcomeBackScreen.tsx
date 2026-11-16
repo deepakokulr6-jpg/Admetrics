@@ -20,6 +20,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 export default function WelcomeBackScreen({
   navigation,
@@ -37,7 +40,7 @@ export default function WelcomeBackScreen({
     setError(null);
 
     if (!trimmedEmail || !password) {
-      setError('Please enter your email and password.');
+      setError(strings.welcomeBack.pleaseEnterYourEmailAnd);
       return;
     }
 
@@ -49,7 +52,7 @@ export default function WelcomeBackScreen({
       setError(
         signInError instanceof AuthError
           ? signInError.message
-          : 'Unable to sign in right now. Please try again.',
+          : strings.welcomeBack.unableToSignInRight,
       );
     } finally {
       setIsSubmitting(false);
@@ -73,17 +76,21 @@ export default function WelcomeBackScreen({
               <AppLogo width={scale(200)} />
             </View>
 
-            <Text style={styles.title}>Welcome Back!</Text>
+            <Text style={styles.title}>{strings.welcomeBack.welcomeBack}</Text>
             <View style={styles.subtitleRow}>
-              <Text style={styles.subtitle}>Sign in to continue to </Text>
-              <GradientText style={styles.brand}>Admetrics</GradientText>
+              <Text style={styles.subtitle}>
+                {strings.welcomeBack.signInToContinueTo}{' '}
+              </Text>
+              <GradientText style={styles.brand}>
+                {strings.welcomeBack.admetrics}
+              </GradientText>
             </View>
 
             <View style={styles.form}>
               <InputField
                 containerStyle={styles.field}
-                label="Email ID"
-                placeholder="Enter your email"
+                label={strings.common.emailId}
+                placeholder={strings.common.enterYourEmail}
                 value={email}
                 onChangeText={value => {
                   setEmail(value);
@@ -96,8 +103,8 @@ export default function WelcomeBackScreen({
 
               <InputField
                 containerStyle={styles.passwordField}
-                label="Password"
-                placeholder="Enter your Password"
+                label={strings.welcomeBack.password}
+                placeholder={strings.auth.enterYourPassword}
                 value={password}
                 onChangeText={value => {
                   setPassword(value);
@@ -112,13 +119,15 @@ export default function WelcomeBackScreen({
                     hitSlop={10}
                     accessibilityRole="button"
                     accessibilityLabel={
-                      showPassword ? 'Hide password' : 'Show password'
+                      showPassword
+                        ? strings.auth.hidePassword
+                        : strings.auth.showPassword
                     }
                   >
                     <Feather
                       name={showPassword ? 'eye-off' : 'eye'}
                       size={scale(18)}
-                      color="#AAAAAA"
+                      color={colors.border}
                     />
                   </Pressable>
                 }
@@ -132,7 +141,7 @@ export default function WelcomeBackScreen({
 
               <View style={styles.button}>
                 <GradientButton
-                  title="Sign In"
+                  title={strings.welcomeBack.signIn}
                   onPress={handleSignIn}
                   loading={isSubmitting}
                 />
@@ -140,7 +149,7 @@ export default function WelcomeBackScreen({
 
               <View style={styles.footer}>
                 <AuthFooter
-                  text="New User?"
+                  text={strings.welcomeBack.newUser}
                   accent
                   onPress={() => navigation.navigate('CreateAccount')}
                 />
@@ -158,7 +167,7 @@ export default function WelcomeBackScreen({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   flex: {
     flex: 1,
@@ -181,8 +190,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: normalizeFont(20),
     lineHeight: normalizeFont(24),
-    fontWeight: '700',
-    color: '#221E25',
+    fontFamily: fonts.bold,
+    color: colors.text,
     textAlign: 'center',
   },
   subtitleRow: {
@@ -193,11 +202,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: normalizeFont(14),
-    color: '#221E25',
+    color: colors.text,
   },
   brand: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
+    fontFamily: fonts.semibold,
   },
   form: {
     marginTop: verticalScale(24),
@@ -211,7 +220,7 @@ const styles = StyleSheet.create({
   error: {
     marginTop: verticalScale(12),
     fontSize: normalizeFont(12),
-    color: '#FF2A2A',
+    color: colors.red,
     textAlign: 'center',
   },
   button: {

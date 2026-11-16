@@ -10,32 +10,19 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import HomeHeader from '../../components/home/HomeHeader';
-import BottomNavigation, { TabName } from '../../navigation/BottomNavigation';
 import RevenueSummaryCard from '../../components/revenue/RevenueSummaryCard';
 import RevenueChart from '../../components/revenue/RevenueChart';
 import RevenuePeriodDropdown from '../../components/revenue/RevenuePeriodDropdown';
 import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
 import { normalizeFont, verticalScale, scale } from '../../utils/responsive';
-import type { AppScreenProps } from '../../navigation/types';
+import type { TabScreenProps } from '../../navigation/types';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
-const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({ navigation }) => {
+const RevenueScreen: React.FC<TabScreenProps<'Revenue'>> = () => {
   const [period, setPeriod] = useState('7 days');
-  const [activeTab, setActiveTab] = useState<TabName>('Revenue');
   const { width } = useWindowDimensions();
-
-  const handleTabPress = (tab: TabName) => {
-    setActiveTab(tab);
-
-    if (tab === 'Clinics') {
-      navigation.navigate('Home');
-    } else if (tab === 'Revenue') {
-      // Already on the Revenue screen.
-    } else if (tab === 'Statement') {
-      navigation.navigate('Statement');
-    } else if (tab === 'Support') {
-      navigation.navigate('Support');
-    }
-  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -56,7 +43,9 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({ navigation }) => {
 
           <View style={styles.chartSection}>
             <View style={styles.chartHeader}>
-              <Text style={styles.chartTitle}>Revenue overview</Text>
+              <Text style={styles.chartTitle}>
+                {strings.revenue.revenueOverview}
+              </Text>
               <RevenuePeriodDropdown
                 selectedPeriod={period}
                 onSelectPeriod={setPeriod}
@@ -68,8 +57,6 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({ navigation }) => {
 
           <TVDisplaysSection />
         </ScrollView>
-
-        <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
       </View>
     </SafeAreaView>
   );
@@ -78,11 +65,11 @@ const RevenueScreen: React.FC<AppScreenProps<'Revenue'>> = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   screen: {
     flex: 1,
-    backgroundColor: '#F5F3EF',
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -108,9 +95,9 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(12),
   },
   chartTitle: {
-    color: '#221E25',
+    color: colors.text,
     fontSize: normalizeFont(14),
-    fontWeight: '600',
+    fontFamily: fonts.semibold,
   },
 });
 

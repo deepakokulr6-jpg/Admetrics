@@ -3,6 +3,10 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import TvDisplayCard from './TvDisplayCard';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
+import { sampleDisplays, sampleTopDisplay } from '../../constants/mockData';
 
 type Props = {
   onViewAll?: () => void;
@@ -21,7 +25,7 @@ const Star: React.FC<{ size: number; lift?: number }> = ({
     viewBox="0 0 24 24"
     style={{ marginBottom: scale(lift) }}
   >
-    <Path d={STAR} fill="#F5BE0B" />
+    <Path d={STAR} fill={colors.star} />
   </Svg>
 );
 
@@ -30,33 +34,24 @@ const Star: React.FC<{ size: number; lift?: number }> = ({
 const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => (
   <View style={styles.section}>
     <View style={styles.headerRow}>
-      <Text style={styles.title}>Your TV displays</Text>
+      <Text style={styles.title}>
+        {strings.tvDisplaysSection.yourTvDisplays}
+      </Text>
       <Pressable onPress={onViewAll} hitSlop={8} accessibilityRole="button">
-        <Text style={styles.viewAll}>View All</Text>
+        <Text style={styles.viewAll}>{strings.common.viewAll}</Text>
       </Pressable>
     </View>
 
-    <TvDisplayCard
-      title="Reception TV"
-      status="Online"
-      displayId="Display 01"
-      uptime="10 hours 56 minutes"
-      revenue="₹18,250"
-    />
-    <TvDisplayCard
-      title="Waiting Hall TV"
-      status="Online"
-      displayId="Display 02"
-      uptime="10 hours 39 minutes"
-      revenue="₹14,800"
-    />
-    <TvDisplayCard
-      title="Pharmacy TV"
-      status="Offline"
-      displayId="Display 03"
-      uptime="07 hours 39 minutes"
-      revenue="₹6,000"
-    />
+    {sampleDisplays.map(display => (
+      <TvDisplayCard
+        key={display.id}
+        title={display.name}
+        online={display.online}
+        displayId={display.id}
+        uptime={display.uptime}
+        revenue={display.revenue}
+      />
+    ))}
 
     <View style={styles.topCard}>
       <View style={styles.stars}>
@@ -64,12 +59,18 @@ const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => (
         <Star size={22} lift={6} />
         <Star size={14} />
       </View>
-      <Text style={styles.topTitle}>Top performing display</Text>
+      <Text style={styles.topTitle}>
+        {strings.tvDisplaysSection.topPerformingDisplay}
+      </Text>
       <Text style={styles.topSubtitle}>
-        Reception TV generates the highest revenue
+        {strings.tvDisplaysSection.generatesHighestRevenue(
+          sampleTopDisplay.name,
+        )}
       </Text>
       <View style={styles.track}>
-        <View style={[styles.fill, { width: '34%' }]} />
+        <View
+          style={[styles.fill, { width: `${sampleTopDisplay.share * 100}%` }]}
+        />
       </View>
     </View>
   </View>
@@ -87,18 +88,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   viewAll: {
     fontSize: normalizeFont(12),
-    fontWeight: '600',
-    color: '#0265FB',
+    fontFamily: fonts.semibold,
+    color: colors.primary,
     textDecorationLine: 'underline',
   },
   topCard: {
     marginTop: verticalScale(16),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: scale(8),
     paddingHorizontal: scale(16),
     paddingTop: scale(14),
@@ -111,24 +112,24 @@ const styles = StyleSheet.create({
   },
   topTitle: {
     fontSize: normalizeFont(14),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   topSubtitle: {
     marginTop: scale(6),
     fontSize: normalizeFont(12),
-    color: '#565656',
+    color: colors.secondaryText,
     marginBottom: scale(10),
   },
   track: {
     height: 2,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.borderLight,
     borderRadius: 1,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
-    backgroundColor: '#14AB00',
+    backgroundColor: colors.green,
   },
 });
 

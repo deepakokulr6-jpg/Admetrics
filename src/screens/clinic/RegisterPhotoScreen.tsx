@@ -21,6 +21,9 @@ import { saveClinicRegistration } from '../../services/clinicService';
 import { ClinicPhotos } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -49,8 +52,8 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
       if (result.errorCode) {
         Alert.alert(
-          'Unable to open gallery',
-          result.errorMessage ?? 'Please try choosing a photo again.',
+          strings.registerPhoto.unableToOpenGallery,
+          result.errorMessage ?? strings.registerPhoto.pleaseTryChoosingAPhoto,
         );
         return;
       }
@@ -58,7 +61,10 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       const asset = result.assets?.[0];
 
       if (!asset?.uri) {
-        Alert.alert('No photo selected', 'Please choose a photo to upload.');
+        Alert.alert(
+          strings.registerPhoto.noPhotoSelected,
+          strings.registerPhoto.pleaseChooseAPhotoTo,
+        );
         return;
       }
 
@@ -71,16 +77,16 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
       if (!isAllowed) {
         Alert.alert(
-          'Unsupported file',
-          'Only .jpg, .jpeg and .png images can be uploaded.',
+          strings.registerPhoto.unsupportedFile,
+          strings.registerPhoto.onlyJpgJpegAndPng,
         );
         return;
       }
 
       if (asset.fileSize && asset.fileSize > MAX_PHOTO_BYTES) {
         Alert.alert(
-          'File too large',
-          'Please choose an image smaller than 5 MB.',
+          strings.registerPhoto.fileTooLarge,
+          strings.registerPhoto.pleaseChooseAnImageSmaller,
         );
         return;
       }
@@ -88,15 +94,15 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       setPhoto(slot, asset.uri);
     } catch {
       Alert.alert(
-        'Unable to open gallery',
-        'Photos cannot be selected right now. Please try again.',
+        strings.registerPhoto.unableToOpenGallery,
+        strings.registerPhoto.photosCannotBeSelectedRight,
       );
     }
   };
 
   const handlePhotoPress = (slot: PhotoSlot, label: string) => {
     if (draft.photos[slot]) {
-      Alert.alert(label, 'What would you like to do?', [
+      Alert.alert(label, strings.registerPhoto.whatWouldYouLikeTo, [
         { text: 'Replace', onPress: () => pickPhoto(slot) },
         {
           text: 'Remove',
@@ -114,8 +120,8 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   const handleRegister = async () => {
     if (!user) {
       Alert.alert(
-        'Session expired',
-        'Please sign in again before registering your clinic.',
+        strings.registerPhoto.sessionExpired,
+        strings.registerPhoto.pleaseSignInAgainBefore,
       );
       return;
     }
@@ -127,12 +133,15 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       resetDraft();
       navigation.reset({
         index: 1,
-        routes: [{ name: 'Home' }, { name: 'ClinicRegistered' }],
+        routes: [
+          { name: 'MainTabs', params: { screen: 'Clinics' } },
+          { name: 'ClinicRegistered' },
+        ],
       });
     } catch {
       Alert.alert(
-        'Registration failed',
-        'The clinic details could not be saved on this device. Please try again.',
+        strings.registerPhoto.registrationFailed,
+        strings.registerPhoto.theClinicDetailsCouldNot,
       );
     } finally {
       setIsSaving(false);
@@ -142,7 +151,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
-        title="Register Your Clinic"
+        title={strings.common.registerYourClinic}
         onBackPress={() => navigation.goBack()}
       />
       <StepProgress currentStep={3} />
@@ -156,28 +165,38 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>Photos</Text>
+          <Text style={styles.heading}>{strings.registerPhoto.photos}</Text>
           <Text style={styles.instruction}>
-            Only .jpg/.png files with 5mb max.
+            {strings.registerPhoto.onlyJpgPngFilesWith}
           </Text>
 
           <View style={styles.photoRow}>
             <PhotoUploadItem
-              title="1. Entrance"
+              title={strings.registerPhoto.n1Entrance}
               imageUri={draft.photos.entrance}
-              onPress={() => handlePhotoPress('entrance', 'Entrance Photo')}
+              onPress={() =>
+                handlePhotoPress(
+                  'entrance',
+                  strings.registerPhoto.entrancePhoto,
+                )
+              }
             />
 
             <PhotoUploadItem
-              title="2. Reception"
+              title={strings.registerPhoto.n2Reception}
               imageUri={draft.photos.reception}
-              onPress={() => handlePhotoPress('reception', 'Reception Photo')}
+              onPress={() =>
+                handlePhotoPress(
+                  'reception',
+                  strings.registerPhoto.receptionPhoto,
+                )
+              }
             />
           </View>
 
           <View style={styles.button}>
             <GradientButton
-              title="Register"
+              title={strings.registerPhoto.register}
               onPress={handleRegister}
               loading={isSaving}
             />
@@ -191,7 +210,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -211,15 +230,15 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: normalizeFont(16),
     lineHeight: normalizeFont(19),
-    fontWeight: '600',
-    color: '#221E25',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginBottom: verticalScale(8),
   },
 
   instruction: {
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    color: '#221E25',
+    color: colors.text,
     marginBottom: verticalScale(16),
   },
 

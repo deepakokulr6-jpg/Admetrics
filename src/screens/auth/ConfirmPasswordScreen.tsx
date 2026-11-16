@@ -21,6 +21,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
+import { fonts } from '../../theme/typography';
+import strings from '../../constants/strings';
 
 const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
@@ -41,24 +44,22 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
     setError(null);
 
     if (!password || !confirmPassword) {
-      setError('Please fill in both password fields.');
+      setError(strings.confirmPassword.pleaseFillInBothPassword);
       return;
     }
 
     if (password.length < 8) {
-      setError('Use at least 8 characters for your password.');
+      setError(strings.confirmPassword.useAtLeast8Characters);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Both passwords must match.');
+      setError(strings.confirmPassword.bothPasswordsMustMatch);
       return;
     }
 
     if (isPasswordReset && !resetToken) {
-      setError(
-        'Your password reset session has expired. Please start the reset flow again.',
-      );
+      setError(strings.confirmPassword.yourPasswordResetSessionHas);
       return;
     }
 
@@ -74,8 +75,8 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         });
 
         Alert.alert(
-          'Password Updated',
-          'Your password has been changed. Please sign in with your new password.',
+          strings.confirmPassword.passwordUpdated,
+          strings.confirmPassword.yourPasswordHasBeenChanged,
         );
         return;
       }
@@ -90,8 +91,8 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         signUpError instanceof AuthError
           ? signUpError.message
           : isPasswordReset
-          ? 'Unable to reset your password right now. Please try again.'
-          : 'Unable to create your account right now. Please try again.',
+          ? strings.confirmPassword.unableToResetYourPassword
+          : strings.confirmPassword.unableToCreateYourAccount,
       );
     } finally {
       setIsSubmitting(false);
@@ -119,20 +120,22 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
 
             <AuthHeader
               title={
-                isPasswordReset ? 'Reset Your Password' : 'Create Your Account'
+                isPasswordReset
+                  ? strings.confirmPassword.resetYourPassword
+                  : strings.common.createYourAccount
               }
               subtitle={
                 isPasswordReset
-                  ? 'Choose a new password for your account'
-                  : 'Enter your email address to get started'
+                  ? strings.confirmPassword.chooseANewPasswordFor
+                  : strings.common.enterYourEmailAddressTo
               }
             />
 
             <View style={styles.form}>
               <InputField
                 containerStyle={styles.field}
-                label="Create Password"
-                placeholder="Enter your Password"
+                label={strings.confirmPassword.createPassword}
+                placeholder={strings.auth.enterYourPassword}
                 value={password}
                 onChangeText={value => {
                   setPassword(value);
@@ -147,21 +150,23 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
                     hitSlop={10}
                     accessibilityRole="button"
                     accessibilityLabel={
-                      showPassword ? 'Hide password' : 'Show password'
+                      showPassword
+                        ? strings.auth.hidePassword
+                        : strings.auth.showPassword
                     }
                   >
                     <Ionicons
                       name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                       size={scale(18)}
-                      color="#777777"
+                      color={colors.mutedText}
                     />
                   </Pressable>
                 }
               />
 
               <InputField
-                label="Confirm Password"
-                placeholder="Re-enter your Password"
+                label={strings.confirmPassword.confirmPassword}
+                placeholder={strings.confirmPassword.reEnterYourPassword}
                 value={confirmPassword}
                 onChangeText={value => {
                   setConfirmPassword(value);
@@ -180,8 +185,8 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
                     accessibilityRole="button"
                     accessibilityLabel={
                       showConfirmPassword
-                        ? 'Hide confirm password'
-                        : 'Show confirm password'
+                        ? strings.confirmPassword.hideConfirmPassword
+                        : strings.confirmPassword.showConfirmPassword
                     }
                   >
                     <Ionicons
@@ -189,7 +194,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
                         showConfirmPassword ? 'eye-off-outline' : 'eye-outline'
                       }
                       size={scale(18)}
-                      color="#777777"
+                      color={colors.mutedText}
                     />
                   </Pressable>
                 }
@@ -199,7 +204,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
 
               <View style={styles.button}>
                 <GradientButton
-                  title="Confirm"
+                  title={strings.confirmPassword.confirm}
                   onPress={handleConfirm}
                   loading={isSubmitting}
                 />
@@ -215,7 +220,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
 
   flex: {
@@ -258,8 +263,8 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(12),
     fontSize: normalizeFont(12),
     lineHeight: normalizeFont(16),
-    fontWeight: '500',
-    color: '#FF2A2A',
+    fontFamily: fonts.medium,
+    color: colors.red,
     textAlign: 'center',
   },
 

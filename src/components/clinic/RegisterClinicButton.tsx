@@ -3,6 +3,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import AppText from '../shared/AppText';
 import RegisterPlus from '../../../assets/images/figma/register_plus.svg';
 import { scale, verticalScale } from '../../utils/responsive';
+import strings from '../../constants/strings';
 
 type Props = {
   onPress: () => void;
@@ -15,12 +16,12 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
     onPress={onPress}
     activeOpacity={0.8}
     accessibilityRole="button"
-    accessibilityLabel="Register Your Clinic"
+    accessibilityLabel={strings.common.registerYourClinic}
     style={styles.container}
   >
     <RegisterPlus width={scale(48)} height={scale(48)} />
     <AppText variant="labelMedium" style={styles.text}>
-      Register Your Clinic
+      {strings.common.registerYourClinic}
     </AppText>
   </TouchableOpacity>
 );
