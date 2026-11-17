@@ -62,4 +62,3 @@ describe('responsive utilities', () => {
     expect((TextInput as any).defaultProps?.allowFontScaling).toBe(false);
   });
 });
-

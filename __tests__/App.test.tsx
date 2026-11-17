@@ -39,7 +39,5 @@ test('renders correctly', async () => {
   });
 
   expect(renderer).toBeTruthy();
-  expect(
-    renderer!.root.findByProps({ testID: 'root-navigator' }),
-  ).toBeTruthy();
+  expect(renderer!.root.findByProps({ testID: 'root-navigator' })).toBeTruthy();
 });

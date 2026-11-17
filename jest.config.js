@@ -10,6 +10,6 @@ module.exports = {
     '^react-native-image-picker$': '<rootDir>/__mocks__/imagePickerMock.js',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|react-native-vector-icons)/)',
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|react-native-vector-icons|@reduxjs|react-redux|redux|redux-persist|immer|reselect)/)',
   ],
 };

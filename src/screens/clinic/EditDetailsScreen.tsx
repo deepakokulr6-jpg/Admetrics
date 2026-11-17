@@ -6,7 +6,7 @@ import GradientButton from '../../components/shared/GradientButton';
 import ClinicInfoForm, {
   CLINIC_BOTTOM_FIELDS,
 } from '../../components/clinic/ClinicInfoForm';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import type { ClinicInfo } from '../../types/clinic';
 import {
   type ClinicErrors,

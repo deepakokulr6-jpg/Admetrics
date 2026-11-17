@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { View, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,61 +7,33 @@ import DashboardHeader from '../../components/home/DashboardHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { getClinicRegistrations } from '../../services/clinicService';
-import { ClinicRegistrationRecord } from '../../types/clinic';
+import { useAuth } from '../../hooks/useAuth';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchClinics } from '../../store/slices/clinicsSlice';
 import type { TabScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 
 const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
-  const [clinics, setClinics] = useState<ClinicRegistrationRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const clinics = useAppSelector(state => state.clinics.items);
+  // Only the very first load shows nothing; refreshes keep the current list.
+  const isLoading = useAppSelector(
+    state =>
+      state.clinics.status === 'idle' || state.clinics.status === 'loading',
+  );
 
   const { user } = useAuth();
   const ownerEmail = user?.email;
 
+  // Re-read the list whenever the tab is shown (e.g. after registering).
   useFocusEffect(
     useCallback(() => {
-      let cancelled = false;
-
-      const loadClinics = async () => {
-        if (!ownerEmail) {
-          if (!cancelled) {
-            setClinics([]);
-            setIsLoading(false);
-          }
-          return;
-        }
-
-        setIsLoading(true);
-
-        try {
-          const records = await getClinicRegistrations(ownerEmail);
-
-          if (!cancelled) {
-            setClinics(records);
-          }
-        } catch (error) {
-          console.warn('[Clinics] Clinic load failed', error);
-
-          if (!cancelled) {
-            setClinics([]);
-          }
-        } finally {
-          if (!cancelled) {
-            setIsLoading(false);
-          }
-        }
-      };
-
-      loadClinics();
-
-      return () => {
-        cancelled = true;
-      };
-    }, [ownerEmail]),
+      if (ownerEmail) {
+        dispatch(fetchClinics(ownerEmail));
+      }
+    }, [dispatch, ownerEmail]),
   );
 
   const hasClinics = clinics.length > 0;

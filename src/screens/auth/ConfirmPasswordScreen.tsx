@@ -6,7 +6,7 @@ import AuthScreenLayout from '../../components/auth/AuthScreenLayout';
 import AuthHeader from '../../components/auth/AuthHeader';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';

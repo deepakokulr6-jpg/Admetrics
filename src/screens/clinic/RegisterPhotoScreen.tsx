@@ -7,7 +7,7 @@ import FormScreenLayout, {
 } from '../../components/shared/FormScreenLayout';
 import PhotoUploadItem from '../../components/clinic/PhotoUploadItem';
 import GradientButton from '../../components/shared/GradientButton';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import { ClinicPhotos } from '../../types/clinic';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';

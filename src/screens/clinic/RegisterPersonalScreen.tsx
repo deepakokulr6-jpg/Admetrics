@@ -6,8 +6,8 @@ import FormScreenLayout, {
 } from '../../components/shared/FormScreenLayout';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
+import { useAuth } from '../../hooks/useAuth';
 import { PersonalInfo } from '../../types/clinic';
 import {
   type PersonalErrors,

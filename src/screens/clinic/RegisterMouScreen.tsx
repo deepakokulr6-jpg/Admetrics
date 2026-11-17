@@ -15,7 +15,7 @@ import StepProgress from '../../components/shared/StepProgress';
 import GradientButton from '../../components/shared/GradientButton';
 import MouDocument from '../../components/clinic/MouDocument';
 import SignaturePad from '../../components/clinic/SignaturePad';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';

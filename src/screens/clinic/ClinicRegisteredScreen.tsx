@@ -1,7 +1,7 @@
 import React from 'react';
 
 import SuccessScreenLayout from '../../components/shared/SuccessScreenLayout';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import type { AppScreenProps } from '../../navigation/types';
 import strings from '../../constants/strings';
 

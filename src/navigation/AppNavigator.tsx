@@ -14,7 +14,6 @@ import RegisterMouScreen from '../screens/clinic/RegisterMouScreen';
 import MouESignScreen from '../screens/clinic/MouESignScreen';
 import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
-import { ClinicRegistrationProvider } from '../contexts/ClinicRegistrationContext';
 import type { AppStackParamList } from './types';
 import colors from '../theme/colors';
 
@@ -22,7 +21,7 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppNavigator = () => {
   return (
-    <ClinicRegistrationProvider>
+    <>
       <Stack.Navigator
         initialRouteName="MainTabs"
         screenOptions={{
@@ -65,7 +64,7 @@ const AppNavigator = () => {
           options={{ animation: 'none', gestureEnabled: false }}
         />
       </Stack.Navigator>
-    </ClinicRegistrationProvider>
+    </>
   );
 };
 

@@ -31,4 +31,3 @@ describe('AnimatedAppLogo', () => {
     expect(renderer).toBeDefined();
   });
 });
-

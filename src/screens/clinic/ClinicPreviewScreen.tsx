@@ -5,9 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import GradientButton from '../../components/shared/GradientButton';
 import ClinicSummary from '../../components/clinic/ClinicSummary';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { saveClinicRegistration } from '../../services/clinicService';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
+import { useAuth } from '../../hooks/useAuth';
+import { useAppDispatch } from '../../store/hooks';
+import { registerClinic } from '../../store/slices/clinicsSlice';
 import type { AppScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
@@ -27,6 +28,7 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
 }) => {
   const { draft, resetDraft } = useClinicRegistration();
   const { user } = useAuth();
+  const dispatch = useAppDispatch();
   const [isSaving, setIsSaving] = useState(false);
   const { clinic, personal, photos } = draft;
 
@@ -47,7 +49,7 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
     setIsSaving(true);
 
     try {
-      await saveClinicRegistration(user.email, draft);
+      await dispatch(registerClinic({ owner: user.email, draft })).unwrap();
       resetDraft();
       navigation.reset({
         index: 1,

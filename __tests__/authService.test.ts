@@ -109,7 +109,9 @@ test('rejects password reset without a valid verification token', async () => {
 
   await expect(
     resetPassword('reset@example.com', 'not-a-token', 'newpassword'),
-  ).rejects.toThrow('Your password reset session has expired. Please start again.');
+  ).rejects.toThrow(
+    'Your password reset session has expired. Please start again.',
+  );
 });
 
 test('does not create an account during password reset', async () => {

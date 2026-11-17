@@ -6,7 +6,7 @@ import FormScreenLayout, {
 } from '../../components/shared/FormScreenLayout';
 import WorkingHoursRow from '../../components/shared/WorkingHoursRow';
 import GradientButton from '../../components/shared/GradientButton';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import { isBlank, isValidTime } from '../../utils/validation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';

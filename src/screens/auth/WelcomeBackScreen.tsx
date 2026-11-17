@@ -7,7 +7,7 @@ import ForgotPasswordLink from '../../components/auth/ForgotPasswordLink';
 import GradientButton from '../../components/shared/GradientButton';
 import GradientText from '../../components/shared/GradientText';
 import InputField from '../../components/shared/InputField';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';

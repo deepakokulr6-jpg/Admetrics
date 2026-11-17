@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
-import { useClinicRegistration } from '../../contexts/ClinicRegistrationContext';
+import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import { DOCUSEAL_FORM_SCRIPT, DOCUSEAL_FORM_URL } from '../../config/esign';
 import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';

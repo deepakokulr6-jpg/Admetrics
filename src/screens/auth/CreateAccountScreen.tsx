@@ -9,7 +9,7 @@ import ResendOtp from '../../components/auth/ResendOtp';
 import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { DEVELOPMENT_OTP } from '../../services/authService';
 import { isValidEmail } from '../../utils/validation';
 import type { AuthScreenProps } from '../../navigation/types';
