@@ -74,5 +74,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Admetrics uses the camera to scan the QR code on your TV to connect it.</string>
 </dict>
 </plist>

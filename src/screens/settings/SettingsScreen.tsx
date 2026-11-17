@@ -225,6 +225,11 @@ const SettingsScreen: React.FC<AppScreenProps<'Settings'>> = ({
               <Pressable
                 key={item.key}
                 accessibilityRole="button"
+                onPress={
+                  item.key === 'device'
+                    ? () => navigation.navigate('AddDevice')
+                    : undefined
+                }
                 style={({ pressed }) => [
                   styles.row,
                   pressed && styles.rowPressed,

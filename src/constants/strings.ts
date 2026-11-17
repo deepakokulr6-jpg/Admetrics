@@ -104,6 +104,41 @@ const strings = {
     logOut: 'Log out',
     closeMenu: 'Close menu',
   },
+  addDevice: {
+    title: 'Add Device',
+    heading: 'Connect Admetrics',
+    intro:
+      'Add TV to your admetrics by scanning its QR code or entering the pairing code displayed on the application.',
+    option1Title: 'Option 1: Scan QR Code',
+    option1Body:
+      'Scan the QR code displayed on Admetrics application to connect instantly.',
+    scannerHint: 'Position the TV QR code inside the scanner',
+    scanQrCode: 'Scan QR Code',
+    option2Title: 'Option 2: Enter Pairing Code',
+    option2Body: 'Enter the unique pairing code shown on your TV screen.',
+    codePlaceholder: 'Enter 6-digit code',
+    connectTv: 'Connect TV',
+    footer: 'Make sure your TV is turned on and displaying the pairing screen.',
+  },
+  scanQr: {
+    title: 'Scan QR Code',
+    cameraDenied:
+      'Allow camera access in Settings to scan the TV QR code, or use the pairing code instead.',
+    openSettings: 'Open Settings',
+    confirmScan: 'Confirm Scan',
+  },
+  deviceDetails: {
+    title: 'Add Device',
+    serialNumber: 'S.No',
+    deviceName: 'Device Name',
+    deviceNamePlaceholder: 'e.g. Reception TV',
+    add: 'Add',
+  },
+  devicePairing: {
+    verifying: 'Verifying...',
+    verified: 'Verified',
+    message: 'Connecting Admetrics to your account.',
+  },
   settings: {
     title: 'Settings',
     appearance: 'Appearance',

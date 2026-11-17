@@ -68,6 +68,8 @@ const lightColors = {
   // Translucent
   overlay: 'rgba(0, 0, 0, 0.05)',
   backdrop: 'rgba(0, 0, 0, 0.4)',
+  /** Heavier dim behind bottom sheets so the screen underneath fades back. */
+  sheetBackdrop: 'rgba(0, 0, 0, 0.65)',
   signatureOverlay: 'rgba(0, 0, 0, 0.78)',
   transparent: 'transparent',
   whiteTranslucent: 'rgba(255, 255, 255, 0.3)',
@@ -112,6 +114,7 @@ export const darkOverrides: Partial<Palette> = {
   photoPlaceholder2: '#45413A',
   overlay: 'rgba(255, 255, 255, 0.06)',
   backdrop: 'rgba(0, 0, 0, 0.6)',
+  sheetBackdrop: 'rgba(0, 0, 0, 0.8)',
 };
 
 /**

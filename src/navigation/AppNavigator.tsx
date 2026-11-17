@@ -15,6 +15,10 @@ import MouESignScreen from '../screens/clinic/MouESignScreen';
 import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
+import AddDeviceScreen from '../screens/settings/AddDeviceScreen';
+import ScanQrScreen from '../screens/settings/ScanQrScreen';
+import DeviceDetailsScreen from '../screens/settings/DeviceDetailsScreen';
+import DevicePairingScreen from '../screens/settings/DevicePairingScreen';
 import type { AppStackParamList } from './types';
 import colors from '../theme/colors';
 
@@ -44,6 +48,18 @@ const AppNavigator = () => {
         <Stack.Screen name="ClinicPreview" component={ClinicPreviewScreen} />
         <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
+        <Stack.Screen name="ScanQr" component={ScanQrScreen} />
+        <Stack.Screen name="DeviceDetails" component={DeviceDetailsScreen} />
+        <Stack.Screen
+          name="DevicePairing"
+          component={DevicePairingScreen}
+          options={{
+            presentation: 'transparentModal',
+            animation: 'none',
+            gestureEnabled: false,
+          }}
+        />
         <Stack.Screen name="EditDetails" component={EditDetailsScreen} />
         <Stack.Screen
           name="RegisteredDetails"

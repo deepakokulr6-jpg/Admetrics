@@ -192,3 +192,6 @@ export const sampleRevenue = {
   monthlyRevenue: '₹13,580',
   pendingPayout: '₹3,710',
 };
+
+/** Serial used by the manual "Confirm Scan" button until scanning is tested on devices. */
+export const SAMPLE_TV_SERIAL = 'SVGWHDJSN97842';

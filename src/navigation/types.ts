@@ -44,6 +44,11 @@ export type AppStackParamList = {
   ClinicPreview: undefined;
   MouAgreement: undefined;
   Settings: undefined;
+  AddDevice: undefined;
+  ScanQr: undefined;
+  /** serial: TV serial number from the QR code or pairing code. */
+  DeviceDetails: { serial: string };
+  DevicePairing: { serial: string; name: string };
   ClinicRegistered: undefined;
   EditDetails: undefined;
   /** approved = false hides Displays (a pending clinic has none yet). */
