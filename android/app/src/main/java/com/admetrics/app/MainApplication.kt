@@ -1,4 +1,4 @@
-package com.admetrics
+package com.admetrics.app
 
 import android.app.Application
 import com.facebook.react.PackageList

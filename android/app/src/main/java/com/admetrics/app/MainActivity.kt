@@ -1,4 +1,4 @@
-package com.admetrics
+package com.admetrics.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
