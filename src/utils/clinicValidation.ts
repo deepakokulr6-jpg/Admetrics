@@ -5,6 +5,7 @@ import {
   isBlank,
   isValidEmail,
   isValidMobile,
+  isValidName,
   isValidPincode,
   isValidYear,
   PAN_PATTERN,
@@ -70,6 +71,8 @@ export const validatePersonal = (personal: PersonalInfo): PersonalErrors => {
 
   if (isBlank(personal.contactPerson)) {
     errors.contactPerson = strings.registerPersonal.contactPersonIsRequired;
+  } else if (!isValidName(personal.contactPerson)) {
+    errors.contactPerson = strings.registerPersonal.enterAValidName;
   }
 
   if (!isBlank(personal.mobile) && !isValidMobile(personal.mobile)) {

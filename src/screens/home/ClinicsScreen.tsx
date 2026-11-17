@@ -14,6 +14,7 @@ import type { TabScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { SHOW_DEMO_CLINICS, sampleClinicList } from '../../constants/mockData';
 
 const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   const dispatch = useAppDispatch();
@@ -36,7 +37,26 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
     }, [dispatch, ownerEmail]),
   );
 
-  const hasClinics = clinics.length > 0;
+  // Your registrations (newest first) are just submitted, so they wait for
+  // approval; the demo clinics follow until the API provides real data.
+  const cards = [
+    ...[...clinics]
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map(record => ({
+        id: record.id,
+        clinicName: record.clinic.clinicName || strings.a15Home.unnamedClinic,
+        contactName:
+          record.personal.contactPerson || strings.common.notProvided,
+        designation: record.personal.designation || strings.common.notProvided,
+        phone: record.personal.mobile,
+        email: record.personal.email,
+        photos: [record.photos.entrance, record.photos.reception] as const,
+        approved: false,
+        displays: undefined as { total: number; online: number } | undefined,
+      })),
+    ...(SHOW_DEMO_CLINICS ? sampleClinicList : []),
+  ];
+  const hasClinics = cards.length > 0;
 
   // Figma: no clinics yet → hide the bottom bar until the first registration.
   // It stays hidden during the first load and only appears once clinics
@@ -65,25 +85,28 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
           {hasClinics ? (
             <>
               <View style={styles.clinicList}>
-                {clinics.map(record => (
+                {cards.map(card => (
                   <ClinicCard
-                    key={record.id}
-                    status={strings.a15Home.waitingForApproval}
-                    clinicName={
-                      record.clinic.clinicName || strings.a15Home.unnamedClinic
+                    key={card.id}
+                    status={
+                      card.approved
+                        ? undefined
+                        : strings.a15Home.waitingForApproval
                     }
-                    contactName={
-                      record.personal.contactPerson ||
-                      strings.common.notProvided
+                    displayCount={card.displays?.total}
+                    onlineDisplays={card.displays?.online}
+                    clinicName={card.clinicName}
+                    contactName={card.contactName}
+                    designation={card.designation}
+                    phone={card.phone}
+                    email={card.email}
+                    photoOneUri={card.photos[0]}
+                    photoTwoUri={card.photos[1]}
+                    onPress={() =>
+                      navigation.navigate('RegisteredDetails', {
+                        approved: card.approved,
+                      })
                     }
-                    designation={
-                      record.personal.designation || strings.common.notProvided
-                    }
-                    phone={record.personal.mobile}
-                    email={record.personal.email}
-                    photoOneUri={record.photos.entrance}
-                    photoTwoUri={record.photos.reception}
-                    onPress={() => navigation.navigate('RegisteredDetails')}
                   />
                 ))}
               </View>

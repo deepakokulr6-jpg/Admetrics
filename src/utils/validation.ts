@@ -40,4 +40,17 @@ export const isValidYear = (value: string): boolean => {
 export const isValidTime = (value: string): boolean =>
   TIME_PATTERN.test(value.trim());
 
+/** Person names: letters (any language), spaces and . ' - */
+export const NAME_PATTERN = /^[\p{L}][\p{L} .'-]*[\p{L}.]$/u;
+
+/** Drops anything a name can't contain and collapses repeated spaces. */
+export const sanitizeName = (value: string): string =>
+  value
+    .replace(/[^\p{L} .'-]/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trimStart();
+
+export const isValidName = (value: string): boolean =>
+  NAME_PATTERN.test(value.trim());
+
 export const isBlank = (value: string): boolean => value.trim().length === 0;

@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  type ImageSourcePropType,
+  Pressable,
+} from 'react-native';
 import TvOn from '../../../assets/images/figma/tv_on.svg';
 import TvOff from '../../../assets/images/figma/tv_off.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
@@ -16,8 +23,9 @@ type Props = {
   email: string;
   photoOneColor?: string;
   photoTwoColor?: string;
-  photoOneUri?: string | null;
-  photoTwoUri?: string | null;
+  /** A file/remote uri or a bundled image (require). */
+  photoOneUri?: string | ImageSourcePropType | null;
+  photoTwoUri?: string | ImageSourcePropType | null;
   displayCount?: number;
   onlineDisplays?: number;
   onPress?: () => void;
@@ -103,7 +111,12 @@ const ClinicCard: React.FC<Props> = ({
             style={[styles.photo, { backgroundColor: photo.color }]}
           >
             {photo.uri ? (
-              <Image source={{ uri: photo.uri }} style={styles.photoImage} />
+              <Image
+                source={
+                  typeof photo.uri === 'string' ? { uri: photo.uri } : photo.uri
+                }
+                style={styles.photoImage}
+              />
             ) : null}
           </View>
         ))}

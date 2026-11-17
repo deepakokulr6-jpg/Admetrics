@@ -36,50 +36,60 @@ const clinic: ClinicSummaryData = {
 
 const RegisteredDetailsScreen: React.FC<
   AppScreenProps<'RegisteredDetails'>
-> = ({ navigation }) => (
-  <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-    <ScreenHeader
-      title={strings.registeredDetails.registeredDetails}
-      onBackPress={() => navigation.goBack()}
-      rightElement={
-        <Pressable
-          onPress={() => navigation.navigate('EditDetails')}
-          hitSlop={10}
-          style={styles.editButton}
-          accessibilityRole="button"
-          accessibilityLabel={strings.registeredDetails.editDetails}
-        >
-          <EditIcon width={scale(19.5)} height={scale(19.5)} />
-        </Pressable>
-      }
-    />
+> = ({ navigation, route }) => {
+  const approved = route.params?.approved ?? true;
 
-    <ScrollView
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      <ClinicSummary data={clinic} />
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+      <ScreenHeader
+        title={strings.registeredDetails.registeredDetails}
+        onBackPress={() => navigation.goBack()}
+        rightElement={
+          <Pressable
+            onPress={() => navigation.navigate('EditDetails')}
+            hitSlop={10}
+            style={styles.editButton}
+            accessibilityRole="button"
+            accessibilityLabel={strings.registeredDetails.editDetails}
+          >
+            <EditIcon width={scale(19.5)} height={scale(19.5)} />
+          </Pressable>
+        }
+      />
 
-      <View style={styles.divider} />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <ClinicSummary data={clinic} />
 
-      {/* Displays */}
-      <Text style={styles.sectionTitle}>
-        {strings.registeredDetails.displays}
-      </Text>
-      {sampleDisplays.map(display => (
-        <View key={display.id} style={styles.display}>
-          <Text style={styles.displayName}>{display.name}</Text>
-          <Text style={styles.displayMeta}>
-            <Text style={display.online ? styles.online : styles.offline}>
-              {display.online ? strings.common.online : strings.common.offline}
+        {/* Displays – only once the clinic is approved */}
+        {approved ? (
+          <>
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionTitle}>
+              {strings.registeredDetails.displays}
             </Text>
-            {strings.registeredDetails.displayId(display.id)}
-          </Text>
-        </View>
-      ))}
-    </ScrollView>
-  </SafeAreaView>
-);
+            {sampleDisplays.map(display => (
+              <View key={display.id} style={styles.display}>
+                <Text style={styles.displayName}>{display.name}</Text>
+                <Text style={styles.displayMeta}>
+                  <Text style={display.online ? styles.online : styles.offline}>
+                    {display.online
+                      ? strings.common.online
+                      : strings.common.offline}
+                  </Text>
+                  {strings.registeredDetails.displayId(display.id)}
+                </Text>
+              </View>
+            ))}
+          </>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   safeArea: {

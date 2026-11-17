@@ -14,6 +14,7 @@ import RegisterMouScreen from '../screens/clinic/RegisterMouScreen';
 import MouESignScreen from '../screens/clinic/MouESignScreen';
 import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
 import type { AppStackParamList } from './types';
 import colors from '../theme/colors';
 
@@ -42,6 +43,7 @@ const AppNavigator = () => {
         />
         <Stack.Screen name="ClinicPreview" component={ClinicPreviewScreen} />
         <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="EditDetails" component={EditDetailsScreen} />
         <Stack.Screen
           name="RegisteredDetails"

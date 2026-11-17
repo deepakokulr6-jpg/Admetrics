@@ -43,9 +43,11 @@ export type AppStackParamList = {
   MouESign: undefined;
   ClinicPreview: undefined;
   MouAgreement: undefined;
+  Settings: undefined;
   ClinicRegistered: undefined;
   EditDetails: undefined;
-  RegisteredDetails: undefined;
+  /** approved = false hides Displays (a pending clinic has none yet). */
+  RegisteredDetails: { approved?: boolean } | undefined;
   PaymentDetails: { month: string; paid: boolean; paidOn?: string } | undefined;
 };
 

@@ -9,6 +9,7 @@ import GradientButton from '../../components/shared/GradientButton';
 import { useClinicRegistration } from '../../hooks/useClinicRegistration';
 import { useAuth } from '../../hooks/useAuth';
 import { PersonalInfo } from '../../types/clinic';
+import { sanitizeName } from '../../utils/validation';
 import {
   type PersonalErrors,
   validatePersonal,
@@ -87,12 +88,17 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
       </Text>
 
       <InputField
-        label={strings.registerPersonal.contactPersonNumber}
+        label={strings.registerPersonal.contactPersonName}
         placeholder={strings.registerPersonal.enterContactPersonName}
         value={personal.contactPerson}
-        onChangeText={value => update('contactPerson', value)}
+        // Names only: letters, spaces and . ' - (digits/symbols are dropped).
+        onChangeText={value => update('contactPerson', sanitizeName(value))}
         {...focusProps('contactPerson')}
+        required
         autoCapitalize="words"
+        textContentType="name"
+        autoComplete="name"
+        maxLength={50}
         error={errors.contactPerson}
       />
 
@@ -121,6 +127,7 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
 
       <InputField
         label={strings.registerPersonal.emailId}
+        required
         placeholder={strings.registerPersonal.enterEmailAddress}
         value={personal.email}
         onChangeText={value => update('email', value.trim())}

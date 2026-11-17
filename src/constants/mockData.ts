@@ -46,7 +46,7 @@ export const sampleDisplays: SampleDisplay[] = [
   {
     name: 'Waiting Hall TV',
     id: 'Display 02',
-    online: true,
+    online: false,
     uptime: '10 hours 39 minutes',
     revenue: '₹14,800',
   },
@@ -56,6 +56,59 @@ export const sampleDisplays: SampleDisplay[] = [
     online: false,
     uptime: '07 hours 39 minutes',
     revenue: '₹6,000',
+  },
+];
+
+/**
+ * Clinics shown on the Clinics tab until the API is connected (Figma cards):
+ * one waiting for approval, one approved with 3 displays (1 online).
+ * Set SHOW_DEMO_CLINICS to false to test the empty "Register" state.
+ */
+export const SHOW_DEMO_CLINICS = true;
+
+export type DemoClinic = {
+  id: string;
+  clinicName: string;
+  contactName: string;
+  designation: string;
+  phone: string;
+  email: string;
+  photos: [number, number];
+  approved: boolean;
+  displays?: { total: number; online: number };
+};
+
+export const sampleClinicList: DemoClinic[] = [
+  {
+    id: 'demo-pending',
+    clinicName: 'Xwell Clinic',
+    contactName: 'Shivan',
+    designation: 'Doctor',
+    phone: '9876543210',
+    email: 'shivan@gmail.com',
+    photos: [
+      require('../../assets/images/figma/sample_entrance.png'),
+      require('../../assets/images/figma/sample_reception.png'),
+    ],
+    approved: false,
+  },
+  {
+    id: 'demo-approved',
+    clinicName: 'Xwell Clinic',
+    contactName: 'Shivan',
+    designation: 'Doctor',
+    phone: '9876543210',
+    email: 'shivan@gmail.com',
+    photos: [
+      require('../../assets/images/figma/sample_entrance.png'),
+      require('../../assets/images/figma/sample_reception.png'),
+    ],
+    approved: true,
+    // Same displays as Registered Details / Revenue (one source of truth).
+    displays: {
+      total: sampleDisplays.length,
+      online: sampleDisplays.filter(display => display.online).length,
+    },
   },
 ];
 

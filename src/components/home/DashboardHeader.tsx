@@ -82,6 +82,7 @@ const DashboardHeader: React.FC<Props> = ({
         onClose={() => setDrawerOpen(false)}
         onLogout={confirmLogout}
         onMouAgreement={() => navigation.navigate('MouAgreement')}
+        onSettings={() => navigation.navigate('Settings')}
       />
     </View>
   );
