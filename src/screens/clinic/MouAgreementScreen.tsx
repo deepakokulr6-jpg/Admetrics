@@ -17,6 +17,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 /**
  * Pages of the agreement: each entry lists the strings.mouDocument sections
@@ -87,39 +88,41 @@ const MouAgreementScreen: React.FC<AppScreenProps<'MouAgreement'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  page: {
-    backgroundColor: colors.white,
-    paddingHorizontal: scale(28),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(40),
-  },
-  // Figma: thick dark bar between pages.
-  pageBreak: {
-    borderTopWidth: scale(4),
-    borderTopColor: colors.textStrong,
-  },
-  pageBadge: {
-    position: 'absolute',
-    top: verticalScale(20),
-    right: scale(16),
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(4),
-    borderRadius: scale(14),
-    backgroundColor: colors.mutedText,
-  },
-  pageBadgeText: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.medium,
-    color: colors.white,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    flex: {
+      flex: 1,
+    },
+    page: {
+      backgroundColor: colors.white,
+      paddingHorizontal: scale(28),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(40),
+    },
+    // Figma: thick dark bar between pages.
+    pageBreak: {
+      borderTopWidth: scale(4),
+      borderTopColor: colors.textStrong,
+    },
+    pageBadge: {
+      position: 'absolute',
+      top: verticalScale(20),
+      right: scale(16),
+      paddingHorizontal: scale(10),
+      paddingVertical: verticalScale(4),
+      borderRadius: scale(14),
+      backgroundColor: colors.mutedText,
+    },
+    pageBadgeText: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.medium,
+      color: colors.onAccent,
+    },
+  }),
+);
 
 export default MouAgreementScreen;

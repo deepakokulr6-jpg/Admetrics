@@ -9,6 +9,7 @@ import { DOCUSEAL_FORM_SCRIPT, DOCUSEAL_FORM_URL } from '../../config/esign';
 import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type DocusealMessage =
   | { type: 'completed'; detail: Record<string, unknown> }
@@ -121,20 +122,22 @@ const MouESignScreen: React.FC<AppScreenProps<'MouESign'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  loader: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.white,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    flex: {
+      flex: 1,
+    },
+    loader: {
+      ...StyleSheet.absoluteFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.white,
+    },
+  }),
+);
 
 export default MouESignScreen;

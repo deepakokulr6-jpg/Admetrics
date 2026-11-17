@@ -10,6 +10,7 @@ import GradientText from '../shared/GradientText';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type AuthFooterProps = {
   text: string;
@@ -51,26 +52,28 @@ const AuthFooter: React.FC<AuthFooterProps> = ({
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
-    paddingVertical: verticalScale(2),
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: normalizeFont(14),
-    color: colors.text,
-  },
-  highlight: {
-    marginLeft: scale(4),
-  },
-  link: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.bold,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      alignSelf: 'center',
+      paddingVertical: verticalScale(2),
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize: normalizeFont(14),
+      color: colors.text,
+    },
+    highlight: {
+      marginLeft: scale(4),
+    },
+    link: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.bold,
+    },
+  }),
+);
 
 export default AuthFooter;

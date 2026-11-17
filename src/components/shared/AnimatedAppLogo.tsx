@@ -3,6 +3,7 @@ import { Animated, Easing, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import { scale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { themedStyles } from '../../theme/themedStyles';
 
 export interface AnimatedAppLogoProps {
   width?: number;
@@ -171,7 +172,7 @@ export default function AnimatedAppLogo({
   });
 
   const fillColor =
-    colorScheme === 'gradient' ? 'url(#animLogoGradient)' : colors.white;
+    colorScheme === 'gradient' ? 'url(#animLogoGradient)' : colors.onAccent;
 
   return (
     <View
@@ -295,19 +296,21 @@ export default function AnimatedAppLogo({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  layer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  svg: {
-    backgroundColor: 'transparent',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+    },
+    layer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+    },
+    svg: {
+      backgroundColor: 'transparent',
+    },
+  }),
+);

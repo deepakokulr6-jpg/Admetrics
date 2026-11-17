@@ -22,6 +22,7 @@ import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { DOCUSEAL_FORM_URL } from '../../config/esign';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Mode = 'read' | 'sign';
 
@@ -124,7 +125,7 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
                   <Svg width={scale(30)} height={scale(14)} viewBox="0 0 30 14">
                     <Path
                       d={SQUIGGLE}
-                      stroke={colors.white}
+                      stroke={colors.onAccent}
                       strokeWidth={2.5}
                       strokeLinecap="round"
                       fill="none"
@@ -165,64 +166,66 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: scale(16),
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: verticalScale(16),
-  },
-  title: {
-    fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(20),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  clear: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-  },
-  // Figma: grey 1px border, 24px corners, fills down to the button.
-  documentBox: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: scale(24),
-    overflow: 'hidden',
-    backgroundColor: colors.white,
-  },
-  document: {
-    paddingHorizontal: scale(24),
-    paddingVertical: verticalScale(24),
-  },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: colors.signatureOverlay,
-  },
-  hint: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  hintText: {
-    marginTop: verticalScale(4),
-    fontSize: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.white,
-  },
-  button: {
-    paddingTop: verticalScale(40),
-    paddingBottom: verticalScale(24),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: scale(16),
+    },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: verticalScale(16),
+    },
+    title: {
+      fontSize: normalizeFont(16),
+      lineHeight: normalizeFont(20),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    clear: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.primary,
+    },
+    // Figma: grey 1px border, 24px corners, fills down to the button.
+    documentBox: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: scale(24),
+      overflow: 'hidden',
+      backgroundColor: colors.white,
+    },
+    document: {
+      paddingHorizontal: scale(24),
+      paddingVertical: verticalScale(24),
+    },
+    overlay: {
+      ...StyleSheet.absoluteFill,
+      backgroundColor: colors.signatureOverlay,
+    },
+    hint: {
+      ...StyleSheet.absoluteFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    hintText: {
+      marginTop: verticalScale(4),
+      fontSize: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.onAccent,
+    },
+    button: {
+      paddingTop: verticalScale(40),
+      paddingBottom: verticalScale(24),
+    },
+  }),
+);
 
 export default RegisterMouScreen;

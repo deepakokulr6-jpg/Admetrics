@@ -13,6 +13,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
@@ -182,27 +183,29 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: verticalScale(24),
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    field: {
+      marginBottom: verticalScale(24),
+    },
 
-  lastField: {
-    marginBottom: 0,
-  },
+    lastField: {
+      marginBottom: 0,
+    },
 
-  error: {
-    marginTop: verticalScale(12),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.red,
-    textAlign: 'center',
-  },
+    error: {
+      marginTop: verticalScale(12),
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.red,
+      textAlign: 'center',
+    },
 
-  button: {
-    marginTop: verticalScale(85),
-  },
-});
+    button: {
+      marginTop: verticalScale(85),
+    },
+  }),
+);
 
 export default ConfirmPasswordScreen;

@@ -13,6 +13,7 @@ import type { AppScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 const joinAddress = (parts: string[], pincode: string) => {
   const address = parts
@@ -113,19 +114,21 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  content: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(32),
-  },
-  button: {
-    marginTop: verticalScale(24),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    content: {
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(32),
+    },
+    button: {
+      marginTop: verticalScale(24),
+    },
+  }),
+);
 
 export default ClinicPreviewScreen;

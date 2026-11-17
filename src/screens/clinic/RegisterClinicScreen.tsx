@@ -18,6 +18,7 @@ import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
 import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 /** Step 1 of registration: clinic details, saved to the registration draft. */
 const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
@@ -70,10 +71,12 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    marginTop: verticalScale(48),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    button: {
+      marginTop: verticalScale(48),
+    },
+  }),
+);
 
 export default RegisterClinicScreen;

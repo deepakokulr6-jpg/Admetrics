@@ -13,6 +13,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   status?: string;
@@ -125,88 +126,90 @@ const ClinicCard: React.FC<Props> = ({
   </Pressable>
 );
 
-const styles = StyleSheet.create({
-  pressed: {
-    opacity: 0.7,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: scale(6),
-    paddingHorizontal: scale(16),
-    paddingBottom: verticalScale(16),
-  },
-  strip: {
-    height: scale(31),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dot: {
-    width: scale(8),
-    height: scale(8),
-    borderRadius: scale(4),
-    backgroundColor: colors.red,
-    marginRight: scale(8),
-  },
-  status: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.medium,
-    color: colors.red,
-  },
-  displays: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.medium,
-    color: colors.text,
-  },
-  tvs: {
-    flexDirection: 'row',
-    gap: scale(8),
-    marginRight: scale(-12),
-  },
-  tv: {
-    width: scale(24),
-    height: scale(24),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  body: {
-    flexDirection: 'row',
-    marginTop: scale(8),
-  },
-  info: {
-    flex: 1,
-  },
-  clinicName: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(6),
-  },
-  detail: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(17),
-    color: colors.secondaryText,
-  },
-  photos: {
-    flexDirection: 'row',
-    gap: scale(8),
-  },
-  photo: {
-    width: scale(80),
-    height: scale(89),
-    borderRadius: scale(5.33),
-    overflow: 'hidden',
-  },
-  photoImage: {
-    width: '100%',
-    height: '100%',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    pressed: {
+      opacity: 0.7,
+    },
+    card: {
+      backgroundColor: colors.white,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      borderRadius: scale(6),
+      paddingHorizontal: scale(16),
+      paddingBottom: verticalScale(16),
+    },
+    strip: {
+      height: scale(31),
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    dot: {
+      width: scale(8),
+      height: scale(8),
+      borderRadius: scale(4),
+      backgroundColor: colors.red,
+      marginRight: scale(8),
+    },
+    status: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.medium,
+      color: colors.red,
+    },
+    displays: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+    tvs: {
+      flexDirection: 'row',
+      gap: scale(8),
+      marginRight: scale(-12),
+    },
+    tv: {
+      width: scale(24),
+      height: scale(24),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    body: {
+      flexDirection: 'row',
+      marginTop: scale(8),
+    },
+    info: {
+      flex: 1,
+    },
+    clinicName: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(6),
+    },
+    detail: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(17),
+      color: colors.secondaryText,
+    },
+    photos: {
+      flexDirection: 'row',
+      gap: scale(8),
+    },
+    photo: {
+      width: scale(80),
+      height: scale(89),
+      borderRadius: scale(5.33),
+      overflow: 'hidden',
+    },
+    photoImage: {
+      width: '100%',
+      height: '100%',
+    },
+  }),
+);
 
 export default ClinicCard;

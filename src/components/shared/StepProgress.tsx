@@ -6,6 +6,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 interface StepProgressProps {
   currentStep: number;
@@ -55,7 +56,7 @@ const StepBadge: React.FC<{ index: number; done: boolean }> = ({
     ) : (
       <>
         <Circle cx={12} cy={12} r={8} fill={colors.borderLight} />
-        <Circle cx={12} cy={12} r={3} fill={colors.white} />
+        <Circle cx={12} cy={12} r={3} fill={colors.onAccent} />
       </>
     )}
   </Svg>
@@ -93,43 +94,45 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: scale(360),
-    alignSelf: 'center',
-    // header → badges 20, badges + label, then 24 down to the section title
-    height: BADGE + scale(19),
-    marginTop: verticalScale(20),
-    marginBottom: verticalScale(24),
-  },
-  track: {
-    position: 'absolute',
-    top: BADGE / 2 - 1,
-    left: TRACK_LEFT,
-    width: TRACK_WIDTH,
-    height: 2,
-  },
-  trackFill: {
-    ...StyleSheet.absoluteFill,
-  },
-  trackRest: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    backgroundColor: colors.borderLight,
-  },
-  step: {
-    position: 'absolute',
-    top: 0,
-    width: scale(60),
-    alignItems: 'center',
-  },
-  label: {
-    marginTop: scale(4),
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.medium,
-    color: colors.text,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      width: scale(360),
+      alignSelf: 'center',
+      // header → badges 20, badges + label, then 24 down to the section title
+      height: BADGE + scale(19),
+      marginTop: verticalScale(20),
+      marginBottom: verticalScale(24),
+    },
+    track: {
+      position: 'absolute',
+      top: BADGE / 2 - 1,
+      left: TRACK_LEFT,
+      width: TRACK_WIDTH,
+      height: 2,
+    },
+    trackFill: {
+      ...StyleSheet.absoluteFill,
+    },
+    trackRest: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      backgroundColor: colors.borderLight,
+    },
+    step: {
+      position: 'absolute',
+      top: 0,
+      width: scale(60),
+      alignItems: 'center',
+    },
+    label: {
+      marginTop: scale(4),
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+  }),
+);
 
 export default StepProgress;

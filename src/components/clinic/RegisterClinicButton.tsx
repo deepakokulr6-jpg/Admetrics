@@ -5,6 +5,7 @@ import AppText from '../shared/AppText';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   onPress: () => void;
@@ -24,7 +25,7 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
       <Svg width={scale(20)} height={scale(20)} viewBox="0 0 20 20">
         <Path
           d="M10 3v14M3 10h14"
-          stroke={colors.white}
+          stroke={colors.onAccent}
           strokeWidth={2.4}
           strokeLinecap="round"
         />
@@ -36,21 +37,23 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-  },
-  circle: {
-    width: scale(48),
-    height: scale(48),
-    borderRadius: scale(24),
-    backgroundColor: colors.buttonPrimary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    marginTop: verticalScale(12),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+    },
+    circle: {
+      width: scale(48),
+      height: scale(48),
+      borderRadius: scale(24),
+      backgroundColor: colors.buttonPrimary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    text: {
+      marginTop: verticalScale(12),
+    },
+  }),
+);
 
 export default RegisterClinicButton;

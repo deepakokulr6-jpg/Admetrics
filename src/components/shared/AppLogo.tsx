@@ -5,6 +5,7 @@ import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import AnimatedAppLogo from './AnimatedAppLogo';
 import { scale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { themedStyles } from '../../theme/themedStyles';
 
 interface AppLogoProps {
   width?: number;
@@ -36,7 +37,7 @@ export default function AppLogo({
 
   const calculatedHeight = height || (targetWidth * 126) / 200;
   const fillColor =
-    colorScheme === 'white' ? colors.white : 'url(#logoGradient)';
+    colorScheme === 'white' ? colors.onAccent : 'url(#logoGradient)';
 
   return (
     <Svg
@@ -85,8 +86,10 @@ export default function AppLogo({
   );
 }
 
-const styles = StyleSheet.create({
-  svg: {
-    backgroundColor: 'transparent',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    svg: {
+      backgroundColor: 'transparent',
+    },
+  }),
+);

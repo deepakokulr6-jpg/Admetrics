@@ -5,6 +5,7 @@ import TabIcon from './TabIcon';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 export type TabName = 'Revenue' | 'Clinics' | 'Statement' | 'Support';
 
@@ -14,9 +15,6 @@ type Props = {
 };
 
 const tabs: TabName[] = ['Revenue', 'Clinics', 'Statement', 'Support'];
-
-const ACTIVE = colors.text;
-const INACTIVE = colors.mutedText;
 
 // Figma: white 56px bar, 24px icons with 10px labels 2px below; the active
 // tab is #221E25 with a filled icon, the rest #787878 outlines.
@@ -32,7 +30,7 @@ const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => {
     >
       {tabs.map(name => {
         const active = activeTab === name;
-        const color = active ? ACTIVE : INACTIVE;
+        const color = active ? colors.text : colors.mutedText;
 
         return (
           <TouchableOpacity
@@ -59,26 +57,28 @@ const BottomNavigation: React.FC<Props> = ({ activeTab, onTabPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: colors.white,
-    paddingTop: verticalScale(9),
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  icon: {
-    width: scale(24),
-    height: scale(24),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  label: {
-    marginTop: verticalScale(2),
-    fontSize: normalizeFont(10),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      backgroundColor: colors.white,
+      paddingTop: verticalScale(9),
+    },
+    tab: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    icon: {
+      width: scale(24),
+      height: scale(24),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    label: {
+      marginTop: verticalScale(2),
+      fontSize: normalizeFont(10),
+    },
+  }),
+);
 
 export default BottomNavigation;

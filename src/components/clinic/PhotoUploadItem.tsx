@@ -6,6 +6,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 interface PhotoUploadProps {
   title: string;
@@ -58,32 +59,34 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
   </View>
 );
 
-const styles = StyleSheet.create({
-  container: {
-    width: BOX,
-  },
-  title: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    fontFamily: fonts.medium,
-    color: colors.text,
-    marginBottom: verticalScale(8),
-  },
-  box: {
-    width: BOX,
-    height: BOX,
-    borderRadius: scale(8),
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      width: BOX,
+    },
+    title: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      fontFamily: fonts.medium,
+      color: colors.text,
+      marginBottom: verticalScale(8),
+    },
+    box: {
+      width: BOX,
+      height: BOX,
+      borderRadius: scale(8),
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    overlay: {
+      ...StyleSheet.absoluteFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  }),
+);
 
 export default PhotoUpload;

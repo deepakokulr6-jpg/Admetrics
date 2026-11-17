@@ -15,7 +15,8 @@ import colors from '../theme/colors';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-export const navigationTheme: Theme = {
+/** Built per render so it follows the light / dark palette. */
+export const navigationTheme = (): Theme => ({
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
@@ -25,7 +26,7 @@ export const navigationTheme: Theme = {
     text: colors.text,
     border: colors.disabled,
   },
-};
+});
 
 const AuthNavigator = () => {
   return (

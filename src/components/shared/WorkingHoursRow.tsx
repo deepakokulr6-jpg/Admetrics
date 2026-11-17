@@ -4,6 +4,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 interface WorkingHoursRowProps {
   day: string;
@@ -34,7 +35,7 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
           value={enabled}
           onValueChange={onToggle}
           trackColor={{ false: colors.switchTrack, true: colors.text }}
-          thumbColor={enabled ? colors.white : colors.white}
+          thumbColor={enabled ? colors.onAccent : colors.onAccent}
           ios_backgroundColor={colors.switchTrack}
           style={styles.switch}
         />
@@ -67,46 +68,48 @@ const WorkingHoursRow: React.FC<WorkingHoursRowProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    gap: scale(16),
-    marginBottom: verticalScale(16),
-  },
-  dayColumn: {
-    width: scale(56),
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  dayText: {
-    fontSize: normalizeFont(12),
-    color: colors.text,
-    marginBottom: verticalScale(4),
-  },
-  switch: {
-    marginLeft: -5,
-    transform: [{ scaleX: 0.78 }, { scaleY: 0.78 }],
-  },
-  timeInput: {
-    width: scale(120),
-    height: verticalScale(40),
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: scale(6),
-    paddingHorizontal: scale(3),
-    paddingVertical: 0,
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    backgroundColor: colors.white,
-  },
-  disabledInput: {
-    borderColor: colors.disabled,
-    color: colors.border,
-    backgroundColor: colors.white,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
+      gap: scale(16),
+      marginBottom: verticalScale(16),
+    },
+    dayColumn: {
+      width: scale(56),
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    },
+    dayText: {
+      fontSize: normalizeFont(12),
+      color: colors.text,
+      marginBottom: verticalScale(4),
+    },
+    switch: {
+      marginLeft: -5,
+      transform: [{ scaleX: 0.78 }, { scaleY: 0.78 }],
+    },
+    timeInput: {
+      width: scale(120),
+      height: verticalScale(40),
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: scale(6),
+      paddingHorizontal: scale(3),
+      paddingVertical: 0,
+      color: colors.text,
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      backgroundColor: colors.white,
+    },
+    disabledInput: {
+      borderColor: colors.disabled,
+      color: colors.border,
+      backgroundColor: colors.white,
+    },
+  }),
+);
 
 export default WorkingHoursRow;

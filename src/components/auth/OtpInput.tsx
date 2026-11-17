@@ -12,6 +12,7 @@ import { normalizeFont, scale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type OtpInputProps = {
   value: string;
@@ -147,61 +148,63 @@ const OtpInput: React.FC<OtpInputProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
 
-  otpBox: {
-    width: scale(40),
-    height: scale(40),
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: scale(6),
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    otpBox: {
+      width: scale(40),
+      height: scale(40),
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: scale(6),
+      backgroundColor: colors.white,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
 
-  otpBoxFocused: {
-    borderColor: colors.primary,
-  },
+    otpBoxFocused: {
+      borderColor: colors.primary,
+    },
 
-  otpBoxDisabled: {
-    borderColor: colors.borderLight,
-  },
+    otpBoxDisabled: {
+      borderColor: colors.borderLight,
+    },
 
-  digit: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
+    digit: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
 
-  placeholder: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.borderLight,
-  },
+    placeholder: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.borderLight,
+    },
 
-  caret: {
-    width: 1.5,
-    height: scale(18),
-    backgroundColor: colors.primary,
-  },
+    caret: {
+      width: 1.5,
+      height: scale(18),
+      backgroundColor: colors.primary,
+    },
 
-  // Covers the whole row so a tap or long-press (Paste) anywhere reaches it,
-  // but it is never visible. Not opacity 0: some Android versions skip
-  // touch / autofill on fully transparent views.
-  hiddenInput: {
-    ...StyleSheet.absoluteFill,
-    opacity: 0.011,
-    color: colors.transparent,
-    fontSize: 1,
-    padding: 0,
-  },
-});
+    // Covers the whole row so a tap or long-press (Paste) anywhere reaches it,
+    // but it is never visible. Not opacity 0: some Android versions skip
+    // touch / autofill on fully transparent views.
+    hiddenInput: {
+      ...StyleSheet.absoluteFill,
+      opacity: 0.011,
+      color: colors.transparent,
+      fontSize: 1,
+      padding: 0,
+    },
+  }),
+);
 
 export default OtpInput;

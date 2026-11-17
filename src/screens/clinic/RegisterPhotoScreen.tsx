@@ -13,6 +13,7 @@ import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -142,19 +143,21 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  instruction: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    instruction: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      color: colors.text,
+      marginBottom: verticalScale(16),
+    },
 
-  photoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: scale(24),
-  },
-});
+    photoRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: scale(24),
+    },
+  }),
+);
 
 export default RegisterPhotoScreen;

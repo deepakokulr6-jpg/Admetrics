@@ -7,6 +7,7 @@ import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { sampleDisplays, sampleTopDisplay } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   onViewAll?: () => void;
@@ -76,61 +77,63 @@ const TVDisplaysSection: React.FC<Props> = ({ onViewAll }) => (
   </View>
 );
 
-const styles = StyleSheet.create({
-  section: {
-    marginTop: verticalScale(24),
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: verticalScale(16),
-  },
-  title: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  viewAll: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-    textDecorationLine: 'underline',
-  },
-  topCard: {
-    marginTop: verticalScale(16),
-    backgroundColor: colors.white,
-    borderRadius: scale(8),
-    paddingHorizontal: scale(16),
-    paddingTop: scale(14),
-    paddingBottom: scale(18),
-  },
-  stars: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginBottom: scale(4),
-  },
-  topTitle: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  topSubtitle: {
-    marginTop: scale(6),
-    fontSize: normalizeFont(12),
-    color: colors.secondaryText,
-    marginBottom: scale(10),
-  },
-  track: {
-    height: 2,
-    backgroundColor: colors.borderLight,
-    borderRadius: 1,
-    overflow: 'hidden',
-  },
-  fill: {
-    height: '100%',
-    backgroundColor: colors.green,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    section: {
+      marginTop: verticalScale(24),
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: verticalScale(16),
+    },
+    title: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    viewAll: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.primary,
+      textDecorationLine: 'underline',
+    },
+    topCard: {
+      marginTop: verticalScale(16),
+      backgroundColor: colors.white,
+      borderRadius: scale(8),
+      paddingHorizontal: scale(16),
+      paddingTop: scale(14),
+      paddingBottom: scale(18),
+    },
+    stars: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      marginBottom: scale(4),
+    },
+    topTitle: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    topSubtitle: {
+      marginTop: scale(6),
+      fontSize: normalizeFont(12),
+      color: colors.secondaryText,
+      marginBottom: scale(10),
+    },
+    track: {
+      height: 2,
+      backgroundColor: colors.borderLight,
+      borderRadius: 1,
+      overflow: 'hidden',
+    },
+    fill: {
+      height: '100%',
+      backgroundColor: colors.green,
+    },
+  }),
+);
 
 export default TVDisplaysSection;

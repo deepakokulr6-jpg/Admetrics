@@ -22,7 +22,6 @@ type Props = {
 const D = 'url(#brandStrong)';
 const M = 'url(#brandSoft)';
 const L = 'url(#brandFaint)';
-const W = colors.white;
 
 /** Two-storey window with a cross bar. */
 const Window = ({ x, y }: { x: number; y: number }) => (
@@ -30,7 +29,7 @@ const Window = ({ x, y }: { x: number; y: number }) => (
     <Rect x={x} y={y} width={14} height={12} rx={1.5} fill={M} />
     <Path
       d={`M${x + 7} ${y}v12M${x} ${y + 6}h14`}
-      stroke={W}
+      stroke={colors.white}
       strokeWidth={1.4}
     />
   </>
@@ -82,8 +81,8 @@ const ClinicIllustration: React.FC<Props> = ({ width = 200 }) => {
       </Defs>
       {/* Soft backdrop and clouds */}
       <Ellipse cx={100} cy={72} rx={70} ry={58} fill={L} />
-      <Ellipse cx={30} cy={34} rx={14} ry={6} fill={W} />
-      <Ellipse cx={170} cy={30} rx={14} ry={6} fill={W} />
+      <Ellipse cx={30} cy={34} rx={14} ry={6} fill={colors.white} />
+      <Ellipse cx={170} cy={30} rx={14} ry={6} fill={colors.white} />
 
       {/* Ground */}
       <Rect x={20} y={124} width={160} height={3} rx={1.5} fill={M} />
@@ -94,7 +93,7 @@ const ClinicIllustration: React.FC<Props> = ({ width = 200 }) => {
         y={70}
         width={36}
         height={54}
-        fill={W}
+        fill={colors.white}
         stroke={M}
         strokeWidth={1.5}
       />
@@ -103,7 +102,7 @@ const ClinicIllustration: React.FC<Props> = ({ width = 200 }) => {
         y={70}
         width={36}
         height={54}
-        fill={W}
+        fill={colors.white}
         stroke={M}
         strokeWidth={1.5}
       />
@@ -119,7 +118,7 @@ const ClinicIllustration: React.FC<Props> = ({ width = 200 }) => {
         y={30}
         width={60}
         height={94}
-        fill={W}
+        fill={colors.white}
         stroke={M}
         strokeWidth={1.5}
       />
@@ -129,14 +128,14 @@ const ClinicIllustration: React.FC<Props> = ({ width = 200 }) => {
       <Rect x={89} y={42} width={22} height={20} rx={3} fill={D} />
       <Path
         d="M100 46.5v11M94.5 52h11"
-        stroke={W}
+        stroke={colors.white}
         strokeWidth={2.6}
         strokeLinecap="round"
       />
 
       {/* Door */}
       <Rect x={88} y={96} width={24} height={28} rx={1.5} fill={M} />
-      <Path d="M100 96v28" stroke={W} strokeWidth={1.4} />
+      <Path d="M100 96v28" stroke={colors.white} strokeWidth={1.4} />
       <Rect x={84} y={92} width={32} height={5} rx={1.5} fill={D} />
 
       {/* Trees */}

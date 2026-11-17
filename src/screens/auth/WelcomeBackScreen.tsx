@@ -14,6 +14,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 export default function WelcomeBackScreen({
   navigation,
@@ -139,44 +140,46 @@ export default function WelcomeBackScreen({
 
 // Layout follows Figma "Android Large - 2": logo at y144, title 20px bold,
 // fields 312px wide (24px gutters), Sign In at y634, "New User?" 24 below.
-const styles = StyleSheet.create({
-  title: {
-    fontSize: normalizeFont(20),
-    lineHeight: normalizeFont(24),
-    fontFamily: fonts.bold,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  subtitleRow: {
-    marginTop: verticalScale(8),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: normalizeFont(14),
-    color: colors.text,
-  },
-  brand: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-  },
-  field: {
-    marginBottom: verticalScale(24),
-  },
-  passwordField: {
-    marginBottom: verticalScale(8),
-  },
-  error: {
-    marginTop: verticalScale(12),
-    fontSize: normalizeFont(12),
-    color: colors.red,
-    textAlign: 'center',
-  },
-  button: {
-    marginTop: verticalScale(62),
-  },
-  footer: {
-    marginTop: verticalScale(24),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    title: {
+      fontSize: normalizeFont(20),
+      lineHeight: normalizeFont(24),
+      fontFamily: fonts.bold,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    subtitleRow: {
+      marginTop: verticalScale(8),
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    subtitle: {
+      fontSize: normalizeFont(14),
+      color: colors.text,
+    },
+    brand: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+    },
+    field: {
+      marginBottom: verticalScale(24),
+    },
+    passwordField: {
+      marginBottom: verticalScale(8),
+    },
+    error: {
+      marginTop: verticalScale(12),
+      fontSize: normalizeFont(12),
+      color: colors.red,
+      textAlign: 'center',
+    },
+    button: {
+      marginTop: verticalScale(62),
+    },
+    footer: {
+      marginTop: verticalScale(24),
+    },
+  }),
+);

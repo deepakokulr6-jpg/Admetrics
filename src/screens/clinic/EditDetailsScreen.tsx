@@ -19,6 +19,7 @@ import type { AppScreenProps } from '../../navigation/types';
 import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import { sampleClinic } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 /**
  * Edit an existing clinic. Starts from the clinic's saved details (demo data
@@ -89,10 +90,12 @@ const EditDetailsScreen: React.FC<AppScreenProps<'EditDetails'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    marginTop: verticalScale(48),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    button: {
+      marginTop: verticalScale(48),
+    },
+  }),
+);
 
 export default EditDetailsScreen;

@@ -6,9 +6,11 @@ import ScreenHeader from '../../components/shared/ScreenHeader';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
+import { statusBarStyle } from '../../theme/appearance';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { samplePayout } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
   navigation,
@@ -31,7 +33,7 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={statusBarStyle()} />
       <ScreenHeader
         title={strings.paymentDetails.paymentDetails}
         onBackPress={() => navigation.goBack()}
@@ -108,107 +110,109 @@ const PaymentDetailsScreen: React.FC<AppScreenProps<'PaymentDetails'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(32),
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  title: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  period: {
-    marginTop: scale(8),
-    fontSize: normalizeFont(10),
-    color: colors.primary,
-  },
-  badge: {
-    height: scale(20),
-    paddingHorizontal: scale(8),
-    borderRadius: scale(10),
-    justifyContent: 'center',
-    marginLeft: scale(8),
-  },
-  badgePaid: {
-    backgroundColor: colors.successBackground,
-  },
-  badgeUnpaid: {
-    backgroundColor: colors.errorBackground,
-  },
-  badgeText: {
-    fontSize: normalizeFont(10),
-    fontFamily: fonts.medium,
-  },
-  paidText: {
-    color: colors.green,
-  },
-  unpaidText: {
-    color: colors.red,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.borderLight,
-    marginVertical: scale(16),
-  },
-  caption: {
-    fontSize: normalizeFont(10),
-    color: colors.text,
-    marginBottom: scale(10),
-  },
-  detailsCaption: {
-    marginTop: scale(16),
-    marginBottom: scale(4),
-  },
-  clinic: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(4),
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    minHeight: scale(31),
-  },
-  rowLabel: {
-    fontSize: normalizeFont(12),
-    color: colors.text,
-  },
-  totalRow: {
-    marginTop: scale(2),
-  },
-  totalLabel: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  totalValue: {
-    fontSize: normalizeFont(16),
-    fontFamily: fonts.bold,
-    color: colors.black,
-  },
-  detailValue: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.black,
-  },
-  dash: {
-    marginRight: scale(40),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    flex: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(32),
+    },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+    },
+    title: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    period: {
+      marginTop: scale(8),
+      fontSize: normalizeFont(10),
+      color: colors.primary,
+    },
+    badge: {
+      height: scale(20),
+      paddingHorizontal: scale(8),
+      borderRadius: scale(10),
+      justifyContent: 'center',
+      marginLeft: scale(8),
+    },
+    badgePaid: {
+      backgroundColor: colors.successBackground,
+    },
+    badgeUnpaid: {
+      backgroundColor: colors.errorBackground,
+    },
+    badgeText: {
+      fontSize: normalizeFont(10),
+      fontFamily: fonts.medium,
+    },
+    paidText: {
+      color: colors.green,
+    },
+    unpaidText: {
+      color: colors.red,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: colors.borderLight,
+      marginVertical: scale(16),
+    },
+    caption: {
+      fontSize: normalizeFont(10),
+      color: colors.text,
+      marginBottom: scale(10),
+    },
+    detailsCaption: {
+      marginTop: scale(16),
+      marginBottom: scale(4),
+    },
+    clinic: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(4),
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      minHeight: scale(31),
+    },
+    rowLabel: {
+      fontSize: normalizeFont(12),
+      color: colors.text,
+    },
+    totalRow: {
+      marginTop: scale(2),
+    },
+    totalLabel: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    totalValue: {
+      fontSize: normalizeFont(16),
+      fontFamily: fonts.bold,
+      color: colors.black,
+    },
+    detailValue: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.black,
+    },
+    dash: {
+      marginRight: scale(40),
+    },
+  }),
+);
 
 export default PaymentDetailsScreen;

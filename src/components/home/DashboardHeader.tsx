@@ -13,6 +13,7 @@ import ProfileDrawer from './ProfileDrawer';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { AppStackParamList } from '../../navigation/types';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   userName?: string;
@@ -88,50 +89,52 @@ const DashboardHeader: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(12),
-    paddingBottom: verticalScale(12),
-    zIndex: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.white,
-    // Figma: soft shadow instead of a divider line.
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(12),
+      paddingBottom: verticalScale(12),
+      zIndex: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: colors.white,
+      // Figma: soft shadow instead of a divider line.
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
+    },
 
-  profileSection: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: scale(12),
-  },
+    profileSection: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginRight: scale(12),
+    },
 
-  textContainer: {
-    flex: 1,
-    marginLeft: scale(16),
-  },
+    textContainer: {
+      flex: 1,
+      marginLeft: scale(16),
+    },
 
-  greeting: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.textStrong,
-  },
+    greeting: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.textStrong,
+    },
 
-  userName: {
-    fontSize: normalizeFont(18),
-    lineHeight: normalizeFont(22),
-    fontFamily: fonts.bold,
-    color: colors.textStrong,
-  },
-});
+    userName: {
+      fontSize: normalizeFont(18),
+      lineHeight: normalizeFont(22),
+      fontFamily: fonts.bold,
+      color: colors.textStrong,
+    },
+  }),
+);
 
 export default DashboardHeader;

@@ -23,7 +23,7 @@ const round = (n: number) => Math.round(n * 10) / 10;
 const SignaturePad: React.FC<Props> = ({
   onChange,
   clearKey = 0,
-  strokeColor = colors.white,
+  strokeColor = colors.onAccent,
 }) => {
   const [strokes, setStrokes] = useState<string[]>([]);
   const [current, setCurrent] = useState('');

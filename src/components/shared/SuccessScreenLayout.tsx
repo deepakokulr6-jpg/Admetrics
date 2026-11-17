@@ -14,6 +14,7 @@ import AppText from './AppText';
 import GradientButton from './GradientButton';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { themedStyles } from '../../theme/themedStyles';
 
 type SuccessScreenLayoutProps = {
   title: string;
@@ -142,34 +143,36 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    // Brand colour underneath, so nothing white flashes before the
-    // gradient fades in.
-    backgroundColor: colors.primary,
-  },
-  sheet: {
-    height: '85.25%', // 682 / 800
-    backgroundColor: colors.white,
-    borderTopLeftRadius: scale(40),
-    borderTopRightRadius: scale(40),
-    alignItems: 'center',
-    paddingTop: verticalScale(196),
-    paddingHorizontal: scale(16),
-  },
-  check: {
-    width: scale(80),
-    height: scale(80),
-  },
-  description: {
-    marginTop: verticalScale(8),
-    lineHeight: normalizeFont(18),
-  },
-  button: {
-    marginTop: verticalScale(18),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      // Brand colour underneath, so nothing white flashes before the
+      // gradient fades in.
+      backgroundColor: colors.primary,
+    },
+    sheet: {
+      height: '85.25%', // 682 / 800
+      backgroundColor: colors.white,
+      borderTopLeftRadius: scale(40),
+      borderTopRightRadius: scale(40),
+      alignItems: 'center',
+      paddingTop: verticalScale(196),
+      paddingHorizontal: scale(16),
+    },
+    check: {
+      width: scale(80),
+      height: scale(80),
+    },
+    description: {
+      marginTop: verticalScale(8),
+      lineHeight: normalizeFont(18),
+    },
+    button: {
+      marginTop: verticalScale(18),
+    },
+  }),
+);
 
 export default SuccessScreenLayout;

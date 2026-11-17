@@ -6,6 +6,7 @@ import BackIcon from '../../../assets/images/figma/back.svg';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 interface ScreenHeaderProps {
   title?: string;
@@ -37,7 +38,11 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel={strings.screenHeader.goBack}
         >
-          <BackIcon width={scale(24)} height={scale(24)} />
+          <BackIcon
+            width={scale(24)}
+            height={scale(24)}
+            color={colors.textStrong}
+          />
         </Pressable>
 
         <AppText variant="headerTitle" style={styles.title} numberOfLines={1}>
@@ -50,31 +55,33 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    paddingHorizontal: scale(16),
-    paddingBottom: verticalScale(20),
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-    zIndex: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: scale(24),
-  },
-  backButton: {
-    width: scale(24),
-    height: scale(24),
-    marginRight: scale(16),
-  },
-  title: {
-    flex: 1,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.white,
+      paddingHorizontal: scale(16),
+      paddingBottom: verticalScale(20),
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
+      zIndex: 10,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: scale(24),
+    },
+    backButton: {
+      width: scale(24),
+      height: scale(24),
+      marginRight: scale(16),
+    },
+    title: {
+      flex: 1,
+    },
+  }),
+);
 
 export default ScreenHeader;

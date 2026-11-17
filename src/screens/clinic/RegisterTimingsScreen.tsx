@@ -13,6 +13,7 @@ import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 const validateHours = (
   hours: ReturnType<typeof useClinicRegistration>['draft']['workingHours'],
@@ -142,23 +143,25 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  rowWrapper: {
-    width: '100%',
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    rowWrapper: {
+      width: '100%',
+    },
 
-  errorText: {
-    marginTop: verticalScale(-6),
-    marginBottom: verticalScale(8),
-    marginLeft: scale(70),
-    fontSize: normalizeFont(11),
-    lineHeight: normalizeFont(15),
-    color: colors.red,
-  },
+    errorText: {
+      marginTop: verticalScale(-6),
+      marginBottom: verticalScale(8),
+      marginLeft: scale(70),
+      fontSize: normalizeFont(11),
+      lineHeight: normalizeFont(15),
+      color: colors.red,
+    },
 
-  button: {
-    marginTop: verticalScale(14),
-  },
-});
+    button: {
+      marginTop: verticalScale(14),
+    },
+  }),
+);
 
 export default RegisterTimingsScreen;

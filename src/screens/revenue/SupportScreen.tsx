@@ -14,14 +14,16 @@ import DashboardHeader from '../../components/home/DashboardHeader';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { TabScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
+import { statusBarStyle } from '../../theme/appearance';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { sampleSupportRequests } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={statusBarStyle()} />
 
       {/* 1. Header with Avatar, Greeting and App Logo */}
       <DashboardHeader />
@@ -146,7 +148,7 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
             <Icon
               name="arrow-right"
               size={scale(16)}
-              color={colors.white}
+              color={colors.onAccent}
               style={styles.arrowIcon}
             />
           </Pressable>
@@ -156,153 +158,155 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  // White behind the status bar so it matches the white header.
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContent: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(24),
-  },
-  headerTitleSection: {
-    marginBottom: verticalScale(16),
-  },
-  mainTitle: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(8),
-  },
-  subtitle: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    color: colors.text,
-  },
-  // Figma: white card, 1px #DDD border, 6px radius, 16px padding.
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: scale(6),
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    padding: scale(16),
-    marginBottom: verticalScale(16),
-  },
-  cardTopRow: {
-    marginBottom: scale(16),
-  },
-  iconContainer: {
-    width: scale(24),
-    height: scale(24),
-  },
-  cardTitle: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(8),
-  },
-  cardDescription: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    color: colors.text,
-    marginBottom: scale(16),
-  },
-  actionLinkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionLinkText: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.bold,
-    color: colors.primary,
-    marginRight: scale(8),
-  },
-  arrowIcon: {
-    marginTop: 1,
-  },
-  recentRequestsSection: {
-    marginTop: verticalScale(8),
-    marginBottom: verticalScale(16),
-  },
-  recentRequestsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: scale(16),
-  },
-  sectionHeading: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  viewAllText: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-    textDecorationLine: 'underline',
-  },
-  requestItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: scale(18),
-  },
-  requestInfo: {
-    flex: 1,
-    paddingRight: scale(8),
-  },
-  requestTitle: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(8),
-  },
-  requestTicketMeta: {
-    fontSize: normalizeFont(12),
-    color: colors.text,
-  },
-  statusInProgress: {
-    fontSize: normalizeFont(12),
-    color: colors.pending,
-  },
-  statusResolved: {
-    fontSize: normalizeFont(12),
-    color: colors.green,
-  },
-  // Figma: dark slate banner, 12px radius.
-  assistanceCard: {
-    backgroundColor: colors.slate,
-    borderRadius: scale(12),
-    padding: scale(16),
-    marginBottom: verticalScale(12),
-  },
-  assistanceTitle: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.white,
-    marginBottom: scale(8),
-  },
-  assistanceDescription: {
-    fontSize: normalizeFont(12),
-    color: colors.slateText,
-    marginBottom: scale(16),
-  },
-  assistanceButtonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  assistanceButtonText: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.bold,
-    color: colors.white,
-    marginRight: scale(8),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    // White behind the status bar so it matches the white header.
+    container: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    scrollView: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(24),
+    },
+    headerTitleSection: {
+      marginBottom: verticalScale(16),
+    },
+    mainTitle: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(8),
+    },
+    subtitle: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      color: colors.text,
+    },
+    // Figma: white card, 1px #DDD border, 6px radius, 16px padding.
+    card: {
+      backgroundColor: colors.white,
+      borderRadius: scale(6),
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      padding: scale(16),
+      marginBottom: verticalScale(16),
+    },
+    cardTopRow: {
+      marginBottom: scale(16),
+    },
+    iconContainer: {
+      width: scale(24),
+      height: scale(24),
+    },
+    cardTitle: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(8),
+    },
+    cardDescription: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      color: colors.text,
+      marginBottom: scale(16),
+    },
+    actionLinkRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    actionLinkText: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.bold,
+      color: colors.primary,
+      marginRight: scale(8),
+    },
+    arrowIcon: {
+      marginTop: 1,
+    },
+    recentRequestsSection: {
+      marginTop: verticalScale(8),
+      marginBottom: verticalScale(16),
+    },
+    recentRequestsHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: scale(16),
+    },
+    sectionHeading: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    viewAllText: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.primary,
+      textDecorationLine: 'underline',
+    },
+    requestItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: scale(18),
+    },
+    requestInfo: {
+      flex: 1,
+      paddingRight: scale(8),
+    },
+    requestTitle: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(8),
+    },
+    requestTicketMeta: {
+      fontSize: normalizeFont(12),
+      color: colors.text,
+    },
+    statusInProgress: {
+      fontSize: normalizeFont(12),
+      color: colors.pending,
+    },
+    statusResolved: {
+      fontSize: normalizeFont(12),
+      color: colors.green,
+    },
+    // Figma: dark slate banner, 12px radius.
+    assistanceCard: {
+      backgroundColor: colors.slate,
+      borderRadius: scale(12),
+      padding: scale(16),
+      marginBottom: verticalScale(12),
+    },
+    assistanceTitle: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.onAccent,
+      marginBottom: scale(8),
+    },
+    assistanceDescription: {
+      fontSize: normalizeFont(12),
+      color: colors.slateText,
+      marginBottom: scale(16),
+    },
+    assistanceButtonRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    assistanceButtonText: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.bold,
+      color: colors.onAccent,
+      marginRight: scale(8),
+    },
+  }),
+);
 
 export default SupportScreen;

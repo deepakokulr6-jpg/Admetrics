@@ -15,6 +15,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 export type ClinicSummaryData = {
   name: string;
@@ -106,71 +107,75 @@ const ClinicSummary: React.FC<{ data: ClinicSummaryData }> = ({ data }) => {
   );
 };
 
-export const summaryStyles = StyleSheet.create({
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.borderLight,
-    marginTop: verticalScale(4),
-    marginBottom: verticalScale(16),
-  },
-  sectionTitle: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
-});
+export const summaryStyles = themedStyles(() =>
+  StyleSheet.create({
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.borderLight,
+      marginTop: verticalScale(4),
+      marginBottom: verticalScale(16),
+    },
+    sectionTitle: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      color: colors.text,
+      marginBottom: verticalScale(16),
+    },
+  }),
+);
 
-const styles = StyleSheet.create({
-  ...summaryStyles,
-  clinicName: {
-    fontSize: normalizeFont(14),
-    lineHeight: normalizeFont(24),
-    fontFamily: fonts.bold,
-    color: colors.black,
-  },
-  address: {
-    marginTop: verticalScale(1),
-    fontSize: normalizeFont(14),
-    color: colors.text,
-    marginBottom: verticalScale(12),
-  },
-  field: {
-    marginBottom: verticalScale(12),
-  },
-  fieldLabel: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(24),
-    color: colors.black,
-  },
-  fieldValue: {
-    fontSize: normalizeFont(14),
-    lineHeight: normalizeFont(24),
-    fontFamily: fonts.bold,
-    color: colors.black,
-  },
-  contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: verticalScale(24),
-    marginBottom: verticalScale(16),
-  },
-  contactText: {
-    marginLeft: scale(12),
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  photoRow: {
-    flexDirection: 'row',
-    gap: scale(8),
-    marginBottom: verticalScale(16),
-  },
-  photo: {
-    flex: 1,
-    height: scale(178),
-    borderRadius: scale(8),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    ...summaryStyles,
+    clinicName: {
+      fontSize: normalizeFont(14),
+      lineHeight: normalizeFont(24),
+      fontFamily: fonts.bold,
+      color: colors.black,
+    },
+    address: {
+      marginTop: verticalScale(1),
+      fontSize: normalizeFont(14),
+      color: colors.text,
+      marginBottom: verticalScale(12),
+    },
+    field: {
+      marginBottom: verticalScale(12),
+    },
+    fieldLabel: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(24),
+      color: colors.black,
+    },
+    fieldValue: {
+      fontSize: normalizeFont(14),
+      lineHeight: normalizeFont(24),
+      fontFamily: fonts.bold,
+      color: colors.black,
+    },
+    contactRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: verticalScale(24),
+      marginBottom: verticalScale(16),
+    },
+    contactText: {
+      marginLeft: scale(12),
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    photoRow: {
+      flexDirection: 'row',
+      gap: scale(8),
+      marginBottom: verticalScale(16),
+    },
+    photo: {
+      flex: 1,
+      height: scale(178),
+      borderRadius: scale(8),
+    },
+  }),
+);
 
 export default ClinicSummary;

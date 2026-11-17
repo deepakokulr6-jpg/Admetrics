@@ -17,8 +17,10 @@ import TVDisplaysSection from '../../components/revenue/TVDisplaysSection';
 import { normalizeFont, verticalScale, scale } from '../../utils/responsive';
 import type { TabScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
+import { statusBarStyle } from '../../theme/appearance';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 const RevenueScreen: React.FC<TabScreenProps<'Revenue'>> = () => {
   const [period, setPeriod] = useState('7 days');
@@ -26,7 +28,7 @@ const RevenueScreen: React.FC<TabScreenProps<'Revenue'>> = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={statusBarStyle()} />
 
       <View style={styles.screen}>
         <DashboardHeader />
@@ -62,43 +64,45 @@ const RevenueScreen: React.FC<TabScreenProps<'Revenue'>> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(24),
-  },
-  tabletContent: {
-    maxWidth: 720,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  // Figma: title + dropdown sit on the page, the chart is its own white card.
-  chartSection: {
-    marginTop: verticalScale(24),
-  },
-  chartHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: verticalScale(12),
-  },
-  chartTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(24),
+    },
+    tabletContent: {
+      maxWidth: 720,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    // Figma: title + dropdown sit on the page, the chart is its own white card.
+    chartSection: {
+      marginTop: verticalScale(24),
+    },
+    chartHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: verticalScale(12),
+    },
+    chartTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+    },
+  }),
+);
 
 export default RevenueScreen;

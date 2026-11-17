@@ -4,6 +4,7 @@ import MapPin from '../../../assets/images/figma/map_pin.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type MapPreviewProps = {
   onPress?: () => void;
@@ -32,28 +33,30 @@ const MapPreview: React.FC<MapPreviewProps> = ({ onPress }) => (
   </View>
 );
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    color: colors.text,
-    marginBottom: verticalScale(8),
-  },
-  map: {
-    width: '100%',
-    height: scale(191),
-    borderRadius: scale(8),
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  pin: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    label: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      color: colors.text,
+      marginBottom: verticalScale(8),
+    },
+    map: {
+      width: '100%',
+      height: scale(191),
+      borderRadius: scale(8),
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    pin: {
+      ...StyleSheet.absoluteFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  }),
+);
 
 export default MapPreview;

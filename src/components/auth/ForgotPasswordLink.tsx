@@ -4,6 +4,7 @@ import GradientText from '../shared/GradientText';
 import { normalizeFont, verticalScale } from '../../utils/responsive';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type ForgotPasswordLinkProps = {
   onPress: () => void;
@@ -24,15 +25,17 @@ const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'flex-end',
-    paddingVertical: verticalScale(2),
-  },
-  text: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.medium,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      alignSelf: 'flex-end',
+      paddingVertical: verticalScale(2),
+    },
+    text: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.medium,
+    },
+  }),
+);
 
 export default ForgotPasswordLink;

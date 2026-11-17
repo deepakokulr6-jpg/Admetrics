@@ -17,6 +17,7 @@ import { normalizeFont, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 // No email service yet: the local auth flow accepts this fixed code.
 const TEST_OTP = DEVELOPMENT_OTP;
@@ -182,52 +183,54 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: verticalScale(24),
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    field: {
+      marginBottom: verticalScale(24),
+    },
 
-  otpHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: verticalScale(8),
-  },
+    otpHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: verticalScale(8),
+    },
 
-  otpLabel: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: colors.text,
-  },
+    otpLabel: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      color: colors.text,
+    },
 
-  otpLabelDisabled: {
-    color: colors.borderLight,
-  },
+    otpLabelDisabled: {
+      color: colors.borderLight,
+    },
 
-  error: {
-    marginTop: verticalScale(12),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.red,
-    textAlign: 'center',
-  },
+    error: {
+      marginTop: verticalScale(12),
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.red,
+      textAlign: 'center',
+    },
 
-  info: {
-    marginTop: verticalScale(12),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: colors.green,
-    textAlign: 'center',
-  },
+    info: {
+      marginTop: verticalScale(12),
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      color: colors.green,
+      textAlign: 'center',
+    },
 
-  button: {
-    marginTop: verticalScale(85),
-  },
+    button: {
+      marginTop: verticalScale(85),
+    },
 
-  footer: {
-    marginTop: verticalScale(24),
-  },
-});
+    footer: {
+      marginTop: verticalScale(24),
+    },
+  }),
+);
 
 export default CreateAccountScreen;

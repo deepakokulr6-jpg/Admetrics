@@ -10,6 +10,7 @@ import {
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type GradientButtonProps = {
   title: string;
@@ -39,7 +40,7 @@ const GradientButton: React.FC<GradientButtonProps> = ({
     >
       <View style={[styles.button, isDisabled && styles.buttonDisabled]}>
         {loading ? (
-          <ActivityIndicator color={colors.white} />
+          <ActivityIndicator color={colors.onAccent} />
         ) : (
           <Text style={styles.buttonText}>{title}</Text>
         )}
@@ -48,36 +49,38 @@ const GradientButton: React.FC<GradientButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  wrapper: {
-    width: scale(160),
-    maxWidth: '100%',
-    height: verticalScale(36),
-    alignSelf: 'center',
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    wrapper: {
+      width: scale(160),
+      maxWidth: '100%',
+      height: verticalScale(36),
+      alignSelf: 'center',
+    },
 
-  button: {
-    flex: 1,
-    width: '100%',
-    height: verticalScale(36),
-    borderRadius: scale(30),
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    backgroundColor: colors.buttonPrimary,
-  },
+    button: {
+      flex: 1,
+      width: '100%',
+      height: verticalScale(36),
+      borderRadius: scale(30),
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      backgroundColor: colors.buttonPrimary,
+    },
 
-  buttonDisabled: {
-    backgroundColor: colors.disabledButton,
-  },
+    buttonDisabled: {
+      backgroundColor: colors.disabledButton,
+    },
 
-  buttonText: {
-    fontSize: normalizeFont(14),
-    lineHeight: normalizeFont(18),
-    fontFamily: fonts.bold,
-    color: colors.white,
-    textAlign: 'center',
-  },
-});
+    buttonText: {
+      fontSize: normalizeFont(14),
+      lineHeight: normalizeFont(18),
+      fontFamily: fonts.bold,
+      color: colors.onAccent,
+      textAlign: 'center',
+    },
+  }),
+);
 
 export default GradientButton;

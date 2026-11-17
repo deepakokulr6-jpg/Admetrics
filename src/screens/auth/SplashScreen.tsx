@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import AnimatedAppLogo from '../../components/shared/AnimatedAppLogo';
 import colors from '../../theme/colors';
+import { themedStyles } from '../../theme/themedStyles';
 
 type SplashScreenProps = {
   onFinish?: () => void;
@@ -39,15 +40,17 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-  logoContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'transparent',
+    },
+    logoContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+    },
+  }),
+);

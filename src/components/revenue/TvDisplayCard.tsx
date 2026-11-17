@@ -5,6 +5,7 @@ import { normalizeFont, scale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   title: string;
@@ -80,58 +81,60 @@ const TvDisplayCard: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    borderRadius: scale(8),
-    padding: scale(10),
-    marginBottom: scale(16),
-  },
-  tile: {
-    width: scale(72),
-    height: scale(72),
-    borderRadius: scale(6),
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: scale(12),
-  },
-  tileOnline: {
-    backgroundColor: colors.successTint,
-  },
-  tileOffline: {
-    backgroundColor: colors.errorTint,
-  },
-  details: {
-    flex: 1,
-  },
-  title: {
-    fontSize: normalizeFont(12),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: scale(8),
-  },
-  meta: {
-    fontSize: normalizeFont(12),
-    color: colors.secondaryText,
-    marginBottom: scale(4),
-  },
-  online: {
-    fontFamily: fonts.medium,
-    color: GREEN,
-  },
-  offline: {
-    fontFamily: fonts.medium,
-    color: RED,
-  },
-  revenue: {
-    marginLeft: scale(8),
-    marginRight: scale(14),
-    fontSize: normalizeFont(16),
-    fontFamily: fonts.bold,
-    color: colors.text,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.white,
+      borderRadius: scale(8),
+      padding: scale(10),
+      marginBottom: scale(16),
+    },
+    tile: {
+      width: scale(72),
+      height: scale(72),
+      borderRadius: scale(6),
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: scale(12),
+    },
+    tileOnline: {
+      backgroundColor: colors.successTint,
+    },
+    tileOffline: {
+      backgroundColor: colors.errorTint,
+    },
+    details: {
+      flex: 1,
+    },
+    title: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: scale(8),
+    },
+    meta: {
+      fontSize: normalizeFont(12),
+      color: colors.secondaryText,
+      marginBottom: scale(4),
+    },
+    online: {
+      fontFamily: fonts.medium,
+      color: GREEN,
+    },
+    offline: {
+      fontFamily: fonts.medium,
+      color: RED,
+    },
+    revenue: {
+      marginLeft: scale(8),
+      marginRight: scale(14),
+      fontSize: normalizeFont(16),
+      fontFamily: fonts.bold,
+      color: colors.text,
+    },
+  }),
+);
 
 export default TvDisplayCard;

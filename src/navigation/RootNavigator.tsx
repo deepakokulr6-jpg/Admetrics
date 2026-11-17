@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useCallback, useRef, useState } from 'react';
+import {
+  NavigationContainer,
+  type NavigationState,
+} from '@react-navigation/native';
 
 import SplashScreen from '../screens/auth/SplashScreen';
 import AuthNavigator, { navigationTheme } from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import { useAuth } from '../hooks/useAuth';
+import { useColorScheme } from '../theme/appearance';
 
 /**
  * Gate for the whole application:
@@ -17,6 +21,10 @@ import { useAuth } from '../hooks/useAuth';
 const RootNavigator = () => {
   const { user, isBootstrapping } = useAuth();
   const [splashFinished, setSplashFinished] = useState(false);
+  const scheme = useColorScheme();
+  // Last navigation state, so a theme switch re-draws every screen with the
+  // new colours and lands back on the same screen (no app reload).
+  const navState = useRef<NavigationState | undefined>(undefined);
 
   const handleSplashFinish = useCallback(() => {
     setSplashFinished(true);
@@ -27,7 +35,14 @@ const RootNavigator = () => {
   }
 
   return (
-    <NavigationContainer theme={navigationTheme}>
+    <NavigationContainer
+      key={scheme}
+      theme={navigationTheme()}
+      initialState={navState.current}
+      onStateChange={state => {
+        navState.current = state;
+      }}
+    >
       {user ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );

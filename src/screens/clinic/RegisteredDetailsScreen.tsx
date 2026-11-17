@@ -17,6 +17,7 @@ import {
   sampleContact,
   sampleDisplays,
 } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 // Demo data until the API is connected (constants/mockData).
 const clinic: ClinicSummaryData = {
@@ -52,7 +53,11 @@ const RegisteredDetailsScreen: React.FC<
             accessibilityRole="button"
             accessibilityLabel={strings.registeredDetails.editDetails}
           >
-            <EditIcon width={scale(19.5)} height={scale(19.5)} />
+            <EditIcon
+              width={scale(19.5)}
+              height={scale(19.5)}
+              color={colors.textStrong}
+            />
           </Pressable>
         }
       />
@@ -91,55 +96,57 @@ const RegisteredDetailsScreen: React.FC<
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  editButton: {
-    width: scale(24),
-    height: scale(24),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(40),
-  },
-  sectionTitle: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(15),
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.borderLight,
-    marginTop: verticalScale(4),
-    marginBottom: verticalScale(16),
-  },
-  display: {
-    marginBottom: verticalScale(16),
-  },
-  displayName: {
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  displayMeta: {
-    marginTop: verticalScale(4),
-    fontSize: normalizeFont(12),
-    color: colors.secondaryText,
-  },
-  online: {
-    fontFamily: fonts.medium,
-    color: colors.green,
-  },
-  offline: {
-    fontFamily: fonts.medium,
-    color: colors.red,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    editButton: {
+      width: scale(24),
+      height: scale(24),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    content: {
+      paddingHorizontal: scale(16),
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(40),
+    },
+    sectionTitle: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(15),
+      color: colors.text,
+      marginBottom: verticalScale(16),
+    },
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.borderLight,
+      marginTop: verticalScale(4),
+      marginBottom: verticalScale(16),
+    },
+    display: {
+      marginBottom: verticalScale(16),
+    },
+    displayName: {
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+    },
+    displayMeta: {
+      marginTop: verticalScale(4),
+      fontSize: normalizeFont(12),
+      color: colors.secondaryText,
+    },
+    online: {
+      fontFamily: fonts.medium,
+      color: colors.green,
+    },
+    offline: {
+      fontFamily: fonts.medium,
+      color: colors.red,
+    },
+  }),
+);
 
 export default RegisteredDetailsScreen;

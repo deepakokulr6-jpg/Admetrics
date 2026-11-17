@@ -15,8 +15,10 @@ import { fetchClinics } from '../../store/slices/clinicsSlice';
 import type { TabScreenProps } from '../../navigation/types';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { statusBarStyle } from '../../theme/appearance';
 import strings from '../../constants/strings';
 import { SHOW_DEMO_CLINICS, sampleClinicList } from '../../constants/mockData';
+import { themedStyles } from '../../theme/themedStyles';
 
 const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   const dispatch = useAppDispatch();
@@ -62,7 +64,7 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={statusBarStyle()} />
 
       <View style={styles.screen}>
         <DashboardHeader />
@@ -134,52 +136,54 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(24),
-  },
-  emptyTitle: {
-    marginTop: verticalScale(20),
-    textAlign: 'center',
-  },
-  emptyMessage: {
-    marginTop: verticalScale(8),
-    color: colors.bodyText,
-    textAlign: 'center',
-    lineHeight: verticalScale(20),
-    maxWidth: scale(260),
-  },
-  emptyButton: {
-    marginTop: verticalScale(28),
-  },
-  content: {
-    flexGrow: 1,
-    paddingTop: verticalScale(24),
-    paddingBottom: verticalScale(20),
-  },
-  clinicList: {
-    gap: verticalScale(16),
-  },
-  // Figma: the register button sits 80px under the last card.
-  registerContainer: {
-    marginTop: verticalScale(80),
-    alignItems: 'center',
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    emptyState: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: scale(16),
+      paddingVertical: verticalScale(24),
+    },
+    emptyTitle: {
+      marginTop: verticalScale(20),
+      textAlign: 'center',
+    },
+    emptyMessage: {
+      marginTop: verticalScale(8),
+      color: colors.bodyText,
+      textAlign: 'center',
+      lineHeight: verticalScale(20),
+      maxWidth: scale(260),
+    },
+    emptyButton: {
+      marginTop: verticalScale(28),
+    },
+    content: {
+      flexGrow: 1,
+      paddingTop: verticalScale(24),
+      paddingBottom: verticalScale(20),
+    },
+    clinicList: {
+      gap: verticalScale(16),
+    },
+    // Figma: the register button sits 80px under the last card.
+    registerContainer: {
+      marginTop: verticalScale(80),
+      alignItems: 'center',
+    },
+  }),
+);
 
 export default ClinicsScreen;

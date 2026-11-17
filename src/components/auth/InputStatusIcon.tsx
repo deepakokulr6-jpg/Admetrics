@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import VerifiedIcon from '../../../assets/images/figma/email_verified.svg';
 import { scale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   status: 'loading' | 'success' | 'error' | 'none';
@@ -40,31 +41,33 @@ const InputStatusIcon: React.FC<Props> = ({ status }) => {
       <Icon
         name={isSuccess ? 'check' : 'x'}
         size={scale(12)}
-        color={colors.white}
+        color={colors.onAccent}
       />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: scale(24),
-    height: scale(24),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    container: {
+      width: scale(24),
+      height: scale(24),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
 
-  circle: {
-    borderRadius: scale(10),
-  },
+    circle: {
+      borderRadius: scale(10),
+    },
 
-  success: {
-    backgroundColor: colors.primary,
-  },
+    success: {
+      backgroundColor: colors.primary,
+    },
 
-  error: {
-    backgroundColor: colors.red,
-  },
-});
+    error: {
+      backgroundColor: colors.red,
+    },
+  }),
+);
 
 export default InputStatusIcon;

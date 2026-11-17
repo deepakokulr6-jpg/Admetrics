@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppLogo from '../shared/AppLogo';
 import { scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
+import { statusBarStyle } from '../../theme/appearance';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   /** Title block under the logo (usually <AuthHeader />). */
@@ -27,7 +29,7 @@ type Props = {
  */
 const AuthScreenLayout: React.FC<Props> = ({ header, children }) => (
   <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-    <StatusBar barStyle="dark-content" />
+    <StatusBar barStyle={statusBarStyle()} />
 
     <KeyboardAvoidingView
       style={styles.flex}
@@ -53,34 +55,36 @@ const AuthScreenLayout: React.FC<Props> = ({ header, children }) => (
   </SafeAreaView>
 );
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingHorizontal: scale(24),
-    // Status bar ≈ 24, so the logo lands at y144.
-    paddingTop: verticalScale(120),
-    paddingBottom: verticalScale(32),
-  },
-  content: {
-    width: '100%',
-    maxWidth: scale(360),
-    alignSelf: 'center',
-  },
-  logo: {
-    alignItems: 'center',
-    marginBottom: verticalScale(40),
-  },
-  form: {
-    marginTop: verticalScale(24),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    flex: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      alignItems: 'center',
+      paddingHorizontal: scale(24),
+      // Status bar ≈ 24, so the logo lands at y144.
+      paddingTop: verticalScale(120),
+      paddingBottom: verticalScale(32),
+    },
+    content: {
+      width: '100%',
+      maxWidth: scale(360),
+      alignSelf: 'center',
+    },
+    logo: {
+      alignItems: 'center',
+      marginBottom: verticalScale(40),
+    },
+    form: {
+      marginTop: verticalScale(24),
+    },
+  }),
+);
 
 export default AuthScreenLayout;

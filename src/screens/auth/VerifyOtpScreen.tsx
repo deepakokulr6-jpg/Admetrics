@@ -21,6 +21,7 @@ import { normalizeFont, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
@@ -259,41 +260,43 @@ export const ForgotPasswordScreen: React.FC<
   <OtpVerification navigation={navigation} mode="reset" />
 );
 
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: verticalScale(24),
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    field: {
+      marginBottom: verticalScale(24),
+    },
 
-  otpHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: verticalScale(8),
-  },
+    otpHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: verticalScale(8),
+    },
 
-  otpLabel: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    color: colors.text,
-    marginBottom: verticalScale(8),
-  },
+    otpLabel: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      color: colors.text,
+      marginBottom: verticalScale(8),
+    },
 
-  error: {
-    marginTop: verticalScale(12),
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.red,
-    textAlign: 'center',
-  },
+    error: {
+      marginTop: verticalScale(12),
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.red,
+      textAlign: 'center',
+    },
 
-  button: {
-    marginTop: verticalScale(85),
-  },
+    button: {
+      marginTop: verticalScale(85),
+    },
 
-  footer: {
-    marginTop: verticalScale(24),
-  },
-});
+    footer: {
+      marginTop: verticalScale(24),
+    },
+  }),
+);
 
 export default VerifyOtpScreen;

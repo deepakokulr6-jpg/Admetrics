@@ -16,6 +16,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   visible: boolean;
@@ -205,69 +206,71 @@ const ProfileDrawer: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: colors.backdrop,
-  },
-  drawer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    width: DRAWER_WIDTH,
-    backgroundColor: colors.white,
-  },
-  // Figma: grey block 124px tall, avatar 40px at 16px from the left.
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-    paddingHorizontal: scale(16),
-    paddingBottom: verticalScale(20),
-    minHeight: verticalScale(124),
-  },
-  headerText: {
-    flex: 1,
-    marginLeft: scale(16),
-  },
-  greeting: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.textStrong,
-  },
-  name: {
-    fontSize: normalizeFont(18),
-    lineHeight: normalizeFont(22),
-    fontFamily: fonts.bold,
-    color: colors.textStrong,
-  },
-  menu: {
-    paddingTop: verticalScale(20),
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: verticalScale(52),
-    paddingHorizontal: scale(25),
-  },
-  itemPressed: {
-    backgroundColor: colors.background,
-  },
-  itemIcon: {
-    width: scale(22),
-    alignItems: 'center',
-  },
-  itemLabel: {
-    marginLeft: scale(14),
-    fontSize: normalizeFont(14),
-    fontFamily: fonts.medium,
-    color: colors.bodyText,
-  },
-  itemLabelDanger: {
-    color: colors.red,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    backdrop: {
+      ...StyleSheet.absoluteFill,
+      backgroundColor: colors.backdrop,
+    },
+    drawer: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: DRAWER_WIDTH,
+      backgroundColor: colors.white,
+    },
+    // Figma: grey block 124px tall, avatar 40px at 16px from the left.
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      paddingHorizontal: scale(16),
+      paddingBottom: verticalScale(20),
+      minHeight: verticalScale(124),
+    },
+    headerText: {
+      flex: 1,
+      marginLeft: scale(16),
+    },
+    greeting: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.textStrong,
+    },
+    name: {
+      fontSize: normalizeFont(18),
+      lineHeight: normalizeFont(22),
+      fontFamily: fonts.bold,
+      color: colors.textStrong,
+    },
+    menu: {
+      paddingTop: verticalScale(20),
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: verticalScale(52),
+      paddingHorizontal: scale(25),
+    },
+    itemPressed: {
+      backgroundColor: colors.background,
+    },
+    itemIcon: {
+      width: scale(22),
+      alignItems: 'center',
+    },
+    itemLabel: {
+      marginLeft: scale(14),
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.medium,
+      color: colors.bodyText,
+    },
+    itemLabelDanger: {
+      color: colors.red,
+    },
+  }),
+);
 
 export default ProfileDrawer;

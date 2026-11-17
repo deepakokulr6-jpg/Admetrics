@@ -8,6 +8,7 @@ import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { sampleRevenue } from '../../constants/mockData';
 import { useCountUp } from '../../hooks/useCountUp';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   totalRevenue?: string;
@@ -96,111 +97,113 @@ const RevenueSummaryCard: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    width: '100%',
-    borderRadius: scale(12),
-    padding: scale(16),
-    overflow: 'hidden',
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    card: {
+      width: '100%',
+      borderRadius: scale(12),
+      padding: scale(16),
+      overflow: 'hidden',
+    },
 
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
+    topRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+    },
 
-  topLeft: {
-    flex: 1,
-  },
+    topLeft: {
+      flex: 1,
+    },
 
-  label: {
-    color: colors.white,
-    fontSize: normalizeFont(12),
-    marginTop: scale(6),
-    marginBottom: scale(8),
-  },
+    label: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(12),
+      marginTop: scale(6),
+      marginBottom: scale(8),
+    },
 
-  totalValue: {
-    color: colors.white,
-    fontSize: normalizeFont(36),
-    fontFamily: fonts.bold,
-  },
+    totalValue: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(36),
+      fontFamily: fonts.bold,
+    },
 
-  walletContainer: {
-    width: scale(32),
-    height: scale(32),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    walletContainer: {
+      width: scale(32),
+      height: scale(32),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
 
-  growthRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: scale(10),
-  },
+    growthRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: scale(10),
+    },
 
-  greenBadge: {
-    paddingHorizontal: scale(5),
-    height: scale(18),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.green,
-    borderRadius: scale(2),
-    marginRight: scale(6),
-  },
+    greenBadge: {
+      paddingHorizontal: scale(5),
+      height: scale(18),
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.green,
+      borderRadius: scale(2),
+      marginRight: scale(6),
+    },
 
-  growthArrow: {
-    color: colors.white,
-    fontSize: normalizeFont(9),
-    marginRight: scale(3),
-  },
+    growthArrow: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(9),
+      marginRight: scale(3),
+    },
 
-  growthText: {
-    color: colors.white,
-    fontSize: normalizeFont(10),
-    fontFamily: fonts.medium,
-  },
+    growthText: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(10),
+      fontFamily: fonts.medium,
+    },
 
-  growthSubtext: {
-    color: colors.white,
-    fontSize: normalizeFont(10),
-  },
+    growthSubtext: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(10),
+    },
 
-  divider: {
-    height: 1,
-    backgroundColor: colors.whiteTranslucent,
-    marginTop: scale(14),
-    marginBottom: scale(12),
-  },
+    divider: {
+      height: 1,
+      backgroundColor: colors.whiteTranslucent,
+      marginTop: scale(14),
+      marginBottom: scale(12),
+    },
 
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+    bottomRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
 
-  bottomColumn: {
-    flex: 1,
-  },
+    bottomColumn: {
+      flex: 1,
+    },
 
-  bottomColumnRight: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
+    bottomColumnRight: {
+      flex: 1,
+      alignItems: 'flex-end',
+    },
 
-  subLabel: {
-    color: colors.white,
-    fontSize: normalizeFont(12),
-    marginBottom: scale(8),
-  },
+    subLabel: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(12),
+      marginBottom: scale(8),
+    },
 
-  subValue: {
-    color: colors.white,
-    fontSize: normalizeFont(18),
-    fontFamily: fonts.bold,
-  },
-});
+    subValue: {
+      color: colors.onAccent,
+      fontSize: normalizeFont(18),
+      fontFamily: fonts.bold,
+    },
+  }),
+);
 
 export default RevenueSummaryCard;

@@ -15,6 +15,7 @@ import type { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   title: string;
@@ -65,40 +66,44 @@ const FormScreenLayout: React.FC<Props> = ({
 );
 
 /** Styles reused inside form bodies. */
-export const formStyles = StyleSheet.create({
-  heading: {
-    fontSize: normalizeFont(16),
-    lineHeight: normalizeFont(19),
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    marginBottom: verticalScale(16),
-  },
-  /** Short forms: pin the button low on the screen (Figma y634 of 800). */
-  pinnedContent: {
-    flexGrow: 1,
-    paddingBottom: verticalScale(110),
-  },
-  pinnedButton: {
-    marginTop: 'auto',
-    paddingTop: verticalScale(24),
-  },
-});
+export const formStyles = themedStyles(() =>
+  StyleSheet.create({
+    heading: {
+      fontSize: normalizeFont(16),
+      lineHeight: normalizeFont(19),
+      fontFamily: fonts.semibold,
+      color: colors.text,
+      marginBottom: verticalScale(16),
+    },
+    /** Short forms: pin the button low on the screen (Figma y634 of 800). */
+    pinnedContent: {
+      flexGrow: 1,
+      paddingBottom: verticalScale(110),
+    },
+    pinnedButton: {
+      marginTop: 'auto',
+      paddingTop: verticalScale(24),
+    },
+  }),
+);
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  flex: {
-    flex: 1,
-  },
-  content: {
-    width: '100%',
-    maxWidth: scale(420),
-    alignSelf: 'center',
-    paddingHorizontal: scale(16),
-    paddingBottom: verticalScale(32),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.white,
+    },
+    flex: {
+      flex: 1,
+    },
+    content: {
+      width: '100%',
+      maxWidth: scale(420),
+      alignSelf: 'center',
+      paddingHorizontal: scale(16),
+      paddingBottom: verticalScale(32),
+    },
+  }),
+);
 
 export default FormScreenLayout;

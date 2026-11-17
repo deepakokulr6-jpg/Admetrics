@@ -11,6 +11,7 @@ import Svg, { Path } from 'react-native-svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   value?: string;
@@ -122,63 +123,65 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    minWidth: scale(80),
-    height: scale(26),
-    borderWidth: 1,
-    borderColor: colors.text,
-    borderRadius: scale(6),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: scale(8),
-    gap: scale(8),
-  },
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    button: {
+      minWidth: scale(80),
+      height: scale(26),
+      borderWidth: 1,
+      borderColor: colors.text,
+      borderRadius: scale(6),
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: scale(8),
+      gap: scale(8),
+    },
 
-  buttonText: {
-    fontSize: normalizeFont(14),
-    color: colors.text,
-  },
+    buttonText: {
+      fontSize: normalizeFont(14),
+      color: colors.text,
+    },
 
-  overlay: {
-    flex: 1,
-    backgroundColor: colors.overlay,
-  },
+    overlay: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+    },
 
-  menu: {
-    position: 'absolute',
-    width: scale(150),
-    backgroundColor: colors.white,
-    borderRadius: scale(8),
-    borderWidth: 1,
-    borderColor: colors.divider,
-    paddingVertical: verticalScale(5),
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    elevation: 6,
-  },
+    menu: {
+      position: 'absolute',
+      width: scale(150),
+      backgroundColor: colors.white,
+      borderRadius: scale(8),
+      borderWidth: 1,
+      borderColor: colors.divider,
+      paddingVertical: verticalScale(5),
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.15,
+      shadowRadius: 5,
+      elevation: 6,
+    },
 
-  option: {
-    paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(12),
-  },
+    option: {
+      paddingHorizontal: scale(16),
+      paddingVertical: verticalScale(12),
+    },
 
-  selectedOption: {
-    backgroundColor: colors.surfaceMuted,
-  },
+    selectedOption: {
+      backgroundColor: colors.surfaceMuted,
+    },
 
-  optionText: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-  },
+    optionText: {
+      color: colors.text,
+      fontSize: normalizeFont(14),
+    },
 
-  selected: {
-    color: colors.primary,
-    fontFamily: fonts.bold,
-  },
-});
+    selected: {
+      color: colors.primary,
+      fontFamily: fonts.bold,
+    },
+  }),
+);
 
 export default RevenuePeriodDropdown;

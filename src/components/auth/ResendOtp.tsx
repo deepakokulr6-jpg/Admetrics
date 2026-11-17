@@ -5,6 +5,7 @@ import { normalizeFont } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   /** Time the OTP was (re)sent – changing it restarts the countdown. */
@@ -72,22 +73,24 @@ const ResendOtp: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  waiting: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.medium,
-    color: colors.mutedText,
-  },
-  resend: {
-    fontSize: normalizeFont(12),
-    lineHeight: normalizeFont(16),
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-  },
-  resendDisabled: {
-    opacity: 0.5,
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    waiting: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.medium,
+      color: colors.mutedText,
+    },
+    resend: {
+      fontSize: normalizeFont(12),
+      lineHeight: normalizeFont(16),
+      fontFamily: fonts.semibold,
+      color: colors.primary,
+    },
+    resendDisabled: {
+      opacity: 0.5,
+    },
+  }),
+);
 
 export default ResendOtp;

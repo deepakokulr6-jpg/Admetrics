@@ -13,6 +13,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import { useTween } from '../../hooks/useTween';
+import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
   period: string;
@@ -170,13 +171,15 @@ const RevenueChart: React.FC<Props> = ({ period }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    width: '100%',
-    backgroundColor: colors.white,
-    borderRadius: scale(12),
-    padding: scale(16),
-  },
-});
+const styles = themedStyles(() =>
+  StyleSheet.create({
+    card: {
+      width: '100%',
+      backgroundColor: colors.white,
+      borderRadius: scale(12),
+      padding: scale(16),
+    },
+  }),
+);
 
 export default RevenueChart;
