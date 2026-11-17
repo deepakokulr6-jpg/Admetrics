@@ -157,12 +157,14 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
 };
 
 const styles = StyleSheet.create({
+  // White behind the status bar so it matches the white header.
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.white,
   },
   scrollView: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   scrollContent: {
     paddingHorizontal: scale(16),

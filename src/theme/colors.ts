@@ -9,6 +9,8 @@ const colors = {
   secondary: '#B43AFC',
   gradientStart: '#0265FB',
   gradientEnd: '#B43AFC',
+  /** Solid blue for buttons and text links (Figma "Sign In"). */
+  buttonPrimary: '#1D5FFB',
   /** Step badges along the brand gradient (Clinic → Contact → Photos). */
   stepBlue: '#1D5FFB',
   stepViolet: '#644EFB',

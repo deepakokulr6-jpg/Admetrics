@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   View,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
@@ -38,19 +37,7 @@ const GradientButton: React.FC<GradientButtonProps> = ({
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       style={[styles.wrapper, style]}
     >
-      <View style={styles.button}>
-        {/* Background layer only – content wrapped in LinearGradient can be
-            mis-sized/clipped on iOS. */}
-        <LinearGradient
-          colors={
-            isDisabled
-              ? [colors.disabledButton, colors.disabledButton]
-              : [colors.primary, colors.secondary]
-          }
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={StyleSheet.absoluteFill}
-        />
+      <View style={[styles.button, isDisabled && styles.buttonDisabled]}>
         {loading ? (
           <ActivityIndicator color={colors.white} />
         ) : (
@@ -77,6 +64,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    backgroundColor: colors.buttonPrimary,
+  },
+
+  buttonDisabled: {
+    backgroundColor: colors.disabledButton,
   },
 
   buttonText: {

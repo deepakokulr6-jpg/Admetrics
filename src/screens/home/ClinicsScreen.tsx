@@ -1,11 +1,13 @@
-import React, { useCallback, useLayoutEffect } from 'react';
-import { View, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import React, { useCallback } from 'react';
+import { ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
+import AppText from '../../components/shared/AppText';
+import ClinicIllustration from '../../components/clinic/ClinicIllustration';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -58,20 +60,11 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
   ];
   const hasClinics = cards.length > 0;
 
-  // Figma: no clinics yet → hide the bottom bar until the first registration.
-  // It stays hidden during the first load and only appears once clinics
-  // exist; on later reloads the previous list is kept, so it never flickers.
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: hasClinics ? undefined : { display: 'none' },
-    });
-  }, [navigation, hasClinics]);
-
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" />
 
-      <View style={[styles.screen, !hasClinics && styles.screenEmpty]}>
+      <View style={styles.screen}>
         <DashboardHeader />
 
         <ScrollView
@@ -118,12 +111,21 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
               </View>
             </>
           ) : !isLoading ? (
-            // Figma (Android Large - 6): no clinics yet → white page with only
-            // the centred "Register Your Clinic" button and no bottom nav.
+            // Empty state (design "Option 5"): artwork, title, message and
+            // a wide register button, centred between header and tab bar.
             <View style={styles.emptyState}>
-              <RegisterClinicButton
-                onPress={() => navigation.navigate('RegisterClinic')}
-              />
+              <ClinicIllustration />
+              <AppText variant="headline" style={styles.emptyTitle}>
+                {strings.a15Home.noClinicsTitle}
+              </AppText>
+              <AppText variant="body" style={styles.emptyMessage}>
+                {strings.a15Home.noClinicsMessage}
+              </AppText>
+              <View style={styles.emptyButton}>
+                <RegisterClinicButton
+                  onPress={() => navigation.navigate('RegisterClinic')}
+                />
+              </View>
             </View>
           ) : null}
         </ScrollView>
@@ -141,9 +143,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  screenEmpty: {
-    backgroundColor: colors.white,
-  },
   scrollView: {
     flex: 1,
   },
@@ -151,6 +150,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(24),
+  },
+  emptyTitle: {
+    marginTop: verticalScale(20),
+    textAlign: 'center',
+  },
+  emptyMessage: {
+    marginTop: verticalScale(8),
+    color: colors.bodyText,
+    textAlign: 'center',
+    lineHeight: verticalScale(20),
+    maxWidth: scale(260),
+  },
+  emptyButton: {
+    marginTop: verticalScale(28),
   },
   content: {
     flexGrow: 1,

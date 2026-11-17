@@ -74,12 +74,14 @@ const StatementScreen: React.FC<TabScreenProps<'Statement'>> = ({
 // Figma: #F5F3EF background, 14px semibold title 24 below the header,
 // 98px white cards (1px #DDD border, 6px radius) 16px apart.
 const styles = StyleSheet.create({
+  // White behind the status bar so it matches the white header.
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.white,
   },
   scrollView: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   scrollContent: {
     paddingHorizontal: scale(16),

@@ -361,6 +361,9 @@ const strings = {
   a15Home: {
     unnamedClinic: 'Clinic',
     waitingForApproval: 'Waiting for Approval',
+    noClinicsTitle: 'No Clinics Yet',
+    noClinicsMessage:
+      'Register your first clinic to get started and manage your displays.',
   },
   clinicCard: {
     displaysCount: (count: number) => `${count} Displays`,

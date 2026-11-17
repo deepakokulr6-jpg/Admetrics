@@ -1,15 +1,16 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import AppText from '../shared/AppText';
-import RegisterPlus from '../../../assets/images/figma/register_plus.svg';
 import { scale, verticalScale } from '../../utils/responsive';
+import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 
 type Props = {
   onPress: () => void;
 };
 
-// Figma: 48px gradient "+" button with "Register Your Clinic" 12px medium
+// Figma: 48px solid blue "+" button with "Register Your Clinic" 12px medium
 // text 12px below it.
 const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
   <TouchableOpacity
@@ -19,7 +20,16 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
     accessibilityLabel={strings.common.registerYourClinic}
     style={styles.container}
   >
-    <RegisterPlus width={scale(48)} height={scale(48)} />
+    <View style={styles.circle}>
+      <Svg width={scale(20)} height={scale(20)} viewBox="0 0 20 20">
+        <Path
+          d="M10 3v14M3 10h14"
+          stroke={colors.white}
+          strokeWidth={2.4}
+          strokeLinecap="round"
+        />
+      </Svg>
+    </View>
     <AppText variant="labelMedium" style={styles.text}>
       {strings.common.registerYourClinic}
     </AppText>
@@ -29,6 +39,14 @@ const RegisterClinicButton: React.FC<Props> = ({ onPress }) => (
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+  },
+  circle: {
+    width: scale(48),
+    height: scale(48),
+    borderRadius: scale(24),
+    backgroundColor: colors.buttonPrimary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     marginTop: verticalScale(12),
