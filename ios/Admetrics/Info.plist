@@ -76,5 +76,7 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Admetrics uses the camera to scan the QR code on your TV to connect it.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Admetrics uses Face ID to unlock the app securely.</string>
 </dict>
 </plist>

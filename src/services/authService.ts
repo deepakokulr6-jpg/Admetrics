@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
+import { disableBiometric } from './biometricService';
 import strings from '../constants/strings';
 
 /**
@@ -408,6 +409,8 @@ export const restoreSession = async (): Promise<AuthUser | null> => {
 export const logout = async (): Promise<void> => {
   passwordResetTickets.clear();
   await clearSession();
+  // The lock belongs to this account; the next user sets their own.
+  await disableBiometric();
 };
 
 export const resetLocalAuthForTests = async (): Promise<void> => {

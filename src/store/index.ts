@@ -14,18 +14,24 @@ import {
 import auth from './slices/authSlice';
 import clinicDraft from './slices/clinicDraftSlice';
 import clinics from './slices/clinicsSlice';
+import bankAccount from './slices/bankAccountSlice';
 
-const rootReducer = combineReducers({ auth, clinicDraft, clinics });
+const rootReducer = combineReducers({
+  auth,
+  clinicDraft,
+  clinics,
+  bankAccount,
+});
 
 /**
- * Only the registration draft is persisted.
+ * Persisted: the registration draft and the saved bank account.
  * - auth: session is in the Keychain (secure), restored by bootstrapAuth.
  * - clinics: always re-read from the service / API.
  */
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['clinicDraft'],
+  whitelist: ['clinicDraft', 'bankAccount'],
 };
 
 export const store = configureStore({

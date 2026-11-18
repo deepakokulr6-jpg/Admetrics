@@ -9,6 +9,8 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { useAppSelector } from '../../store/hooks';
+import { ownerKey } from '../../store/slices/clinicDraftSlice';
 import {
   getThemePreference,
   setThemePreference,
@@ -146,7 +148,7 @@ const ICONS: Record<string, React.FC<IconProps>> = {
 
 const ITEMS = [
   { key: 'appearance', label: strings.settings.appearance },
-  { key: 'password', label: strings.settings.changePassword },
+  { key: 'password', label: strings.settings.privacySecurity },
   { key: 'device', label: strings.settings.addDevice },
   { key: 'bank', label: strings.settings.bankAccountDetails },
   { key: 'privacy', label: strings.settings.privacyPolicy },
@@ -160,6 +162,18 @@ const THEME_OPTIONS: { key: ThemeChoice; icon: string; label: string }[] = [
   { key: 'dark', icon: 'dark', label: strings.settings.themeDark },
   { key: 'system', icon: 'system', label: strings.settings.themeSystem },
 ];
+
+/** Rows that open another screen. */
+const ROUTES: Partial<
+  Record<
+    (typeof ITEMS)[number]['key'],
+    (nav: AppScreenProps<'Settings'>['navigation']) => () => void
+  >
+> = {
+  password: nav => () => nav.navigate('PrivacySecurity'),
+  device: nav => () => nav.navigate('AddDevice'),
+  bank: nav => () => nav.navigate('BankAccount'),
+};
 
 const RowIcon = ({ name, size }: { name: string; size: number }) => {
   const Icon = ICONS[name];
@@ -175,6 +189,9 @@ const SettingsScreen: React.FC<AppScreenProps<'Settings'>> = ({
   navigation,
 }) => {
   const [theme, setTheme] = useState<ThemeChoice>(getThemePreference);
+  const hasBankAccount = useAppSelector(state =>
+    Boolean(state.bankAccount.byOwner[ownerKey(state.auth.user?.email ?? '')]),
+  );
 
   // Saved, then the app reloads with the new palette if it changed.
   const chooseTheme = (next: ThemeChoice) => {
@@ -225,18 +242,21 @@ const SettingsScreen: React.FC<AppScreenProps<'Settings'>> = ({
               <Pressable
                 key={item.key}
                 accessibilityRole="button"
-                onPress={
-                  item.key === 'device'
-                    ? () => navigation.navigate('AddDevice')
-                    : undefined
-                }
+                onPress={ROUTES[item.key]?.(navigation)}
                 style={({ pressed }) => [
                   styles.row,
                   pressed && styles.rowPressed,
                 ]}
               >
                 <RowIcon name={item.key} size={scale(24)} />
-                <Text style={styles.label}>{item.label}</Text>
+                <Text style={[styles.label, styles.flex]}>{item.label}</Text>
+                {item.key === 'bank' && hasBankAccount ? (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {strings.settings.added}
+                    </Text>
+                  </View>
+                ) : null}
               </Pressable>
             ),
           )}
@@ -254,6 +274,18 @@ const styles = themedStyles(() =>
     },
     flex: {
       flex: 1,
+    },
+    // Figma: green "Added" pill on the Bank Account row.
+    badge: {
+      paddingHorizontal: scale(8),
+      paddingVertical: verticalScale(3),
+      borderRadius: scale(10),
+      backgroundColor: colors.successBackground,
+    },
+    badgeText: {
+      fontSize: normalizeFont(10),
+      fontFamily: fonts.semibold,
+      color: colors.success,
     },
     // Rows are 56px white bars separated by thin 2px beige lines.
     list: {

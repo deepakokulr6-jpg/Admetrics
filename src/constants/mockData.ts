@@ -195,3 +195,16 @@ export const sampleRevenue = {
 
 /** Serial used by the manual "Confirm Scan" button until scanning is tested on devices. */
 export const SAMPLE_TV_SERIAL = 'SVGWHDJSN97842';
+
+/** Demo authenticator setup until the MFA API exists. */
+export const SAMPLE_TOTP_SECRET = 'ABCDEFGHIJKLMNOP';
+export const SAMPLE_RECOVERY_CODES = [
+  { code: 'A7K9-M2PX', used: true },
+  { code: 'B4N8-Q6RT', used: false },
+  { code: 'C3W5-L9YD', used: false },
+  { code: 'D8F2-K7JM', used: false },
+  { code: 'E6P4-X3NV', used: false },
+  { code: 'F9R2-H5QC', used: false },
+  { code: 'G2T7-M8WK', used: false },
+  { code: 'H5Y3-P4LB', used: false },
+];

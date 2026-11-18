@@ -54,3 +54,17 @@ export const isValidName = (value: string): boolean =>
   NAME_PATTERN.test(value.trim());
 
 export const isBlank = (value: string): boolean => value.trim().length === 0;
+
+/** Indian bank account numbers: 9–18 digits. */
+export const ACCOUNT_NUMBER_PATTERN = /^\d{9,18}$/;
+/** IFSC: 4 bank letters, a 0, then 6 branch letters/digits (e.g. CNRB0003241). */
+export const IFSC_PATTERN = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+export const isValidAccountNumber = (value: string): boolean =>
+  ACCOUNT_NUMBER_PATTERN.test(value);
+export const isValidIfsc = (value: string): boolean =>
+  IFSC_PATTERN.test(value.trim().toUpperCase());
+
+/** "823423422321" → "8234 2342 2321" for display. */
+export const groupDigits = (value: string): string =>
+  value.replace(/(\d{4})(?=\d)/g, '$1 ');

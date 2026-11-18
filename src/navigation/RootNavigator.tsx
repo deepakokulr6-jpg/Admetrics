@@ -9,6 +9,8 @@ import AuthNavigator, { navigationTheme } from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import { useAuth } from '../hooks/useAuth';
 import { useColorScheme } from '../theme/appearance';
+import { useAppLock } from '../hooks/useAppLock';
+import BiometricLock from '../components/shared/BiometricLock';
 
 /**
  * Gate for the whole application:
@@ -19,7 +21,8 @@ import { useColorScheme } from '../theme/appearance';
  * avoids the "login flash" for already signed-in users.
  */
 const RootNavigator = () => {
-  const { user, isBootstrapping } = useAuth();
+  const { user, isBootstrapping, signOut } = useAuth();
+  const { lock, unlock } = useAppLock(Boolean(user), !isBootstrapping);
   const [splashFinished, setSplashFinished] = useState(false);
   const scheme = useColorScheme();
   // Last navigation state, so a theme switch re-draws every screen with the
@@ -35,16 +38,26 @@ const RootNavigator = () => {
   }
 
   return (
-    <NavigationContainer
-      key={scheme}
-      theme={navigationTheme()}
-      initialState={navState.current}
-      onStateChange={state => {
-        navState.current = state;
-      }}
-    >
-      {user ? <AppNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
+    <>
+      <NavigationContainer
+        key={scheme}
+        theme={navigationTheme()}
+        initialState={navState.current}
+        onStateChange={state => {
+          navState.current = state;
+        }}
+      >
+        {user ? <AppNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+      {/* Biometric lock covers the app; navigation state stays underneath. */}
+      {lock ? (
+        <BiometricLock
+          biometry={lock}
+          onUnlock={unlock}
+          onUsePassword={signOut}
+        />
+      ) : null}
+    </>
   );
 };
 

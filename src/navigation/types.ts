@@ -45,6 +45,8 @@ export type AppStackParamList = {
   MouAgreement: undefined;
   Settings: undefined;
   AddDevice: undefined;
+  PrivacySecurity: undefined;
+  BankAccount: undefined;
   ScanQr: undefined;
   /** serial: TV serial number from the QR code or pairing code. */
   DeviceDetails: { serial: string };

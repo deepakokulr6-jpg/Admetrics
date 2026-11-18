@@ -16,6 +16,8 @@ import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import AddDeviceScreen from '../screens/settings/AddDeviceScreen';
+import PrivacySecurityScreen from '../screens/settings/PrivacySecurityScreen';
+import BankAccountScreen from '../screens/settings/BankAccountScreen';
 import ScanQrScreen from '../screens/settings/ScanQrScreen';
 import DeviceDetailsScreen from '../screens/settings/DeviceDetailsScreen';
 import DevicePairingScreen from '../screens/settings/DevicePairingScreen';
@@ -49,6 +51,11 @@ const AppNavigator = () => {
         <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
+        <Stack.Screen name="BankAccount" component={BankAccountScreen} />
+        <Stack.Screen
+          name="PrivacySecurity"
+          component={PrivacySecurityScreen}
+        />
         <Stack.Screen name="ScanQr" component={ScanQrScreen} />
         <Stack.Screen name="DeviceDetails" component={DeviceDetailsScreen} />
         <Stack.Screen
