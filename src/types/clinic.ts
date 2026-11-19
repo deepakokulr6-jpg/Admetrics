@@ -38,6 +38,8 @@ export type ClinicRegistrationDraft = {
   photos: ClinicPhotos;
   /** MOU signature as SVG path data (drawn on the MOU step). */
   signature: string | null;
+  /** Link to the DocuSeal-signed MOU PDF (null if signed offline). */
+  signedMouUrl?: string | null;
 };
 
 export type ClinicRegistrationRecord = ClinicRegistrationDraft & {

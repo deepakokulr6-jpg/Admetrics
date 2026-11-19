@@ -43,6 +43,8 @@ export type AppStackParamList = {
   MouESign: undefined;
   ClinicPreview: undefined;
   MouAgreement: undefined;
+  /** Signed MOU PDF from DocuSeal. */
+  SignedMou: { url: string };
   Settings: undefined;
   AddDevice: undefined;
   PrivacySecurity: undefined;

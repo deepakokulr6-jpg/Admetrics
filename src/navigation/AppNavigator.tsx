@@ -14,6 +14,7 @@ import RegisterMouScreen from '../screens/clinic/RegisterMouScreen';
 import MouESignScreen from '../screens/clinic/MouESignScreen';
 import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
+import SignedMouScreen from '../screens/clinic/SignedMouScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import AddDeviceScreen from '../screens/settings/AddDeviceScreen';
 import PrivacySecurityScreen from '../screens/settings/PrivacySecurityScreen';
@@ -49,6 +50,7 @@ const AppNavigator = () => {
         />
         <Stack.Screen name="ClinicPreview" component={ClinicPreviewScreen} />
         <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
+        <Stack.Screen name="SignedMou" component={SignedMouScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
         <Stack.Screen name="BankAccount" component={BankAccountScreen} />

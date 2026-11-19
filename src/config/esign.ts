@@ -18,3 +18,16 @@ export const DOCUSEAL_FORM_URL = 'https://docuseal.com/d/jxecS12SMPrUd5';
 
 /** Script that renders the embedded DocuSeal signing form. */
 export const DOCUSEAL_FORM_SCRIPT = 'https://cdn.docuseal.com/js/form.js';
+
+/**
+ * DocuSeal API settings for signing from the app (no backend yet).
+ * Values live in the git-ignored `esign.local.ts`; copy
+ * `esign.local.example.ts` to create it.
+ */
+export {
+  DOCUSEAL_API_KEY,
+  DOCUSEAL_TEMPLATE_ID,
+  DOCUSEAL_SIGNATURE_FIELD,
+} from './esign.local';
+
+export const DOCUSEAL_API_URL = 'https://api.docuseal.com';

@@ -405,6 +405,19 @@ const strings = {
     signingUnavailable: 'Signing unavailable',
     checkConnection:
       'The signing page could not be loaded. Check your internet connection and try again.',
+    clearSignature: 'Clear signature',
+    signingFailed: 'Could not sign the MOU',
+    signingFailedMessage:
+      'The signed document could not be created. Check your internet connection and try again, or continue and sign it later.',
+    retry: 'Try again',
+    signedMou: 'Signed MOU',
+    signedViaDocuSeal: 'Signed electronically via DocuSeal',
+    signedOnDevice: 'Signed on this device (not yet sent for e-sign)',
+    viewSignedMou: 'View signed MOU',
+    viewMou: 'View MOU',
+    openInBrowser: 'Open in browser',
+    documentLoadFailed: 'The signed document could not be loaded.',
+    continueAnyway: 'Continue',
   },
   /**
    * MOU text shown on the MOU step and in the side menu.

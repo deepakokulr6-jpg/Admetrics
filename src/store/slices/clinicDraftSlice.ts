@@ -73,6 +73,9 @@ const clinicDraftSlice = createSlice({
     ) {
       draftFor(state, payload.owner).signature = payload.signature;
     },
+    setSignedMou(state, { payload }: OwnerPayload<{ url: string | null }>) {
+      draftFor(state, payload.owner).signedMouUrl = payload.url;
+    },
     resetDraft(state, { payload }: OwnerPayload<{}>) {
       delete state.byOwner[ownerKey(payload.owner)];
     },
