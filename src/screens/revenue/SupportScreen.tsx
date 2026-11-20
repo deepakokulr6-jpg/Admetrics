@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
 import DashboardHeader from '../../components/home/DashboardHeader';
+import ComplaintSheet from '../../components/support/ComplaintSheet';
+import InstallationSheet from '../../components/support/InstallationSheet';
+import { formatDate } from '../../components/shared/CalendarPicker';
+import StatusSheet, {
+  type SheetStatus,
+} from '../../components/shared/StatusSheet';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import type { TabScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
@@ -20,7 +26,70 @@ import strings from '../../constants/strings';
 import { sampleSupportRequests } from '../../constants/mockData';
 import { themedStyles } from '../../theme/themedStyles';
 
+const SUBMIT_MS = 1100;
+const SUCCESS_MS = 1600;
+/** Let the form sheet slide away before the status sheet opens. */
+const SHEET_SWAP_MS = 350;
+
 const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
+  const [complaintOpen, setComplaintOpen] = useState(false);
+  const [installationOpen, setInstallationOpen] = useState(false);
+  const [statusVisible, setStatusVisible] = useState(false);
+  // What the status sheet says while loading / after success.
+  const [statusText, setStatusText] = useState({
+    loadingTitle: '',
+    loadingMessage: '',
+    doneTitle: '',
+    doneMessage: '',
+  });
+  const [status, setStatus] = useState<SheetStatus>('loading');
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach(clearTimeout);
+  }, []);
+
+  /** Shared "loading → success" sheet after a form is sent. */
+  const showStatus = (text: typeof statusText) => {
+    setStatusText(text);
+    const later = (fn: () => void, ms: number) =>
+      timers.current.push(setTimeout(fn, ms));
+    later(() => {
+      setStatus('loading');
+      setStatusVisible(true);
+    }, SHEET_SWAP_MS);
+    later(() => setStatus('success'), SHEET_SWAP_MS + SUBMIT_MS);
+    later(
+      () => setStatusVisible(false),
+      SHEET_SWAP_MS + SUBMIT_MS + SUCCESS_MS,
+    );
+  };
+
+  // TODO: send to the support API.
+  const submitComplaint = (_text: string) => {
+    setComplaintOpen(false);
+    showStatus({
+      loadingTitle: strings.complaint.submitting,
+      loadingMessage: strings.complaint.submittingMessage,
+      doneTitle: strings.complaint.submitted,
+      doneMessage: strings.complaint.submittedMessage,
+    });
+  };
+
+  // TODO: send to the installation API.
+  const submitInstallation = (date: Date, time: string) => {
+    setInstallationOpen(false);
+    showStatus({
+      loadingTitle: strings.installation.submitting,
+      loadingMessage: strings.installation.submittingMessage,
+      doneTitle: strings.installation.submitted,
+      doneMessage: strings.installation.submittedMessage(
+        `${formatDate(date)}, ${time}`,
+      ),
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle={statusBarStyle()} />
@@ -57,7 +126,12 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
           <Text style={styles.cardDescription}>
             {strings.support.reportDeviceIssuesTvOffline}
           </Text>
-          <Pressable style={styles.actionLinkRow} accessibilityRole="button">
+          <Pressable
+            style={styles.actionLinkRow}
+            accessibilityRole="button"
+            accessibilityLabel={strings.support.createComplaint}
+            onPress={() => setComplaintOpen(true)}
+          >
             <Text style={styles.actionLinkText}>
               {strings.support.createComplaint}
             </Text>
@@ -83,7 +157,12 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
           <Text style={styles.cardDescription}>
             {strings.support.requestNewDeviceInstallationOr}
           </Text>
-          <Pressable style={styles.actionLinkRow} accessibilityRole="button">
+          <Pressable
+            style={styles.actionLinkRow}
+            accessibilityRole="button"
+            accessibilityLabel={strings.support.requestInstallation}
+            onPress={() => setInstallationOpen(true)}
+          >
             <Text style={styles.actionLinkText}>
               {strings.support.requestInstallation}
             </Text>
@@ -141,6 +220,7 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
           <Pressable
             style={styles.assistanceButtonRow}
             accessibilityRole="button"
+            accessibilityLabel={strings.support.contactSupport}
           >
             <Text style={styles.assistanceButtonText}>
               {strings.support.contactSupport}
@@ -154,6 +234,29 @@ const SupportScreen: React.FC<TabScreenProps<'Support'>> = () => {
           </Pressable>
         </View>
       </ScrollView>
+
+      <ComplaintSheet
+        visible={complaintOpen}
+        onClose={() => setComplaintOpen(false)}
+        onSubmit={submitComplaint}
+      />
+      <InstallationSheet
+        visible={installationOpen}
+        onClose={() => setInstallationOpen(false)}
+        onSubmit={submitInstallation}
+      />
+      <StatusSheet
+        visible={statusVisible}
+        status={status}
+        title={
+          status === 'success' ? statusText.doneTitle : statusText.loadingTitle
+        }
+        message={
+          status === 'success'
+            ? statusText.doneMessage
+            : statusText.loadingMessage
+        }
+      />
     </SafeAreaView>
   );
 };

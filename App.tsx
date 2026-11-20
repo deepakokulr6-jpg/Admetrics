@@ -10,6 +10,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './src/store';
 import { bootstrapAuth } from './src/store/slices/authSlice';
 import RootNavigator from './src/navigation/RootNavigator';
+import { AppAlertHost } from './src/components/shared/AppAlert';
+import { BottomSheetProvider } from '@swmansion/react-native-bottom-sheet';
 import { statusBarStyle, useColorScheme } from './src/theme/appearance';
 import { lockFontScaling } from './src/utils/lockFontScaling';
 
@@ -28,7 +30,13 @@ export default function App() {
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaProvider initialMetrics={initialWindowMetrics ?? undefined}>
           <StatusBar barStyle={statusBarStyle()} />
-          <RootNavigator />
+          {/* Bottom sheets render here, inside the app window, so the
+              iOS keyboard shows above them. */}
+          <BottomSheetProvider>
+            <RootNavigator />
+            {/* Themed alerts (appAlert) above every screen. */}
+            <AppAlertHost />
+          </BottomSheetProvider>
         </SafeAreaProvider>
       </PersistGate>
     </Provider>

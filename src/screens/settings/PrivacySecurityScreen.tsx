@@ -168,6 +168,7 @@ const PrivacySecurityScreen: React.FC<AppScreenProps<'PrivacySecurity'>> = ({
         <Row
           icon={svg(<PasswordIcon color={colors.textStrong} />)}
           label={t.changePassword}
+          onPress={() => navigation.navigate('ChangePassword')}
         />
 
         <Text style={styles.section}>{t.mfaSection}</Text>

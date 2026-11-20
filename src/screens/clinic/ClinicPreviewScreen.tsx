@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import GradientButton from '../../components/shared/GradientButton';
+import StatusSheet, {
+  type SheetStatus,
+} from '../../components/shared/StatusSheet';
 import ClinicSummary from '../../components/clinic/ClinicSummary';
 import SignaturePreview from '../../components/clinic/SignaturePreview';
 import { useClinicRegistration } from '../../hooks/useClinicRegistration';
@@ -23,6 +19,7 @@ import { fonts } from '../../theme/typography';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 const joinAddress = (parts: string[], pincode: string) => {
   const address = parts
@@ -32,6 +29,14 @@ const joinAddress = (parts: string[], pincode: string) => {
   return pincode.trim() ? `${address} – ${pincode.trim()}` : address;
 };
 
+const MIN_LOADING_MS = 1200;
+/** How long "Clinic Added" stays up before the sheet closes. */
+const SUCCESS_MS = 1800;
+const wait = (ms: number) =>
+  new Promise<void>(resolve => {
+    setTimeout(() => resolve(), ms);
+  });
+
 /** Last step: review everything entered, then Register. */
 const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
   navigation,
@@ -40,11 +45,15 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
   const { user } = useAuth();
   const dispatch = useAppDispatch();
   const [isSaving, setIsSaving] = useState(false);
+  // Same "Verifying..." → success sheet as Add Device.
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetStatus, setSheetStatus] = useState<SheetStatus>('loading');
+  const outcome = useRef<'saved' | 'failed' | null>(null);
   const { clinic, personal, photos } = draft;
 
   const handleRegister = async () => {
     if (!user) {
-      Alert.alert(
+      appAlert(
         strings.registerPhoto.sessionExpired,
         strings.registerPhoto.pleaseSignInAgainBefore,
       );
@@ -52,29 +61,44 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
     }
 
     if (!draft.signature) {
-      Alert.alert(strings.mou.signatureRequired, strings.mou.pleaseSignTheMou);
+      appAlert(strings.mou.signatureRequired, strings.mou.pleaseSignTheMou);
       return;
     }
 
     setIsSaving(true);
+    setSheetStatus('loading');
+    setSheetVisible(true);
+    outcome.current = null;
 
     try {
-      await dispatch(registerClinic({ owner: user.email, draft })).unwrap();
+      // Keep the spinner up briefly even when saving is instant.
+      await Promise.all([
+        dispatch(registerClinic({ owner: user.email, draft })).unwrap(),
+        wait(MIN_LOADING_MS),
+      ]);
+      outcome.current = 'saved';
+      setSheetStatus('success');
+      await wait(SUCCESS_MS);
+    } catch {
+      outcome.current = 'failed';
+    }
+    setSheetVisible(false);
+  };
+
+  /** After the sheet has slid away: go to the clinic list, or explain. */
+  const onSheetHidden = () => {
+    setIsSaving(false);
+    if (outcome.current === 'saved') {
       resetDraft();
       navigation.reset({
-        index: 1,
-        routes: [
-          { name: 'MainTabs', params: { screen: 'Clinics' } },
-          { name: 'ClinicRegistered' },
-        ],
+        index: 0,
+        routes: [{ name: 'MainTabs', params: { screen: 'Clinics' } }],
       });
-    } catch {
-      Alert.alert(
+    } else if (outcome.current === 'failed') {
+      appAlert(
         strings.registerPhoto.registrationFailed,
         strings.registerPhoto.theClinicDetailsCouldNot,
       );
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -90,6 +114,7 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
         showsVerticalScrollIndicator={false}
       >
         <ClinicSummary
+          photoLabels
           data={{
             name: clinic.clinicName,
             address: joinAddress(
@@ -154,6 +179,22 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
           />
         </View>
       </ScrollView>
+
+      <StatusSheet
+        visible={sheetVisible}
+        status={sheetStatus}
+        title={
+          sheetStatus === 'success'
+            ? strings.clinicSubmit.added
+            : strings.clinicSubmit.verifying
+        }
+        message={
+          sheetStatus === 'success'
+            ? strings.clinicSubmit.addedMessage
+            : strings.clinicSubmit.savingMessage
+        }
+        onHidden={onSheetHidden}
+      />
     </SafeAreaView>
   );
 };

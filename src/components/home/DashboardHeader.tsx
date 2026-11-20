@@ -7,6 +7,8 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { useAppSelector } from '../../store/hooks';
+import { ownerKey } from '../../store/slices/clinicDraftSlice';
 import { useLogout } from '../../hooks/useLogout';
 import { useAuth } from '../../hooks/useAuth';
 import ProfileDrawer from './ProfileDrawer';
@@ -30,6 +32,9 @@ const DashboardHeader: React.FC<Props> = ({
 }) => {
   const confirmLogout = useLogout();
   const { user } = useAuth();
+  const bankAccountAdded = useAppSelector(state =>
+    Boolean(state.bankAccount.byOwner[ownerKey(state.auth.user?.email ?? '')]),
+  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();
@@ -84,6 +89,9 @@ const DashboardHeader: React.FC<Props> = ({
         onLogout={confirmLogout}
         onMouAgreement={() => navigation.navigate('MouAgreement')}
         onSettings={() => navigation.navigate('Settings')}
+        onAddDevice={() => navigation.navigate('AddDevice')}
+        onBankAccount={() => navigation.navigate('BankAccount')}
+        bankAccountAdded={bankAccountAdded}
       />
     </View>
   );

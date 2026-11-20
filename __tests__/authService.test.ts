@@ -3,6 +3,7 @@ import * as Keychain from 'react-native-keychain';
 
 import {
   AuthError,
+  changePassword,
   DEVELOPMENT_OTP,
   isEmailRegistered,
   login,
@@ -120,4 +121,21 @@ test('does not create an account during password reset', async () => {
   );
 
   expect(await isEmailRegistered('missing@example.com')).toBe(false);
+});
+
+test('changes the password only when the current one is correct', async () => {
+  await registerAccount('doc@clinic.com', 'oldpass123');
+
+  await expect(
+    changePassword('doc@clinic.com', 'wrongpass', 'newpass123'),
+  ).rejects.toBeInstanceOf(AuthError);
+
+  await changePassword('Doc@Clinic.com', 'oldpass123', 'newpass123');
+
+  await expect(login('doc@clinic.com', 'oldpass123')).rejects.toBeInstanceOf(
+    AuthError,
+  );
+  await expect(login('doc@clinic.com', 'newpass123')).resolves.toMatchObject({
+    email: 'doc@clinic.com',
+  });
 });

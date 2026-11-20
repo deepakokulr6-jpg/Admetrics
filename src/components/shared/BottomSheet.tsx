@@ -1,15 +1,14 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
-  Animated,
-  Easing,
-  KeyboardAvoidingView,
-  Modal,
+  FlatList,
+  type FlatListProps,
+  Keyboard,
   Platform,
-  Pressable,
+  ScrollView,
   StyleSheet,
-  useWindowDimensions,
   View,
 } from 'react-native';
+import { ModalBottomSheet } from '@swmansion/react-native-bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { scale, verticalScale } from '../../utils/responsive';
@@ -23,107 +22,139 @@ type Props = {
   children: ReactNode;
 };
 
+/** Closed, then sized to the content (capped to the screen natively). */
+const DETENTS: (0 | 'content')[] = [0, 'content'];
+const CLOSED = 0;
 /**
- * White sheet with a grab handle that glides up over the dimmed screen.
- * Tap outside or Android back closes it. Children can change while it is
- * open (e.g. Set Up → Verify → Recovery Codes) without re-animating.
+ * The sheet floats above the screen but stays in its React tree, so a list
+ * in it would think it sits inside the screen's ScrollView (dev warning).
+ * Reset that context: the sheet is its own scroll root.
+ */
+const ScrollContext = (
+  ScrollView as unknown as {
+    Context: React.Context<unknown>;
+  }
+).Context;
+const OPEN = 1;
+
+/**
+ * True while the keyboard is up (both platforms), so tall sheet content can
+ * shrink to keep its button above the keyboard.
+ */
+export const useKeyboardVisible = () => {
+  const [visible, setVisible] = useState(Keyboard.isVisible());
+  useEffect(() => {
+    const ios = Platform.OS === 'ios';
+    const show = Keyboard.addListener(
+      ios ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setVisible(true),
+    );
+    const hide = Keyboard.addListener(
+      ios ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setVisible(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  return visible;
+};
+
+/**
+ * iOS keyboard height (0 when hidden). Android needs none: the window
+ * already resizes for the keyboard (adjustResize), lifting the sheet.
+ */
+const useKeyboardHeight = () => {
+  const [height, setHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    const show = Keyboard.addListener('keyboardWillShow', event =>
+      setHeight(event.endCoordinates.height),
+    );
+    const hide = Keyboard.addListener('keyboardWillHide', () => setHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  return height;
+};
+
+/**
+ * List inside a sheet. The sheet library hands drags between the list and
+ * the sheet natively (pull down at the top closes it), so this is a plain
+ * FlatList; kept as its own name so sheets read clearly.
+ */
+export function SheetFlatList<T>({
+  startsAtTop: _startsAtTop,
+  ...props
+}: FlatListProps<T> & { startsAtTop?: boolean }) {
+  // No scroll bar in sheets, like the rest of the app.
+  return <FlatList showsVerticalScrollIndicator={false} {...props} />;
+}
+
+/**
+ * White sheet with a grab handle over a dimmed screen, built on Software
+ * Mansion's native bottom sheet: drag down (from anywhere, or from a list at
+ * its top), tap outside or Android back closes it. Rendered through the
+ * BottomSheetProvider in App.tsx (inside the app window, so the keyboard
+ * shows above it); grows above the keyboard while one is open.
+ * Children can change while open (e.g. Set Up → Verify → Recovery Codes).
  */
 const BottomSheet: React.FC<Props> = ({ visible, onClose, children }) => {
-  const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const [mounted, setMounted] = useState(visible);
-  const backdrop = useRef(new Animated.Value(0)).current;
-  const offset = useRef(new Animated.Value(height)).current;
-
-  useEffect(() => {
-    if (visible) {
-      setMounted(true);
-      Animated.parallel([
-        Animated.timing(backdrop, {
-          toValue: 1,
-          duration: 240,
-          useNativeDriver: true,
-        }),
-        Animated.timing(offset, {
-          toValue: 0,
-          duration: 340,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(backdrop, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(offset, {
-          toValue: height,
-          duration: 260,
-          easing: Easing.in(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start(({ finished }) => finished && setMounted(false));
-    }
-  }, [visible, backdrop, offset, height]);
+  const keyboardHeight = useKeyboardHeight();
 
   return (
-    <Modal
-      visible={mounted}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={onClose}
+    <ModalBottomSheet
+      lazy
+      detents={DETENTS}
+      index={visible ? OPEN : CLOSED}
+      onIndexChange={index => {
+        if (index === CLOSED) {
+          onClose();
+        }
+      }}
+      onCloseRequest={onClose}
+      scrimColor={colors.sheetBackdrop}
+      scrimAccessibilityLabel={strings.authenticator.closeSheet}
+      surface={<View style={styles.surface} />}
+      surfaceStyle={styles.surfaceShape}
     >
-      <Animated.View style={[styles.backdrop, { opacity: backdrop }]}>
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel={strings.authenticator.closeSheet}
-        />
-      </Animated.View>
-
-      <KeyboardAvoidingView
-        style={styles.anchor}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        pointerEvents="box-none"
+      <View
+        style={[
+          styles.content,
+          {
+            // Grow above the keyboard so a focused field stays visible.
+            paddingBottom: keyboardHeight
+              ? keyboardHeight + verticalScale(16)
+              : insets.bottom + verticalScale(32),
+          },
+        ]}
       >
-        <Animated.View
-          style={[
-            styles.sheet,
-            {
-              maxHeight: height - insets.top - verticalScale(24),
-              paddingBottom: insets.bottom + verticalScale(32),
-              transform: [{ translateY: offset }],
-            },
-          ]}
-        >
-          <View style={styles.handle} />
-          {children}
-        </Animated.View>
-      </KeyboardAvoidingView>
-    </Modal>
+        <View style={styles.handle} />
+        <ScrollContext.Provider value={null}>{children}</ScrollContext.Provider>
+      </View>
+    </ModalBottomSheet>
   );
 };
 
 const styles = themedStyles(() =>
   StyleSheet.create({
-    backdrop: {
+    surface: {
       ...StyleSheet.absoluteFill,
-      backgroundColor: colors.sheetBackdrop,
+      backgroundColor: colors.white,
     },
-    anchor: {
-      flex: 1,
-      justifyContent: 'flex-end',
-    },
-    sheet: {
-      paddingHorizontal: scale(24),
-      paddingTop: verticalScale(8),
+    surfaceShape: {
       borderTopLeftRadius: scale(20),
       borderTopRightRadius: scale(20),
-      backgroundColor: colors.white,
+    },
+    content: {
+      paddingHorizontal: scale(24),
+      paddingTop: verticalScale(8),
     },
     // Figma: 120 × 4 grey grab handle centred at the top.
     handle: {

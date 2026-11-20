@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import FormScreenLayout, {
   formStyles,
@@ -14,6 +14,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 const validateHours = (
   hours: ReturnType<typeof useClinicRegistration>['draft']['workingHours'],
@@ -95,7 +96,7 @@ const RegisterTimingsScreen: React.FC<AppScreenProps<'RegisterTimings'>> = ({
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      Alert.alert(
+      appAlert(
         strings.registerTimings.checkWorkingHours,
         strings.registerTimings.pleaseCorrectTheHighlightedWorking,
       );

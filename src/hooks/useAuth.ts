@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import {
+  changePassword,
   isEmailRegistered,
   registerAccount,
   requestPasswordReset,
@@ -47,6 +48,7 @@ export const useAuth = () => {
       requestPasswordReset,
       verifyPasswordResetOtp,
       resetPassword,
+      changePassword,
     }),
     [user, isBootstrapping, signIn, signOut],
   );

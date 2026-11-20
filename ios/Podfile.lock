@@ -28,6 +28,80 @@ PODS:
     - React-Core
   - DoubleConversion (1.1.6):
     - ReactNativeDependencies
+  - EXConstants (58.0.16):
+    - ExpoModulesCore
+  - Expo (58.0.26):
+    - ExpoModulesCore
+    - ExpoModulesJSI
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTAppDelegate
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactAppDependencyProvider
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - ExpoAsset (58.0.21):
+    - ExpoModulesCore
+  - ExpoDomWebView (58.0.2):
+    - ExpoModulesCore
+  - ExpoFileSystem (58.0.14):
+    - ExpoModulesCore
+  - ExpoFont (58.0.12):
+    - ExpoModulesCore
+  - ExpoKeepAwake (58.0.4):
+    - ExpoModulesCore
+  - ExpoLocation (58.0.22):
+    - ExpoModulesCore
+  - ExpoLogBox (58.0.15):
+    - React-Core
+  - ExpoModulesCore (58.1.0):
+    - ExpoModulesJSI
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-jsinspector
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - ExpoModulesJSI (58.0.23):
+    - React-Core
+    - ReactCommon
+  - ExpoModulesWorklets (58.1.0):
+    - ExpoModulesCore
+    - ExpoModulesJSI
   - fast_float (8.0.0):
     - ReactNativeDependencies
   - FBLazyVector (0.88.1):
@@ -39,6 +113,29 @@ PODS:
   - hermes-engine (260318099.0.5):
     - hermes-engine/Pre-built (= 260318099.0.5)
   - hermes-engine/Pre-built (260318099.0.5)
+  - MapLibreReactNative (11.5.1):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
     - ReactNativeDependencies
@@ -1883,6 +1980,29 @@ PODS:
     - React-perflogger (= 0.88.1)
     - React-utils (= 0.88.1)
     - ReactNativeDependencies
+  - ReactNativeBottomSheet (1.1.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - ReactNativeCameraKit (18.0.1):
     - hermes-engine
     - RCTRequired
@@ -2082,11 +2202,24 @@ DEPENDENCIES:
   - boost (from `build/rndeps-facades/boost`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `build/rndeps-facades/DoubleConversion`)
+  - EXConstants (from `../node_modules/expo-constants/ios`)
+  - Expo (from `../node_modules/expo`)
+  - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - "ExpoDomWebView (from `../node_modules/@expo/dom-webview/ios`)"
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
+  - ExpoFont (from `../node_modules/expo-font/ios`)
+  - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLocation (from `../node_modules/expo-location/ios`)
+  - "ExpoLogBox (from `../node_modules/@expo/log-box`)"
+  - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoModulesJSI (from `../node_modules/expo-modules-jsi/apple`)
+  - ExpoModulesWorklets (from `../node_modules/expo-modules-core`)
   - fast_float (from `build/rndeps-facades/fast_float`)
   - FBLazyVector (from `build/rncore-facades/FBLazyVector`)
   - fmt (from `build/rndeps-facades/fmt`)
   - glog (from `build/rndeps-facades/glog`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - "MapLibreReactNative (from `../node_modules/@maplibre/maplibre-react-native`)"
   - RCT-Folly (from `build/rndeps-facades/RCT-Folly`)
   - RCTDeprecation (from `build/rncore-facades/RCTDeprecation`)
   - RCTRequired (from `build/rncore-facades/RCTRequired`)
@@ -2167,6 +2300,7 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios/ReactAppDependencyProvider`)
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "ReactNativeBottomSheet (from `../node_modules/@swmansion/react-native-bottom-sheet`)"
   - ReactNativeCameraKit (from `../node_modules/react-native-camera-kit`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
@@ -2186,6 +2320,30 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :path: build/rndeps-facades/DoubleConversion
+  EXConstants:
+    :path: "../node_modules/expo-constants/ios"
+  Expo:
+    :path: "../node_modules/expo"
+  ExpoAsset:
+    :path: "../node_modules/expo-asset/ios"
+  ExpoDomWebView:
+    :path: "../node_modules/@expo/dom-webview/ios"
+  ExpoFileSystem:
+    :path: "../node_modules/expo-file-system/ios"
+  ExpoFont:
+    :path: "../node_modules/expo-font/ios"
+  ExpoKeepAwake:
+    :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLocation:
+    :path: "../node_modules/expo-location/ios"
+  ExpoLogBox:
+    :path: "../node_modules/@expo/log-box"
+  ExpoModulesCore:
+    :path: "../node_modules/expo-modules-core"
+  ExpoModulesJSI:
+    :path: "../node_modules/expo-modules-jsi/apple"
+  ExpoModulesWorklets:
+    :path: "../node_modules/expo-modules-core"
   fast_float:
     :path: build/rndeps-facades/fast_float
   FBLazyVector:
@@ -2197,6 +2355,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v260318099.0.5
+  MapLibreReactNative:
+    :path: "../node_modules/@maplibre/maplibre-react-native"
   RCT-Folly:
     :path: build/rndeps-facades/RCT-Folly
   RCTDeprecation:
@@ -2355,6 +2515,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios/ReactCodegen
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeBottomSheet:
+    :path: "../node_modules/@swmansion/react-native-bottom-sheet"
   ReactNativeCameraKit:
     :path: "../node_modules/react-native-camera-kit"
   ReactNativeDependencies:
@@ -2379,11 +2541,24 @@ SPEC CHECKSUMS:
   boost: 8502bfdc46e2804408af2e163049ece181009af4
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   DoubleConversion: 501a575c40c0b50c89685762dd3e415e6bb26fb0
+  EXConstants: aeda76f4be923fc719522ae162dd0b8c6483f9cc
+  Expo: 23763d9c59158fd5cae2d5831d3e42576f61f011
+  ExpoAsset: eda9e4844b55b78d4e71a0e2de767a038f3a0806
+  ExpoDomWebView: b2a6d681b9d34c23b1f584321386ca8da1d36afb
+  ExpoFileSystem: 3f4f423755d1ed5ef084caeb3a62c4a3fca0bf12
+  ExpoFont: daea737a2e3742f9a946f2884518e70dd37011f3
+  ExpoKeepAwake: 3dc7cce59bdc13796f772ac54d3af1ca6b6954cd
+  ExpoLocation: c218990b798e212f2f2184e11e675637da8ca1ae
+  ExpoLogBox: 9bfba7bb99c806b678703e6c62323f3c4785e706
+  ExpoModulesCore: 14422e046fbe8669653396d79f8cc2c94dada405
+  ExpoModulesJSI: 6684bdf9d04f2e5e39f6b90189dcb0def22a55d6
+  ExpoModulesWorklets: 03d171c0296cdffc054e9570e9393a7655ef360d
   fast_float: 7c925d1cebf8328d4018d061f49377e9f887e3b4
   FBLazyVector: 07cb4c5b92110c132f2bb73b908e87f35cbe0a19
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 79484fc4e58f328d01b9339ef899ca633d3702ee
+  MapLibreReactNative: 0a515f1f18c5f24ae353306558727ea2e1511426
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: c62b9b3fbf0d26b76755f3ebd1c913a4fb469dde
   RCTRequired: d0563e2484633b657976195f0543e180133afd3a
@@ -2463,6 +2638,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 2dbb2d65f3a487b8a69449f5b1b12b44656d2204
   ReactCodegen: 3840312f5071bb6b953b35a029c5c6dcf06b435e
   ReactCommon: b63ce798b898ed77c6cfdeb80b18080161f52ed5
+  ReactNativeBottomSheet: dd7d6119d1ddaaa3b1843eae04c0d7a20c0672e5
   ReactNativeCameraKit: 19bb4a99e92365175c2b48ab8e2a5dcc16ea150d
   ReactNativeDependencies: a5164c3ebbe90d992022b5d9cbabbf770a6d7d05
   RNCClipboard: efcb0fcabe40529a32cb0c75fcef4f9c73052c2e
@@ -2473,6 +2649,6 @@ SPEC CHECKSUMS:
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
-PODFILE CHECKSUM: 2feb59dce031c0e2c809911777839bd384f0b50e
+PODFILE CHECKSUM: 3e11437db898ac109742dc0d84cfde37760bcb74
 
 COCOAPODS: 1.17.0

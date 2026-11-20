@@ -1,6 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
-  Alert,
   BackHandler,
   type LayoutChangeEvent,
   Pressable,
@@ -26,6 +25,7 @@ import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 type Mode = 'read' | 'sign';
 
@@ -59,6 +59,8 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
   const [mode, setMode] = useState<Mode>('read');
   const [signature, setLocalSignature] = useState('');
   const [clearKey, setClearKey] = useState(0);
+  // True from the first touch, so the placeholder clears as drawing starts.
+  const [drawing, setDrawing] = useState(false);
   const [padSize, setPadSize] = useState({ width: 0, height: 0 });
   const [submitting, setSubmitting] = useState(false);
   const exportRef = useRef<Svg>(null);
@@ -86,6 +88,7 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
 
   const clear = () => {
     setLocalSignature('');
+    setDrawing(false);
     setClearKey(key => key + 1);
   };
 
@@ -125,7 +128,7 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
       finish(signed.documentUrl);
     } catch (error) {
       console.warn('[mou] DocuSeal signing failed', error);
-      Alert.alert(strings.mou.signingFailed, strings.mou.signingFailedMessage, [
+      appAlert(strings.mou.signingFailed, strings.mou.signingFailedMessage, [
         { text: strings.mou.continueAnyway, onPress: () => finish(null) },
         { text: strings.mou.retry, onPress: handleSubmit },
       ]);
@@ -168,7 +171,7 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
 
               {/* Figma: framed signing box over the dimmed MOU. */}
               <View style={styles.signBox} onLayout={onPadLayout}>
-                {!signature ? (
+                {!signature && !drawing ? (
                   <View style={styles.hint} pointerEvents="none">
                     <Svg
                       width={scale(30)}
@@ -190,6 +193,7 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
                 ) : null}
                 <SignaturePad
                   onChange={setLocalSignature}
+                  onBegin={() => setDrawing(true)}
                   clearKey={clearKey}
                 />
               </View>

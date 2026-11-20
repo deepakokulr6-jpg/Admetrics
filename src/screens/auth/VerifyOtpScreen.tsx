@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import AuthScreenLayout from '../../components/auth/AuthScreenLayout';
@@ -22,6 +22,7 @@ import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 type OtpMode = 'signup' | 'reset';
 type OtpRouteName = 'VerifyOtp' | 'ForgotPassword';
@@ -73,7 +74,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
       setOtpSent(true);
       setOtpSentAt(Date.now());
       setOtp('');
-      Alert.alert(
+      appAlert(
         strings.verifyOtp.otpSent,
         strings.auth.devOtpNotEmailed(DEVELOPMENT_OTP),
       );
@@ -156,7 +157,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
     setOtp('');
     setError(null);
     setOtpSentAt(Date.now());
-    Alert.alert(
+    appAlert(
       strings.verifyOtp.otpSent,
       strings.auth.devOtpNotEmailed(DEVELOPMENT_OTP),
     );

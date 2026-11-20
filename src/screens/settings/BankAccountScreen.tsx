@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +10,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import InputField from '../../components/shared/InputField';
+import GradientButton from '../../components/shared/GradientButton';
+import StatusSheet, {
+  type SheetStatus,
+} from '../../components/shared/StatusSheet';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { ownerKey } from '../../store/slices/clinicDraftSlice';
 import {
@@ -24,29 +27,50 @@ import {
   isValidAccountNumber,
   isValidIfsc,
   isValidName,
+  lengthError,
   sanitizeName,
 } from '../../utils/validation';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import { themedStyles } from '../../theme/themedStyles';
+import { useFieldChain } from '../../utils/useFieldChain';
+import { applyMask, IFSC_MASK, keyboardForMask } from '../../utils/inputMask';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
 
 const t = strings.bankAccount;
 
-type Errors = Partial<Record<keyof BankAccount, string>>;
+/** Indian account numbers: up to 18 digits, shown as "1234 5678 …". */
+const ACCOUNT_INPUT_MAX = 18 + Math.floor((18 - 1) / 4);
 
-const validate = (account: BankAccount): Errors => {
+type Errors = Partial<Record<keyof BankAccount | 'confirmAccount', string>>;
+
+const MIN_LOADING_MS = 900;
+const SUCCESS_MS = 1600;
+const wait = (ms: number) =>
+  new Promise<void>(resolve => {
+    setTimeout(() => resolve(), ms);
+  });
+
+const validate = (account: BankAccount, confirmAccount: string): Errors => {
   const errors: Errors = {};
   if (isBlank(account.holderName)) {
     errors.holderName = t.nameRequired;
   } else if (!isValidName(account.holderName.trim())) {
     errors.holderName = strings.registerPersonal.enterAValidName;
+  } else if (lengthError(account.holderName, LIMITS.holderName)) {
+    errors.holderName = lengthError(account.holderName, LIMITS.holderName);
   }
   if (!account.accountNumber) {
     errors.accountNumber = t.accountRequired;
   } else if (!isValidAccountNumber(account.accountNumber)) {
     errors.accountNumber = t.accountInvalid;
+  }
+  if (!confirmAccount) {
+    errors.confirmAccount = t.confirmRequired;
+  } else if (confirmAccount !== account.accountNumber) {
+    errors.confirmAccount = t.confirmMismatch;
   }
   if (isBlank(account.ifsc)) {
     errors.ifsc = t.ifscRequired;
@@ -72,7 +96,13 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
   const [account, setAccount] = useState<BankAccount>(
     saved ?? { holderName: '', accountNumber: '', ifsc: '' },
   );
+  // Typed twice (first one hidden) so a wrong digit can't slip through.
+  const [confirmAccount, setConfirmAccount] = useState(
+    saved?.accountNumber ?? '',
+  );
   const [errors, setErrors] = useState<Errors>({});
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetStatus, setSheetStatus] = useState<SheetStatus>('loading');
 
   const update = (patch: Partial<BankAccount>) => {
     setAccount(previous => ({ ...previous, ...patch }));
@@ -86,30 +116,38 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
     });
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     const trimmed: BankAccount = {
       holderName: account.holderName.trim(),
       accountNumber: account.accountNumber,
       ifsc: account.ifsc.trim().toUpperCase(),
     };
-    const found = validate(trimmed);
+    const found = validate(trimmed, confirmAccount);
     setErrors(found);
-    if (Object.keys(found).length === 0) {
-      dispatch(saveBankAccount({ owner, account: trimmed }));
-      navigation.goBack();
+    if (Object.keys(found).length) {
+      return;
     }
+    // Same "loading → success" sheet as the other flows.
+    setSheetStatus('loading');
+    setSheetVisible(true);
+    await wait(MIN_LOADING_MS);
+    dispatch(saveBankAccount({ owner, account: trimmed }));
+    setSheetStatus('success');
+    await wait(SUCCESS_MS);
+    setSheetVisible(false);
   };
+
+  // Keyboard Next: holder → account → re-enter → IFSC → Save.
+  const chain = useFieldChain(
+    ['holder', 'account', 'confirm', 'ifsc'] as const,
+    onSave,
+  );
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <ScreenHeader
         title={saved ? t.editTitle : t.addTitle}
         onBackPress={() => navigation.goBack()}
-        rightElement={
-          <Pressable onPress={onSave} accessibilityRole="button" hitSlop={10}>
-            <Text style={styles.save}>{t.save}</Text>
-          </Pressable>
-        }
       />
 
       <KeyboardAvoidingView
@@ -133,11 +171,12 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
             autoCapitalize="words"
             textContentType="name"
             autoComplete="name"
-            maxLength={60}
+            maxLength={LIMITS.holderName.max}
             error={errors.holderName}
+            {...chain('holder')}
           />
 
-          {/* Shown in groups of 4; stored as plain digits. */}
+          {/* Hidden (Figma "**** ****"); grouped in 4s, stored as digits. */}
           <InputField
             label={t.accountNumber}
             required
@@ -147,8 +186,34 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
               update({ accountNumber: value.replace(/\D/g, '').slice(0, 18) })
             }
             keyboardType="number-pad"
-            maxLength={22}
+            secureTextEntry
+            textContentType="none"
+            autoComplete="off"
+            // 18 digits + the spaces shown between groups of 4.
+            maxLength={ACCOUNT_INPUT_MAX}
             error={errors.accountNumber}
+            {...chain('account')}
+          />
+
+          <InputField
+            label={t.confirmAccount}
+            required
+            placeholder={t.confirmPlaceholder}
+            value={groupDigits(confirmAccount)}
+            onChangeText={value => {
+              setConfirmAccount(value.replace(/\D/g, '').slice(0, 18));
+              setErrors(previous => ({
+                ...previous,
+                confirmAccount: undefined,
+              }));
+            }}
+            keyboardType="number-pad"
+            textContentType="none"
+            autoComplete="off"
+            // 18 digits + the spaces shown between groups of 4.
+            maxLength={ACCOUNT_INPUT_MAX}
+            error={errors.confirmAccount}
+            {...chain('confirm')}
           />
 
           <InputField
@@ -158,18 +223,36 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
             value={account.ifsc}
             onChangeText={value =>
               update({
-                ifsc: value
-                  .toUpperCase()
-                  .replace(/[^A-Z0-9]/g, '')
-                  .slice(0, 11),
+                ifsc: applyMask(value, IFSC_MASK),
               })
             }
             autoCapitalize="characters"
-            maxLength={11}
+            // Letters for the bank code, numbers after the fixed 0.
+            keyboardType={keyboardForMask(account.ifsc, IFSC_MASK)}
+            maxLength={IFSC_MASK.length}
             error={errors.ifsc}
+            {...chain('ifsc')}
+          />
+
+          <GradientButton
+            title={t.save}
+            onPress={onSave}
+            style={styles.button}
           />
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <StatusSheet
+        visible={sheetVisible}
+        status={sheetStatus}
+        title={sheetStatus === 'success' ? t.saved : t.saving}
+        message={sheetStatus === 'success' ? t.savedMessage : t.savingMessage}
+        onHidden={() => {
+          if (sheetStatus === 'success') {
+            navigation.goBack();
+          }
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -194,11 +277,9 @@ const styles = themedStyles(() =>
       fontFamily: fonts.semibold,
       color: colors.textStrong,
     },
-    // Figma: blue "Save" text action on the right of the header.
-    save: {
-      fontSize: normalizeFont(14),
-      fontFamily: fonts.bold,
-      color: colors.buttonPrimary,
+    // Figma: Save pill ~120px under the last field.
+    button: {
+      marginTop: verticalScale(80),
     },
   }),
 );

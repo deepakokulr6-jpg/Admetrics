@@ -9,8 +9,6 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
-import { useAppSelector } from '../../store/hooks';
-import { ownerKey } from '../../store/slices/clinicDraftSlice';
 import {
   getThemePreference,
   setThemePreference,
@@ -89,33 +87,6 @@ const ICONS: Record<string, React.FC<IconProps>> = {
       />
     </>
   ),
-  device: ({ color }) => (
-    <>
-      <Path
-        d="M9.5 19H4a1.5 1.5 0 01-1.5-1.5v-11A1.5 1.5 0 014 5h16a1.5 1.5 0 011.5 1.5v11A1.5 1.5 0 0120 19h-5.5"
-        stroke={color}
-        strokeWidth={1.5}
-        fill="none"
-      />
-      <Circle
-        cx={12}
-        cy={19}
-        r={2}
-        stroke={color}
-        strokeWidth={1.5}
-        fill="none"
-      />
-    </>
-  ),
-  bank: ({ color }) => (
-    <Path
-      d="M3 9h18M12 3l9 4.5H3L12 3zM5 9v9m4.67-9v9m4.66-9v9M19 9v9M3 18.5h18M2.5 21h19"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinejoin="round"
-      fill="none"
-    />
-  ),
   privacy: ({ color }) => (
     <Path
       d="M12 3l7.5 2.5V11c0 4.6-3.2 8.6-7.5 10-4.3-1.4-7.5-5.4-7.5-10V5.5L12 3z"
@@ -149,8 +120,6 @@ const ICONS: Record<string, React.FC<IconProps>> = {
 const ITEMS = [
   { key: 'appearance', label: strings.settings.appearance },
   { key: 'password', label: strings.settings.privacySecurity },
-  { key: 'device', label: strings.settings.addDevice },
-  { key: 'bank', label: strings.settings.bankAccountDetails },
   { key: 'privacy', label: strings.settings.privacyPolicy },
   { key: 'about', label: strings.settings.aboutAdmetrics },
 ] as const;
@@ -171,8 +140,6 @@ const ROUTES: Partial<
   >
 > = {
   password: nav => () => nav.navigate('PrivacySecurity'),
-  device: nav => () => nav.navigate('AddDevice'),
-  bank: nav => () => nav.navigate('BankAccount'),
 };
 
 const RowIcon = ({ name, size }: { name: string; size: number }) => {
@@ -189,9 +156,6 @@ const SettingsScreen: React.FC<AppScreenProps<'Settings'>> = ({
   navigation,
 }) => {
   const [theme, setTheme] = useState<ThemeChoice>(getThemePreference);
-  const hasBankAccount = useAppSelector(state =>
-    Boolean(state.bankAccount.byOwner[ownerKey(state.auth.user?.email ?? '')]),
-  );
 
   // Saved, then the app reloads with the new palette if it changed.
   const chooseTheme = (next: ThemeChoice) => {
@@ -249,14 +213,7 @@ const SettingsScreen: React.FC<AppScreenProps<'Settings'>> = ({
                 ]}
               >
                 <RowIcon name={item.key} size={scale(24)} />
-                <Text style={[styles.label, styles.flex]}>{item.label}</Text>
-                {item.key === 'bank' && hasBankAccount ? (
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>
-                      {strings.settings.added}
-                    </Text>
-                  </View>
-                ) : null}
+                <Text style={styles.label}>{item.label}</Text>
               </Pressable>
             ),
           )}
@@ -274,18 +231,6 @@ const styles = themedStyles(() =>
     },
     flex: {
       flex: 1,
-    },
-    // Figma: green "Added" pill on the Bank Account row.
-    badge: {
-      paddingHorizontal: scale(8),
-      paddingVertical: verticalScale(3),
-      borderRadius: scale(10),
-      backgroundColor: colors.successBackground,
-    },
-    badgeText: {
-      fontSize: normalizeFont(10),
-      fontFamily: fonts.semibold,
-      color: colors.success,
     },
     // Rows are 56px white bars separated by thin 2px beige lines.
     list: {

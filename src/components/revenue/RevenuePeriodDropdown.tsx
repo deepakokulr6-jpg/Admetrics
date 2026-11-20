@@ -96,6 +96,7 @@ const RevenuePeriodDropdown: React.FC<Props> = ({
           >
             <FlatList
               data={periods}
+              showsVerticalScrollIndicator={false}
               keyExtractor={item => item}
               renderItem={({ item }) => (
                 <Pressable

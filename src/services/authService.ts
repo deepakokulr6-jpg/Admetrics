@@ -312,6 +312,37 @@ export const resetPassword = async (
 };
 
 /**
+ * Signed-in password change: checks the current password, then saves the
+ * new one. The session stays signed in.
+ */
+export const changePassword = async (
+  email: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  const normalizedEmail = normalizeEmail(email);
+  const accounts = await readAccounts();
+  const index = accounts.findIndex(a => a.email === normalizedEmail);
+
+  if (index === -1) {
+    throw new AuthError(strings.authService.noAccountFoundForThis);
+  }
+  if (
+    accounts[index].passwordHash !==
+    hashPassword(normalizedEmail, currentPassword)
+  ) {
+    throw new AuthError(strings.changePassword.currentIncorrect);
+  }
+
+  const updated = [...accounts];
+  updated[index] = {
+    ...updated[index],
+    passwordHash: hashPassword(normalizedEmail, newPassword),
+  };
+  await writeAccounts(updated);
+};
+
+/**
  * Validates local credentials and persists the session.
  */
 export const login = async (

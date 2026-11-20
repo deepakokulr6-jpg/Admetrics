@@ -18,9 +18,12 @@ import {
   sampleDisplays,
 } from '../../constants/mockData';
 import { themedStyles } from '../../theme/themedStyles';
+import { createDefaultWorkingHours } from '../../types/clinic';
 
 // Demo data until the API is connected (constants/mockData).
 const clinic: ClinicSummaryData = {
+  // Demo week (Mon–Sat open, Sunday closed) until the API returns real hours.
+  workingHours: createDefaultWorkingHours(),
   name: sampleClinic.clinicName,
   address: sampleClinic.fullAddress,
   medicalRegistrationNumber: sampleClinic.medicalRegistrationNumber,
@@ -85,7 +88,7 @@ const RegisteredDetailsScreen: React.FC<
                       ? strings.common.online
                       : strings.common.offline}
                   </Text>
-                  {strings.registeredDetails.displayId(display.id)}
+                  {strings.registeredDetails.serialNumber(display.serial)}
                 </Text>
               </View>
             ))}

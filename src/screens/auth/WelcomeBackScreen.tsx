@@ -13,7 +13,9 @@ import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { useFieldChain } from '../../utils/useFieldChain';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
 import { themedStyles } from '../../theme/themedStyles';
 
 export default function WelcomeBackScreen({
@@ -51,6 +53,11 @@ export default function WelcomeBackScreen({
     }
   };
 
+  // Keyboard: email Next → password Done signs in.
+  const chain = useFieldChain(['email', 'password'] as const, () =>
+    handleSignIn(),
+  );
+
   return (
     <AuthScreenLayout
       header={
@@ -79,6 +86,9 @@ export default function WelcomeBackScreen({
         iconName="email"
         keyboardType="email-address"
         textContentType="emailAddress"
+        autoComplete="email"
+        maxLength={LIMITS.email.max}
+        {...chain('email')}
       />
 
       <InputField
@@ -93,6 +103,9 @@ export default function WelcomeBackScreen({
         iconName="password"
         secureTextEntry={!showPassword}
         textContentType="password"
+        autoComplete="current-password"
+        maxLength={LIMITS.password.max}
+        {...chain('password')}
         rightElement={
           <Pressable
             onPress={() => setShowPassword(previous => !previous)}

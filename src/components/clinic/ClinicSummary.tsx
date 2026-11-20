@@ -16,6 +16,8 @@ import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import type { WorkingHour } from '../../types/clinic';
+import { slotsOf } from '../../utils/workingHours';
 
 export type ClinicSummaryData = {
   name: string;
@@ -30,13 +32,36 @@ export type ClinicSummaryData = {
   mobile: string;
   email: string;
   photos: (ImageSourcePropType | null)[];
+  /** Shown after the clinic fields when given (Registered Details). */
+  workingHours?: WorkingHour[];
 };
+
+type SummaryOptions = {
+  /** "1. Entrance" / "2. Reception" above the photos (Preview). */
+  photoLabels?: boolean;
+};
+
+const PHOTO_LABELS: string[] = [
+  strings.registerPhoto.n1Entrance,
+  strings.registerPhoto.n2Reception,
+];
+
+/** "09:30AM - 12:30PM" lines for an open day, "-" when closed. */
+const hoursText = (hour: WorkingHour) =>
+  hour.enabled
+    ? slotsOf(hour)
+        .map(slot => `${slot.startTime} - ${slot.endTime}`)
+        .join('\n')
+    : strings.registeredDetails.closed;
 
 /**
  * Clinic information · Contact information · Photos, as shown on the
  * Preview (before registering) and Registered Details screens.
  */
-const ClinicSummary: React.FC<{ data: ClinicSummaryData }> = ({ data }) => {
+const ClinicSummary: React.FC<{ data: ClinicSummaryData } & SummaryOptions> = ({
+  data,
+  photoLabels,
+}) => {
   const fields = [
     [
       strings.clinicForm.medicalRegistrationNumber,
@@ -55,9 +80,13 @@ const ClinicSummary: React.FC<{ data: ClinicSummaryData }> = ({ data }) => {
     { key: 'email', Icon: EmailIcon, value: data.email },
   ].filter(item => Boolean(item.value));
 
-  const photos = data.photos.filter(
-    (source): source is ImageSourcePropType => source !== null,
-  );
+  // Keep each photo's slot number for its label.
+  const photos = data.photos
+    .map((source, index) => ({ source, label: PHOTO_LABELS[index] }))
+    .filter(
+      (photo): photo is { source: ImageSourcePropType; label: string } =>
+        photo.source !== null,
+    );
 
   return (
     <View>
@@ -72,6 +101,24 @@ const ClinicSummary: React.FC<{ data: ClinicSummaryData }> = ({ data }) => {
           <Text style={styles.fieldValue}>{value}</Text>
         </View>
       ))}
+
+      {data.workingHours ? (
+        <View style={styles.field}>
+          <Text style={styles.fieldLabel}>
+            {strings.registeredDetails.workingHours}
+          </Text>
+          {data.workingHours.map(hour => (
+            <View key={hour.day} style={styles.hoursRow}>
+              <Text style={[styles.fieldValue, styles.hoursDay]}>
+                {hour.day}
+              </Text>
+              <Text style={[styles.fieldValue, styles.hoursTime]}>
+                {hoursText(hour)}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
 
       <View style={styles.divider} />
 
@@ -92,13 +139,17 @@ const ClinicSummary: React.FC<{ data: ClinicSummaryData }> = ({ data }) => {
             {strings.registeredDetails.photos}
           </Text>
           <View style={styles.photoRow}>
-            {photos.map((source, index) => (
-              <Image
-                key={index}
-                source={source}
-                style={styles.photo}
-                resizeMode="cover"
-              />
+            {photos.map(({ source, label }) => (
+              <View key={label} style={styles.photoColumn}>
+                {photoLabels ? (
+                  <Text style={styles.photoLabel}>{label}</Text>
+                ) : null}
+                <Image
+                  source={source}
+                  style={styles.photo}
+                  resizeMode="cover"
+                />
+              </View>
             ))}
           </View>
         </>
@@ -170,8 +221,29 @@ const styles = themedStyles(() =>
       gap: scale(8),
       marginBottom: verticalScale(16),
     },
-    photo: {
+    photoColumn: {
       flex: 1,
+    },
+    photoLabel: {
+      marginBottom: verticalScale(8),
+      marginLeft: scale(6),
+      fontSize: normalizeFont(14),
+      fontFamily: fonts.medium,
+      color: colors.text,
+    },
+    // Figma: day in one column, its time(s) lined up in the next.
+    hoursRow: {
+      flexDirection: 'row',
+      marginTop: verticalScale(10),
+    },
+    hoursDay: {
+      width: scale(150),
+    },
+    hoursTime: {
+      flex: 1,
+    },
+    photo: {
+      width: '100%',
       height: scale(178),
       borderRadius: scale(8),
     },

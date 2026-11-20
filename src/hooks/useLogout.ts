@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { Alert } from 'react-native';
 
 import { useAuth } from '../hooks/useAuth';
 import strings from '../constants/strings';
+import { appAlert } from '../components/shared/AppAlert';
 
 /**
  * Confirmed Log Out (used by the side menu). Signing out swaps the root
@@ -12,7 +12,7 @@ export const useLogout = () => {
   const { signOut } = useAuth();
 
   return useCallback(() => {
-    Alert.alert(strings.home.logOut, strings.home.areYouSureYouWant, [
+    appAlert(strings.home.logOut, strings.home.areYouSureYouWant, [
       { text: strings.common.cancel, style: 'cancel' },
       {
         text: strings.home.logOut,
@@ -21,7 +21,7 @@ export const useLogout = () => {
           try {
             await signOut();
           } catch {
-            Alert.alert(
+            appAlert(
               strings.home.logOutFailed,
               strings.home.unableToClearYourSession,
             );

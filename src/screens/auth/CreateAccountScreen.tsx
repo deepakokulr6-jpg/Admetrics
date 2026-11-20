@@ -17,6 +17,7 @@ import { normalizeFont, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
 import { themedStyles } from '../../theme/themedStyles';
 
 // No email service yet: the local auth flow accepts this fixed code.
@@ -131,6 +132,15 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
         iconName="email"
         keyboardType="email-address"
         textContentType="emailAddress"
+        autoComplete="email"
+        maxLength={LIMITS.email.max}
+        returnKeyType="send"
+        submitBehavior="blurAndSubmit"
+        onSubmitEditing={() => {
+          if (!otpSent) {
+            handleGetOtp();
+          }
+        }}
         rightElement={
           isChecking ? (
             <InputStatusIcon status={'loading'} />

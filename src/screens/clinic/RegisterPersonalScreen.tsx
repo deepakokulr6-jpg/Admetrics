@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text } from 'react-native';
 
 import FormScreenLayout, {
   formStyles,
@@ -16,7 +16,10 @@ import {
 } from '../../utils/clinicValidation';
 import { useKeyboardAutoScroll } from '../../utils/useKeyboardAutoScroll';
 import type { AppScreenProps } from '../../navigation/types';
+import { useFieldChain } from '../../utils/useFieldChain';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
+import { appAlert } from '../../components/shared/AppAlert';
 
 // The last fields sit right above the Next button, so the form scrolls to its
 // end when one of them is focused to keep the button above the keyboard.
@@ -63,7 +66,7 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      Alert.alert(
+      appAlert(
         strings.registerPersonal.checkPersonalDetails,
         strings.registerPersonal.pleaseCompleteTheRequiredPersonal,
       );
@@ -74,6 +77,12 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
     // photos. The timings screen remains available as a standalone route.
     navigation.navigate('RegisterPhotos');
   };
+
+  // Keyboard Next: name → designation → mobile → email → Next step.
+  const chain = useFieldChain(
+    ['contactPerson', 'designation', 'mobile', 'email'] as const,
+    () => handleNext(),
+  );
 
   return (
     <FormScreenLayout
@@ -94,11 +103,12 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
         // Names only: letters, spaces and . ' - (digits/symbols are dropped).
         onChangeText={value => update('contactPerson', sanitizeName(value))}
         {...focusProps('contactPerson')}
+        {...chain('contactPerson')}
         required
         autoCapitalize="words"
         textContentType="name"
         autoComplete="name"
-        maxLength={50}
+        maxLength={LIMITS.contactPerson.max}
         error={errors.contactPerson}
       />
 
@@ -108,7 +118,10 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
         value={personal.designation}
         onChangeText={value => update('designation', value)}
         {...focusProps('designation')}
+        {...chain('designation')}
         autoCapitalize="words"
+        textContentType="jobTitle"
+        maxLength={LIMITS.designation.max}
         error={errors.designation}
       />
 
@@ -120,8 +133,11 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
           update('mobile', value.replace(/[^\d+\s-]/g, ''))
         }
         {...focusProps('mobile')}
+        {...chain('mobile')}
         keyboardType="phone-pad"
-        maxLength={15}
+        textContentType="telephoneNumber"
+        autoComplete="tel"
+        maxLength={LIMITS.mobile.max}
         error={errors.mobile}
       />
 
@@ -132,6 +148,9 @@ const RegisterPersonalScreen: React.FC<AppScreenProps<'RegisterPersonal'>> = ({
         value={personal.email}
         onChangeText={value => update('email', value.trim())}
         {...focusProps('email')}
+        {...chain('email')}
+        autoComplete="email"
+        maxLength={LIMITS.email.max}
         editable={!user?.email}
         keyboardType="email-address"
         textContentType="emailAddress"

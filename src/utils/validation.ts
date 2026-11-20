@@ -1,3 +1,5 @@
+import strings from '../constants/strings';
+
 /**
  * Small, dependency-free validation helpers shared by the auth and clinic
  * registration flows.
@@ -54,6 +56,27 @@ export const isValidName = (value: string): boolean =>
   NAME_PATTERN.test(value.trim());
 
 export const isBlank = (value: string): boolean => value.trim().length === 0;
+
+/**
+ * "Too short / too long" message for a field, or undefined when its trimmed
+ * length is within `limit`. Blank is the caller's "required" check.
+ */
+export const lengthError = (
+  value: string,
+  limit: { min: number; max: number },
+): string | undefined => {
+  const length = value.trim().length;
+  if (length === 0) {
+    return undefined;
+  }
+  if (length < limit.min) {
+    return strings.validation.tooShort(limit.min);
+  }
+  if (length > limit.max) {
+    return strings.validation.tooLong(limit.max);
+  }
+  return undefined;
+};
 
 /** Indian bank account numbers: 9–18 digits. */
 export const ACCOUNT_NUMBER_PATTERN = /^\d{9,18}$/;

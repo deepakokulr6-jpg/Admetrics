@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AuthScreenLayout from '../../components/auth/AuthScreenLayout';
@@ -12,8 +12,11 @@ import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
+import { useFieldChain } from '../../utils/useFieldChain';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
@@ -38,7 +41,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
       return;
     }
 
-    if (password.length < 8) {
+    if (password.length < LIMITS.password.min) {
       setError(strings.confirmPassword.useAtLeast8Characters);
       return;
     }
@@ -64,7 +67,7 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
           routes: [{ name: 'Login' }],
         });
 
-        Alert.alert(
+        appAlert(
           strings.confirmPassword.passwordUpdated,
           strings.confirmPassword.yourPasswordHasBeenChanged,
         );
@@ -88,6 +91,11 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
       setIsSubmitting(false);
     }
   };
+
+  // Keyboard: password Next → confirm Done submits.
+  const chain = useFieldChain(['password', 'confirm'] as const, () =>
+    handleConfirm(),
+  );
 
   return (
     <AuthScreenLayout
@@ -118,6 +126,9 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         iconName="password"
         secureTextEntry={!showPassword}
         textContentType="newPassword"
+        autoComplete="new-password"
+        maxLength={LIMITS.password.max}
+        {...chain('password')}
         rightElement={
           <Pressable
             onPress={() => setShowPassword(previous => !previous)}
@@ -149,6 +160,9 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         iconName="password"
         secureTextEntry={!showConfirmPassword}
         textContentType="newPassword"
+        autoComplete="new-password"
+        maxLength={LIMITS.password.max}
+        {...chain('confirm')}
         containerStyle={styles.lastField}
         rightElement={
           <Pressable

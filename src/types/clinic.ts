@@ -10,6 +10,9 @@ export type ClinicInfo = {
   city: string;
   state: string;
   pincode: string;
+  /** Pin chosen on the map (decimal degrees as text; '' = not set). */
+  latitude: string;
+  longitude: string;
 };
 
 export type PersonalInfo = {
@@ -19,11 +22,16 @@ export type PersonalInfo = {
   email: string;
 };
 
+export type TimeSlot = { startTime: string; endTime: string };
+
 export type WorkingHour = {
   day: string;
   enabled: boolean;
+  /** First slot of the day. */
   startTime: string;
   endTime: string;
+  /** Optional second slot (e.g. after a lunch break). */
+  extraSlots?: TimeSlot[];
 };
 
 export type ClinicPhotos = {
@@ -70,6 +78,8 @@ export const createEmptyClinicInfo = (): ClinicInfo => ({
   city: '',
   state: '',
   pincode: '',
+  latitude: '',
+  longitude: '',
 });
 
 export const createEmptyPersonalInfo = (): PersonalInfo => ({

@@ -33,12 +33,15 @@ export type SampleDisplay = {
   online: boolean;
   uptime: string;
   revenue: string;
+  /** Serial number printed on the TV (S.No). */
+  serial: string;
 };
 
 export const sampleDisplays: SampleDisplay[] = [
   {
     name: 'Reception TV',
     id: 'Display 01',
+    serial: 'SVGWHDJSN97842',
     online: true,
     uptime: '10 hours 56 minutes',
     revenue: '₹18,250',
@@ -46,6 +49,7 @@ export const sampleDisplays: SampleDisplay[] = [
   {
     name: 'Waiting Hall TV',
     id: 'Display 02',
+    serial: 'SVGWHD28405433',
     online: false,
     uptime: '10 hours 39 minutes',
     revenue: '₹14,800',
@@ -53,6 +57,7 @@ export const sampleDisplays: SampleDisplay[] = [
   {
     name: 'Pharmacy TV',
     id: 'Display 03',
+    serial: 'SVGWHD28489022',
     online: false,
     uptime: '07 hours 39 minutes',
     revenue: '₹6,000',

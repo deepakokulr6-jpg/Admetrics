@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 import FormScreenLayout, {
@@ -14,6 +14,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import { appAlert } from '../../components/shared/AppAlert';
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -38,7 +39,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       }
 
       if (result.errorCode) {
-        Alert.alert(
+        appAlert(
           strings.registerPhoto.unableToOpenGallery,
           result.errorMessage ?? strings.registerPhoto.pleaseTryChoosingAPhoto,
         );
@@ -48,7 +49,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       const asset = result.assets?.[0];
 
       if (!asset?.uri) {
-        Alert.alert(
+        appAlert(
           strings.registerPhoto.noPhotoSelected,
           strings.registerPhoto.pleaseChooseAPhotoTo,
         );
@@ -63,7 +64,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
         ALLOWED_EXTENSIONS.includes(extension);
 
       if (!isAllowed) {
-        Alert.alert(
+        appAlert(
           strings.registerPhoto.unsupportedFile,
           strings.registerPhoto.onlyJpgJpegAndPng,
         );
@@ -71,7 +72,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
       }
 
       if (asset.fileSize && asset.fileSize > MAX_PHOTO_BYTES) {
-        Alert.alert(
+        appAlert(
           strings.registerPhoto.fileTooLarge,
           strings.registerPhoto.pleaseChooseAnImageSmaller,
         );
@@ -80,7 +81,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
       setPhoto(slot, asset.uri);
     } catch {
-      Alert.alert(
+      appAlert(
         strings.registerPhoto.unableToOpenGallery,
         strings.registerPhoto.photosCannotBeSelectedRight,
       );
@@ -89,7 +90,7 @@ const RegisterPhotoScreen: React.FC<AppScreenProps<'RegisterPhotos'>> = ({
 
   const handlePhotoPress = (slot: PhotoSlot, label: string) => {
     if (draft.photos[slot]) {
-      Alert.alert(label, strings.registerPhoto.whatWouldYouLikeTo, [
+      appAlert(label, strings.registerPhoto.whatWouldYouLikeTo, [
         { text: strings.registerPhoto.replace, onPress: () => pickPhoto(slot) },
         {
           text: strings.registerPhoto.remove,
