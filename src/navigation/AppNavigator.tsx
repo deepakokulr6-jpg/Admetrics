@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MainTabs from './MainTabs';
 import RegisterClinicScreen from '../screens/clinic/RegisterClinicScreen';
+import ClinicInformationScreen from '../screens/clinic/ClinicInformationScreen';
 import EditDetailsScreen from '../screens/clinic/EditDetailsScreen';
 import RegisteredDetailsScreen from '../screens/clinic/RegisteredDetailsScreen';
 import PaymentDetailsScreen from '../screens/revenue/PaymentDetailsScreen';
@@ -40,6 +41,7 @@ const AppNavigator = () => {
         {/* Bottom tabs: Revenue · Clinics · Statement · Support */}
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
+        <Stack.Screen name="ClinicInformation" component={ClinicInformationScreen} />
         <Stack.Screen name="RegisterMou" component={RegisterMouScreen} />
         {/* No swipe-back while signing: strokes must not drag the page. */}
         <Stack.Screen

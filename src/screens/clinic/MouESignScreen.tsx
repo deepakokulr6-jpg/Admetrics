@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
 import { useClinicRegistration } from '../../hooks/useClinicRegistration';
@@ -10,6 +9,7 @@ import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 
 type DocusealMessage =
   | { type: 'completed'; detail: Record<string, unknown> }

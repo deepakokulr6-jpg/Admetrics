@@ -36,6 +36,7 @@ export type MainTabParamList = {
 export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
   RegisterClinic: undefined;
+  ClinicInformation: undefined;
   RegisterPersonal: undefined;
   RegisterTimings: undefined;
   RegisterPhotos: undefined;

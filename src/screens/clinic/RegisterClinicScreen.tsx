@@ -19,6 +19,11 @@ import type { AppScreenProps } from '../../navigation/types';
 import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+import {
+  DayScheduleItem,
+  INITIAL_WORKING_HOURS,
+  WorkingHoursSection,
+} from './ClinicInformationScreen';
 
 /** Step 1 of registration: clinic details, saved to the registration draft. */
 const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
@@ -27,6 +32,9 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
   const { draft, updateClinicInfo } = useClinicRegistration();
   const keyboard = useKeyboardAutoScroll();
   const [errors, setErrors] = useState<ClinicErrors>({});
+  const [workingHours, setWorkingHours] = useState<DayScheduleItem[]>(
+    INITIAL_WORKING_HOURS,
+  );
 
   const handleChange = (key: keyof ClinicInfo, value: string) => {
     updateClinicInfo({ [key]: value });
@@ -62,6 +70,11 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
         onFieldFocus={key =>
           keyboard.setAutoScroll(CLINIC_BOTTOM_FIELDS.includes(key))
         }
+      />
+
+      <WorkingHoursSection
+        value={workingHours}
+        onChange={setWorkingHours}
       />
 
       <View style={styles.button}>
