@@ -22,6 +22,15 @@ export type AuthStackParamList = {
     email: string;
     mode?: 'signup' | 'reset';
     resetToken?: string;
+    /** From the signup email code; lets the server set the password. */
+    verificationToken?: string;
+  };
+  /** Authenticator step after the password: first-time setup or a code. */
+  Mfa: {
+    email: string;
+    challengeToken: string;
+    /** true: show the QR + key first; undefined: try setup, else verify. */
+    setupRequired?: boolean;
   };
   AccountCreated: undefined;
 };

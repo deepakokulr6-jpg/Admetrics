@@ -7,6 +7,8 @@ import AuthHeader from '../../components/auth/AuthHeader';
 import InputField from '../../components/shared/InputField';
 import GradientButton from '../../components/shared/GradientButton';
 import { useAuth } from '../../hooks/useAuth';
+import { ApiError } from '../../api/client';
+import { apiErrorMessage } from '../../utils/apiErrorMessage';
 import { AuthError } from '../../services/authService';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
@@ -22,8 +24,13 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
   navigation,
   route,
 }) => {
-  const { signUp, resetPassword } = useAuth();
-  const { email, mode = 'signup', resetToken } = route.params;
+  const { registerPassword, resetPassword } = useAuth();
+  const {
+    email,
+    mode = 'signup',
+    resetToken,
+    verificationToken,
+  } = route.params;
   const isPasswordReset = mode === 'reset';
 
   const [password, setPassword] = useState('');
@@ -74,7 +81,13 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
         return;
       }
 
-      await signUp(email, password);
+      if (!verificationToken) {
+        setError(strings.apiErrors.sessionExpired);
+        return;
+      }
+      // Server sets the password for the verified email; the user then
+      // logs in (and sets up the authenticator) from the Login screen.
+      await registerPassword(verificationToken, password);
       navigation.reset({
         index: 1,
         routes: [{ name: 'Login' }, { name: 'AccountCreated' }],
@@ -83,6 +96,8 @@ const ConfirmPasswordScreen: React.FC<AuthScreenProps<'ConfirmPassword'>> = ({
       setError(
         signUpError instanceof AuthError
           ? signUpError.message
+          : signUpError instanceof ApiError
+          ? apiErrorMessage(signUpError, 'password')
           : isPasswordReset
           ? strings.confirmPassword.unableToResetYourPassword
           : strings.confirmPassword.unableToCreateYourAccount,

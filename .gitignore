@@ -80,7 +80,6 @@ yarn-error.log
 !.env.example
 
 # DocuSeal API key (dev only)
-src/config/esign.local.ts
 
 # Expo
 .expo

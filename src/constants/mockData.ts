@@ -69,7 +69,7 @@ export const sampleDisplays: SampleDisplay[] = [
  * one waiting for approval, one approved with 3 displays (1 online).
  * Set SHOW_DEMO_CLINICS to false to test the empty "Register" state.
  */
-export const SHOW_DEMO_CLINICS = true;
+export const SHOW_DEMO_CLINICS = false;
 
 export type DemoClinic = {
   id: string;

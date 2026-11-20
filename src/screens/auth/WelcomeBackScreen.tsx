@@ -8,7 +8,7 @@ import GradientButton from '../../components/shared/GradientButton';
 import GradientText from '../../components/shared/GradientText';
 import InputField from '../../components/shared/InputField';
 import { useAuth } from '../../hooks/useAuth';
-import { AuthError } from '../../services/authService';
+import { apiErrorMessage } from '../../utils/apiErrorMessage';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
@@ -21,7 +21,7 @@ import { themedStyles } from '../../theme/themedStyles';
 export default function WelcomeBackScreen({
   navigation,
 }: AuthScreenProps<'Login'>) {
-  const { signIn } = useAuth();
+  const { login, completeSignIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,13 +41,20 @@ export default function WelcomeBackScreen({
     setIsSubmitting(true);
 
     try {
-      await signIn(trimmedEmail, password);
+      const result = await login(trimmedEmail, password);
+      if (result.kind === 'signedIn') {
+        await completeSignIn(trimmedEmail, result.tokens);
+        return;
+      }
+      // Password OK: authenticator next (setup on the first login).
+      setPassword('');
+      navigation.navigate('Mfa', {
+        email: trimmedEmail,
+        challengeToken: result.challengeToken,
+        setupRequired: result.setupRequired,
+      });
     } catch (signInError) {
-      setError(
-        signInError instanceof AuthError
-          ? signInError.message
-          : strings.welcomeBack.unableToSignInRight,
-      );
+      setError(apiErrorMessage(signInError, 'login'));
     } finally {
       setIsSubmitting(false);
     }

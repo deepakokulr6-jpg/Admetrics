@@ -22,7 +22,8 @@ export const LIMITS = {
   // Bank
   holderName: { min: 3, max: 60 },
   // Account
-  password: { min: 8, max: 64 },
+  // Backend rule: at least 12 characters.
+  password: { min: 12, max: 64 },
   // Devices & support
   deviceName: { min: 2, max: 40 },
   displayName: { min: 2, max: 40 },

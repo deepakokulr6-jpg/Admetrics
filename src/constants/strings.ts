@@ -5,6 +5,25 @@
  * Sample/demo data lives in constants/mockData.ts, not here.
  */
 const strings = {
+  apiErrors: {
+    network:
+      "Can't reach the Admetrics server. Check your internet or Wi-Fi and try again.",
+    timeout: 'The server is taking too long. Please try again.',
+    badOtp:
+      'That code is incorrect or has expired. Check the email or request a new code.',
+    badLogin: 'Incorrect email or password.',
+    badMfa:
+      'That authenticator code is incorrect. Use the current 6-digit code from your app.',
+    sessionExpired: 'This step has expired. Please start again.',
+    unauthorized: 'Please sign in again.',
+    notInvited: "This email hasn't been invited to Admetrics yet.",
+    alreadyRegistered:
+      'This email is already registered. Please log in instead.',
+    tooMany: 'Too many attempts. Please wait a few minutes and try again.',
+    invalid: 'Please check the details and try again.',
+    server: 'The Admetrics server had a problem. Please try again shortly.',
+    unexpected: 'Something went wrong. Please try again.',
+  },
   validation: {
     tooShort: (min: number) => `Enter at least ${min} characters.`,
     tooLong: (max: number) => `Use ${max} characters or fewer.`,
@@ -322,7 +341,7 @@ const strings = {
     update: 'Update Password',
     currentRequired: 'Enter your current password.',
     currentIncorrect: 'Current password is incorrect.',
-    tooShort: 'Use at least 8 characters.',
+    tooShort: 'Use at least 12 characters.',
     sameAsCurrent: 'New password must be different from the current one.',
     mismatch: 'Passwords do not match.',
     updating: 'Updating...',
@@ -345,6 +364,19 @@ const strings = {
     mfaSection: 'Multi-Factor Authentication (MFA)',
     authenticatorApp: 'Authenticator app',
     recoveryCodes: 'Recovery Codes',
+  },
+  mfaLogin: {
+    headerTitle: 'Two-Step Verification',
+    loading: 'Preparing your authenticator...',
+    enterTitle: 'Enter Authenticator Code',
+    enterIntro:
+      'Open your authenticator app and enter the 6-digit code shown for Admetrics.',
+    logIn: 'Log In',
+    confirmIntro:
+      'Enter the 6-digit code your authenticator app now shows for Admetrics to finish setup.',
+    finishSetup: 'Finish Setup',
+    retry: 'Try Again',
+    backToLogin: 'Back to Log In',
   },
   authenticator: {
     setupTitle: 'Set Up Authenticator',
@@ -421,7 +453,7 @@ const strings = {
   },
   confirmPassword: {
     pleaseFillInBothPassword: 'Please fill in both password fields.',
-    useAtLeast8Characters: 'Use at least 8 characters for your password.',
+    useAtLeast8Characters: 'Use at least 12 characters for your password.',
     bothPasswordsMustMatch: 'Both passwords must match.',
     yourPasswordResetSessionHas:
       'Your password reset session has expired. Please start the reset flow again.',

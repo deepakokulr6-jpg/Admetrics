@@ -64,17 +64,30 @@ export const SetupStep: React.FC<SetupProps> = ({
 // ---------------------------------------------------------------- Step 2
 
 type VerifyProps = {
-  /** Resolves true when the code is accepted. */
   onVerify: (code: string) => void;
+  /** Login uses its own wording ("Enter your code" / "Log In"). */
+  title?: string;
+  intro?: string;
+  buttonTitle?: string;
+  /** Shown under the field (e.g. wrong code from the server). */
+  error?: string | null;
+  loading?: boolean;
 };
 
-export const VerifyStep: React.FC<VerifyProps> = ({ onVerify }) => {
+export const VerifyStep: React.FC<VerifyProps> = ({
+  onVerify,
+  title = t.verifyTitle,
+  intro = t.verifyIntro,
+  buttonTitle = t.verifyEnable,
+  error,
+  loading = false,
+}) => {
   const [code, setCode] = useState('');
 
   return (
     <View>
-      <Text style={styles.title}>{t.verifyTitle}</Text>
-      <Text style={styles.body}>{t.verifyIntro}</Text>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.body}>{intro}</Text>
 
       <Text style={[styles.label, styles.gapLarge]}>{t.codeLabel}</Text>
       <TextInput
@@ -92,11 +105,16 @@ export const VerifyStep: React.FC<VerifyProps> = ({ onVerify }) => {
         style={styles.input}
         accessibilityLabel={t.codeLabel}
       />
-      <Text style={[styles.small, styles.hint]}>{t.codeHint}</Text>
+      {error ? (
+        <Text style={[styles.small, styles.hint, styles.error]}>{error}</Text>
+      ) : (
+        <Text style={[styles.small, styles.hint]}>{t.codeHint}</Text>
+      )}
 
       <GradientButton
-        title={t.verifyEnable}
+        title={buttonTitle}
         disabled={code.length !== CODE_LENGTH}
+        loading={loading}
         onPress={() => onVerify(code)}
         style={styles.ctaFar}
       />
@@ -180,6 +198,9 @@ const styles = themedStyles(() =>
     },
     gapSmall: {
       marginTop: verticalScale(8),
+    },
+    error: {
+      color: colors.red,
     },
     qr: {
       alignSelf: 'center',
