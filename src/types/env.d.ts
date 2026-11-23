@@ -4,10 +4,4 @@ declare module '@env' {
   export const API_BASE_URL: string | undefined;
   export const API_TIMEOUT_MS: string | undefined;
   export const MAP_STYLE_URL: string | undefined;
-  export const DOCUSEAL_API_URL: string | undefined;
-  export const DOCUSEAL_FORM_URL: string | undefined;
-  export const DOCUSEAL_FORM_SCRIPT: string | undefined;
-  export const DOCUSEAL_API_KEY: string | undefined;
-  export const DOCUSEAL_TEMPLATE_ID: string | undefined;
-  export const DOCUSEAL_SIGNATURE_FIELD: string | undefined;
 }

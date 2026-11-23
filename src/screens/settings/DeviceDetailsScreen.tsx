@@ -137,10 +137,14 @@ const DeviceDetailsScreen: React.FC<AppScreenProps<'DeviceDetails'>> = ({
         status={sheetStatus}
         title={
           sheetStatus === 'success'
-            ? strings.devicePairing.verified
-            : strings.devicePairing.verifying
+            ? strings.devicePairing.added
+            : strings.devicePairing.adding
         }
-        message={strings.devicePairing.message}
+        message={
+          sheetStatus === 'success'
+            ? strings.devicePairing.addedMessage
+            : strings.devicePairing.addingMessage
+        }
         onHidden={leave}
       />
 

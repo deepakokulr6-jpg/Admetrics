@@ -153,7 +153,7 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
             <Text style={styles.mouTitle}>{strings.mou.signedMou}</Text>
             <Text style={styles.mouStatus}>
               {draft.signedMouUrl
-                ? strings.mou.signedViaDocuSeal
+                ? strings.mou.signedOnline
                 : strings.mou.signedOnDevice}
             </Text>
             <View style={styles.signatureBox}>
@@ -186,7 +186,7 @@ const ClinicPreviewScreen: React.FC<AppScreenProps<'ClinicPreview'>> = ({
         title={
           sheetStatus === 'success'
             ? strings.clinicSubmit.added
-            : strings.clinicSubmit.verifying
+            : strings.clinicSubmit.registering
         }
         message={
           sheetStatus === 'success'

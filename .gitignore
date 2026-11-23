@@ -74,14 +74,39 @@ yarn-error.log
 !.yarn/sdks
 !.yarn/versions
 
-# Env
+# Env: secrets and per-machine settings (copy .env.example to .env)
 .env
 .env.*
 !.env.example
-
-# DocuSeal API key (dev only)
 
 # Expo
 .expo
 dist/
 web-build/
+
+# Build outputs
+*.apk
+*.aab
+android/app/release/
+*.dSYM.zip
+
+# Signing (never commit; debug.keystore above is the public RN one)
+*.jks
+*.p12
+*.p8
+*.pem
+*.mobileprovision
+*.cer
+android/keystore.properties
+
+# Logs
+*.log
+logs/
+
+# Editors / OS
+.vscode/
+*.swp
+Thumbs.db
+
+# Test tools
+.maestro/

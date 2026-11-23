@@ -19,7 +19,8 @@ import StatusSheet, {
   type SheetStatus,
 } from '../../components/shared/StatusSheet';
 import { useAuth } from '../../hooks/useAuth';
-import { AuthError } from '../../services/authService';
+import { ApiError } from '../../api/client';
+import { apiErrorMessage } from '../../utils/apiErrorMessage';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
@@ -85,6 +86,9 @@ const ChangePasswordScreen: React.FC<AppScreenProps<'ChangePassword'>> = ({
   const [sheetVisible, setSheetVisible] = useState(false);
   const [sheetStatus, setSheetStatus] = useState<SheetStatus>('loading');
   const saved = useRef(false);
+  // Error to show once the status sheet has fully closed: iOS can't open a
+  // dialog while another modal is still animating away.
+  const pendingAlert = useRef<string | null>(null);
 
   const update = (field: Field, value: string) => {
     setValues(previous => ({ ...previous, [field]: value }));
@@ -127,10 +131,13 @@ const ChangePasswordScreen: React.FC<AppScreenProps<'ChangePassword'>> = ({
       setSheetStatus('success');
     } catch (error) {
       setSheetVisible(false);
-      setErrors({
-        current:
-          error instanceof AuthError ? error.message : t.currentIncorrect,
-      });
+      // 400/401 here = the current password is wrong; others are general.
+      const status = error instanceof ApiError ? error.status : -1;
+      if (status === 400 || status === 401 || status === 403) {
+        setErrors({ current: t.currentIncorrect });
+      } else {
+        pendingAlert.current = apiErrorMessage(error, 'general');
+      }
     }
   };
 
@@ -223,6 +230,9 @@ const ChangePasswordScreen: React.FC<AppScreenProps<'ChangePassword'>> = ({
         onHidden={() => {
           if (saved.current) {
             navigation.goBack();
+          } else if (pendingAlert.current) {
+            appAlert(t.title, pendingAlert.current);
+            pendingAlert.current = null;
           }
         }}
       />

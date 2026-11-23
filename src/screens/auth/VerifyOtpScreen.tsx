@@ -11,7 +11,8 @@ import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
 import { useAuth } from '../../hooks/useAuth';
-import { AuthError, DEVELOPMENT_OTP } from '../../services/authService';
+import { apiErrorMessage } from '../../utils/apiErrorMessage';
+import { DEVELOPMENT_OTP } from '../../services/authService';
 import { isValidEmail } from '../../utils/validation';
 import type {
   AuthScreenProps,
@@ -74,16 +75,9 @@ function OtpVerification<RouteName extends OtpRouteName>({
       setOtpSent(true);
       setOtpSentAt(Date.now());
       setOtp('');
-      appAlert(
-        strings.verifyOtp.otpSent,
-        strings.auth.devOtpNotEmailed(DEVELOPMENT_OTP),
-      );
+      appAlert(strings.verifyOtp.otpSent, strings.auth.otpSentTo(trimmedEmail));
     } catch (sendError) {
-      setError(
-        sendError instanceof AuthError
-          ? sendError.message
-          : strings.verifyOtp.unableToSendTheOtp,
-      );
+      setError(apiErrorMessage(sendError, 'otp'));
     } finally {
       setIsSubmitting(false);
     }
@@ -127,11 +121,7 @@ function OtpVerification<RouteName extends OtpRouteName>({
         mode: 'signup',
       });
     } catch (verifyError) {
-      setError(
-        verifyError instanceof AuthError
-          ? verifyError.message
-          : strings.verifyOtp.unableToVerifyTheOtp,
-      );
+      setError(apiErrorMessage(verifyError, 'otp'));
     } finally {
       setIsSubmitting(false);
     }

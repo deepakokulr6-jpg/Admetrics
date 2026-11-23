@@ -8,11 +8,8 @@ import EditDetailsScreen from '../screens/clinic/EditDetailsScreen';
 import RegisteredDetailsScreen from '../screens/clinic/RegisteredDetailsScreen';
 import PaymentDetailsScreen from '../screens/revenue/PaymentDetailsScreen';
 import RegisterPersonalScreen from '../screens/clinic/RegisterPersonalScreen';
-import RegisterTimingsScreen from '../screens/clinic/RegisterTimingsScreen';
 import RegisterPhotoScreen from '../screens/clinic/RegisterPhotoScreen';
-import ClinicRegisteredScreen from '../screens/clinic/ClinicRegisteredScreen';
 import RegisterMouScreen from '../screens/clinic/RegisterMouScreen';
-import MouESignScreen from '../screens/clinic/MouESignScreen';
 import ClinicPreviewScreen from '../screens/clinic/ClinicPreviewScreen';
 import MouAgreementScreen from '../screens/clinic/MouAgreementScreen';
 import SignedMouScreen from '../screens/clinic/SignedMouScreen';
@@ -45,12 +42,6 @@ const AppNavigator = () => {
         <Stack.Screen name="RegisterClinic" component={RegisterClinicScreen} />
         <Stack.Screen name="ClinicInformation" component={ClinicInformationScreen} />
         <Stack.Screen name="RegisterMou" component={RegisterMouScreen} />
-        {/* No swipe-back while signing: strokes must not drag the page. */}
-        <Stack.Screen
-          name="MouESign"
-          component={MouESignScreen}
-          options={{ gestureEnabled: false, fullScreenGestureEnabled: false }}
-        />
         <Stack.Screen name="ClinicPreview" component={ClinicPreviewScreen} />
         <Stack.Screen name="MouAgreement" component={MouAgreementScreen} />
         <Stack.Screen name="SignedMou" component={SignedMouScreen} />
@@ -80,17 +71,7 @@ const AppNavigator = () => {
           name="RegisterPersonal"
           component={RegisterPersonalScreen}
         />
-        <Stack.Screen
-          name="RegisterTimings"
-          component={RegisterTimingsScreen}
-        />
         <Stack.Screen name="RegisterPhotos" component={RegisterPhotoScreen} />
-        <Stack.Screen
-          name="ClinicRegistered"
-          component={ClinicRegisteredScreen}
-          // Success sheet: no swipe-back into the finished registration.
-          options={{ animation: 'none', gestureEnabled: false }}
-        />
       </Stack.Navigator>
     </>
   );

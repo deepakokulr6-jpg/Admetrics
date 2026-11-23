@@ -92,6 +92,8 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
   const saved = useAppSelector(
     state => state.bankAccount.byOwner[ownerKey(owner)],
   );
+  // Editing an existing account (decided on open, not after this save).
+  const [isEditing] = useState(Boolean(saved));
 
   const [account, setAccount] = useState<BankAccount>(
     saved ?? { holderName: '', accountNumber: '', ifsc: '' },
@@ -245,7 +247,13 @@ const BankAccountScreen: React.FC<AppScreenProps<'BankAccount'>> = ({
       <StatusSheet
         visible={sheetVisible}
         status={sheetStatus}
-        title={sheetStatus === 'success' ? t.saved : t.saving}
+        title={
+          sheetStatus === 'success'
+            ? isEditing
+              ? t.updated
+              : t.saved
+            : t.saving
+        }
         message={sheetStatus === 'success' ? t.savedMessage : t.savingMessage}
         onHidden={() => {
           if (sheetStatus === 'success') {

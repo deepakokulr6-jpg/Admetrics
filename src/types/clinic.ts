@@ -46,7 +46,12 @@ export type ClinicRegistrationDraft = {
   photos: ClinicPhotos;
   /** MOU signature as SVG path data (drawn on the MOU step). */
   signature: string | null;
-  /** Link to the DocuSeal-signed MOU PDF (null if signed offline). */
+  /**
+   * The same signature as a PNG (base64, no data: prefix): what the
+   * backend stamps onto the MOU PDF (POST /clinics/{id}/mou/sign).
+   */
+  signaturePng?: string | null;
+  /** Signed MOU PDF link from the backend (null until it is signed there). */
   signedMouUrl?: string | null;
 };
 

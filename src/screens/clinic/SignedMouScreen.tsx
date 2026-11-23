@@ -28,7 +28,7 @@ const viewerUrl = (url: string) =>
     ? `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`
     : url;
 
-/** The DocuSeal-signed MOU PDF, with the signature on it. */
+/** The signed MOU PDF from the backend, with the signature on it. */
 const SignedMouScreen: React.FC<AppScreenProps<'SignedMou'>> = ({
   navigation,
   route,

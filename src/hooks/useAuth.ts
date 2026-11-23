@@ -1,13 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import {
-  type AuthUser,
-  changePassword,
-  requestPasswordReset,
-  resetPassword,
-  startSession,
-  verifyPasswordResetOtp,
-} from '../services/authService';
+import { type AuthUser, startSession } from '../services/authService';
 import * as authApi from '../api/auth';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -53,11 +46,17 @@ export const useAuth = () => {
       startMfaSetup: authApi.startMfaSetup,
       confirmMfa: authApi.confirmMfa,
       verifyMfa: authApi.verifyMfa,
-      // Not on the API yet: still local placeholders.
-      requestPasswordReset,
-      verifyPasswordResetOtp,
-      resetPassword,
-      changePassword,
+      // Forgot password: email code → token → new password.
+      requestPasswordReset: authApi.requestPasswordReset,
+      verifyPasswordResetOtp: authApi.verifyPasswordResetOtp,
+      resetPassword: (_email: string, token: string, password: string) =>
+        authApi.resetPassword(token, password),
+      // Signed in: the server knows the account from the access token.
+      changePassword: (
+        _email: string,
+        currentPassword: string,
+        newPassword: string,
+      ) => authApi.changePassword(currentPassword, newPassword),
     }),
     [user, isBootstrapping, signOut, completeSignIn],
   );

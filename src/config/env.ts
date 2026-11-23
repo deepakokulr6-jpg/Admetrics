@@ -3,12 +3,6 @@ import {
   API_BASE_URL,
   API_TIMEOUT_MS,
   APP_ENV as APP_ENV_RAW,
-  DOCUSEAL_API_KEY,
-  DOCUSEAL_API_URL,
-  DOCUSEAL_FORM_SCRIPT,
-  DOCUSEAL_FORM_URL,
-  DOCUSEAL_SIGNATURE_FIELD,
-  DOCUSEAL_TEMPLATE_ID,
   MAP_STYLE_URL,
 } from '@env';
 
@@ -36,7 +30,7 @@ export const ENV = {
 
   api: {
     baseUrl: withoutTrailingSlash(
-      read(API_BASE_URL, 'http://192.168.0.168:3000/api'),
+      read(API_BASE_URL, 'http://192.168.0.165:3000/api'),
     ),
     timeoutMs: Number(read(API_TIMEOUT_MS, '15000')) || 15000,
   },
@@ -46,21 +40,6 @@ export const ENV = {
       MAP_STYLE_URL,
       'https://tiles.openfreemap.org/styles/liberty',
     ),
-  },
-
-  docuseal: {
-    apiUrl: withoutTrailingSlash(
-      read(DOCUSEAL_API_URL, 'https://api.docuseal.com'),
-    ),
-    formUrl: read(DOCUSEAL_FORM_URL, ''),
-    formScript: read(
-      DOCUSEAL_FORM_SCRIPT,
-      'https://cdn.docuseal.com/js/form.js',
-    ),
-    /** DEV ONLY: ships inside the app. Signing must move to the backend. */
-    apiKey: read(DOCUSEAL_API_KEY, ''),
-    templateId: read(DOCUSEAL_TEMPLATE_ID, ''),
-    signatureField: read(DOCUSEAL_SIGNATURE_FIELD, 'Signature'),
   },
 } as const;
 
