@@ -85,3 +85,27 @@ test('a network failure becomes ApiError 0', async () => {
   globalThis.fetch = jest.fn().mockRejectedValue(new TypeError('Network'));
   await expect(login('a@b.com', 'pw')).rejects.toMatchObject({ status: 0 });
 });
+
+test('forgot password returns the reset token', async () => {
+  globalThis.fetch = respond(200, { token: 'reset-token' });
+  const { verifyPasswordResetOtp } = require('../src/api/auth');
+  await expect(verifyPasswordResetOtp('a@b.com', '123456')).resolves.toBe(
+    'reset-token',
+  );
+});
+
+test('reset password sends token and password', async () => {
+  const fetchMock = respond(200, {});
+  globalThis.fetch = fetchMock;
+  const { resetPassword } = require('../src/api/auth');
+  await resetPassword('reset-token', 'NewPassword@123');
+  expect(fetchMock).toHaveBeenCalledWith(
+    expect.stringContaining('/auth/reset-password'),
+    expect.objectContaining({
+      body: JSON.stringify({
+        token: 'reset-token',
+        password: 'NewPassword@123',
+      }),
+    }),
+  );
+});

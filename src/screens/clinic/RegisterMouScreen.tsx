@@ -17,8 +17,6 @@ import GradientButton from '../../components/shared/GradientButton';
 import MouDocument from '../../components/clinic/MouDocument';
 import SignaturePad from '../../components/clinic/SignaturePad';
 import { useClinicRegistration } from '../../hooks/useClinicRegistration';
-import { useAuth } from '../../hooks/useAuth';
-import { isESignConfigured, signMou } from '../../services/esignService';
 import type { AppScreenProps } from '../../navigation/types';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
@@ -49,13 +47,13 @@ const toPng = (svg: Svg | null) =>
  * Step 4 of registration.
  * read → the MOU in a bordered box + "Signature".
  * sign → the MOU dims, a framed signature box appears over it (× clears),
- *        "Submit" signs the MOU on DocuSeal and opens the Preview.
+ *        "Submit" saves the signature and opens the Preview (the backend
+ *        adds it to the MOU PDF; see src/api/mou.ts).
  */
 const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
   navigation,
 }) => {
-  const { draft, setSignature, setSignedMou } = useClinicRegistration();
-  const { user } = useAuth();
+  const { setSignature, setSignedMou } = useClinicRegistration();
   const [mode, setMode] = useState<Mode>('read');
   const [signature, setLocalSignature] = useState('');
   const [clearKey, setClearKey] = useState(0);
@@ -105,31 +103,21 @@ const RegisterMouScreen: React.FC<AppScreenProps<'RegisterMou'>> = ({
     setPadSize({ width, height });
   };
 
-  /** Keep the signature locally and move on (signed PDF can come later). */
-  const finish = (signedUrl: string | null) => {
-    setSignature(signature);
-    setSignedMou(signedUrl);
-    navigation.navigate('ClinicPreview');
-  };
-
+  /**
+   * Save the signature (drawing + PNG) and continue to the Preview. The
+   * backend stamps the PNG onto the MOU PDF once the clinic is registered
+   * there (src/api/mou.ts); until then it stays in the draft.
+   */
   const handleSubmit = async () => {
-    if (!isESignConfigured()) {
-      finish(null);
-      return;
-    }
     setSubmitting(true);
     try {
       const png = await toPng(exportRef.current);
-      const signed = await signMou({
-        signaturePng: png,
-        email: draft.personal.email || user?.email || '',
-        name: draft.personal.contactPerson || draft.clinic.clinicName,
-      });
-      finish(signed.documentUrl);
+      setSignature(signature, png);
+      setSignedMou(null);
+      navigation.navigate('ClinicPreview');
     } catch (error) {
-      console.warn('[mou] DocuSeal signing failed', error);
+      console.warn('[mou] Signature export failed', error);
       appAlert(strings.mou.signingFailed, strings.mou.signingFailedMessage, [
-        { text: strings.mou.continueAnyway, onPress: () => finish(null) },
         { text: strings.mou.retry, onPress: handleSubmit },
       ]);
     } finally {

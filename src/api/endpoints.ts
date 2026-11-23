@@ -10,6 +10,10 @@ export const ENDPOINTS = {
     login: '/auth/login',
     refresh: '/auth/refresh',
     logout: '/auth/logout',
+    forgotPassword: '/auth/forgot-password',
+    forgotPasswordVerifyOtp: '/auth/forgot-password/verify-otp',
+    resetPassword: '/auth/reset-password',
+    changePassword: '/auth/change-password',
     mfa: {
       setup: '/auth/mfa/setup',
       confirm: '/auth/mfa/confirm',
@@ -17,5 +21,14 @@ export const ENDPOINTS = {
       enroll: '/auth/mfa/enroll',
       disable: '/auth/mfa/disable',
     },
+  },
+  /**
+   * MOU for a clinic. Paths as proposed to the backend: confirm with the
+   * final Postman collection before use.
+   */
+  mou: {
+    get: (clinicId: string) => `/clinics/${clinicId}/mou`,
+    sign: (clinicId: string) => `/clinics/${clinicId}/mou/sign`,
+    document: (clinicId: string) => `/clinics/${clinicId}/mou/document`,
   },
 } as const;

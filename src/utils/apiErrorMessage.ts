@@ -1,4 +1,5 @@
-import { ApiError } from '../api/client';
+import { ApiError } from '../api/errors';
+import { HTTP_STATUS } from '../api/constants';
 import strings from '../constants/strings';
 
 const t = strings.apiErrors;
@@ -15,11 +16,15 @@ export const apiErrorMessage = (error: unknown, step: AuthStep): string => {
   if (!(error instanceof ApiError)) {
     return t.unexpected;
   }
+  if (error.isTimeout) {
+    return t.timeout;
+  }
+  if (error.isNetwork) {
+    return t.network;
+  }
   switch (error.status) {
-    case 0:
-      return error.message === 'timeout' ? t.timeout : t.network;
-    case 401:
-    case 403:
+    case HTTP_STATUS.UNAUTHORIZED:
+    case HTTP_STATUS.FORBIDDEN:
       return step === 'otp'
         ? t.badOtp
         : step === 'login'
@@ -29,18 +34,18 @@ export const apiErrorMessage = (error: unknown, step: AuthStep): string => {
         : step === 'password'
         ? t.sessionExpired
         : t.unauthorized;
-    case 404:
+    case HTTP_STATUS.NOT_FOUND:
       return step === 'otp' ? t.notInvited : t.unexpected;
-    case 409:
+    case HTTP_STATUS.CONFLICT:
       return t.alreadyRegistered;
-    case 410:
+    case HTTP_STATUS.GONE:
       return t.sessionExpired;
-    case 429:
+    case HTTP_STATUS.TOO_MANY_REQUESTS:
       return t.tooMany;
-    case 400:
-    case 422:
+    case HTTP_STATUS.BAD_REQUEST:
+    case HTTP_STATUS.UNPROCESSABLE:
       return error.message.startsWith('HTTP') ? t.invalid : error.message;
     default:
-      return error.status >= 500 ? t.server : t.unexpected;
+      return error.isServer ? t.server : t.unexpected;
   }
 };

@@ -48,13 +48,11 @@ export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
   RegisterClinic: { pickedLocation?: PickedLocation } | undefined;
   RegisterPersonal: undefined;
-  RegisterTimings: undefined;
   RegisterPhotos: undefined;
   RegisterMou: undefined;
-  MouESign: undefined;
   ClinicPreview: undefined;
   MouAgreement: undefined;
-  /** Signed MOU PDF from DocuSeal. */
+  /** Signed MOU PDF from the backend. */
   SignedMou: { url: string };
   Settings: undefined;
   AddDevice: undefined;
@@ -64,7 +62,6 @@ export type AppStackParamList = {
   ScanQr: undefined;
   /** serial: TV serial number from the QR code or pairing code. */
   DeviceDetails: { serial: string };
-  ClinicRegistered: undefined;
   EditDetails: { pickedLocation?: PickedLocation } | undefined;
   /** Full-screen map to pick the clinic's spot; returns to `returnTo`. */
   MapPicker: {

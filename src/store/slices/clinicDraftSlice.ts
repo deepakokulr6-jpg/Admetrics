@@ -69,9 +69,13 @@ const clinicDraftSlice = createSlice({
     },
     setSignature(
       state,
-      { payload }: OwnerPayload<{ signature: string | null }>,
+      {
+        payload,
+      }: OwnerPayload<{ signature: string | null; png?: string | null }>,
     ) {
-      draftFor(state, payload.owner).signature = payload.signature;
+      const draft = draftFor(state, payload.owner);
+      draft.signature = payload.signature;
+      draft.signaturePng = payload.png ?? null;
     },
     setSignedMou(state, { payload }: OwnerPayload<{ url: string | null }>) {
       draftFor(state, payload.owner).signedMouUrl = payload.url;

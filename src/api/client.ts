@@ -1,30 +1,38 @@
 import { ENV } from '../config/env';
+import {
+  CONTENT_TYPE,
+  HEADER,
+  HTTP_METHOD,
+  HTTP_STATUS,
+  type HttpMethod,
+  NO_RESPONSE,
+} from './constants';
+import { ApiError, messageFromBody } from './errors';
+import { logResponse } from './logger';
+import type { QueryParams } from './types';
 
-/** A failed API call: HTTP status (0 = network / timeout) and a message. */
-export class ApiError extends Error {
-  constructor(
-    readonly status: number,
-    message: string,
-    readonly body?: unknown,
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-}
+export { ApiError } from './errors';
 
-type Options = {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type RequestOptions = {
+  /** JSON-serialisable body, or FormData for file uploads. */
   body?: unknown;
-  /** Bearer access token, for calls made with a specific token. */
-  token?: string;
+  /** Appended as ?a=1&b=2 (undefined / null values are skipped). */
+  query?: QueryParams;
   /**
-   * Signed-in call: attach the current access token automatically and, on
-   * 401, refresh it once and retry. Needs `configureAuth` (authService).
+   * Signed-in call: attach the current access token, and on 401 refresh it
+   * (once, shared by concurrent calls) and retry. Needs `configureAuth`.
    */
   auth?: boolean;
+  /** Explicit bearer token (e.g. logout with the token being ended). */
+  token?: string;
+  headers?: Record<string, string>;
+  /** Cancel from the caller (e.g. screen unmounted). */
+  signal?: AbortSignal;
+  /** Override ENV.api.timeoutMs for slow calls (uploads). */
+  timeoutMs?: number;
 };
 
-// ------------------------------------------------- signed-in token hooks
+// ----------------------------------------------------------- auth hooks
 
 type AuthHooks = {
   /** Current valid access token (refreshing if expired), or null. */
@@ -38,154 +46,205 @@ type AuthHooks = {
 let authHooks: AuthHooks | null = null;
 
 /**
- * Called once by authService, so the client can sign requests without
+ * Registered once by authService, so the client can sign requests without
  * importing it (avoids an import cycle).
  */
 export const configureAuth = (hooks: AuthHooks) => {
   authHooks = hooks;
 };
 
-/** Keys whose values never go to the console (tokens, codes, secrets). */
-const SECRET_KEY = /token|secret|password|otp|code|otpauth|uri|url/i;
-
-/** Response shape for dev logs, with sensitive values masked. */
-const redact = (value: unknown): unknown => {
-  if (Array.isArray(value)) {
-    return value.map(redact);
+/**
+ * One refresh at a time: when several signed-in calls get 401 together,
+ * they all wait for the same refresh instead of each spending the
+ * (single-use) refresh token.
+ */
+let refreshing: Promise<string | null> | null = null;
+const refreshOnce = () => {
+  if (!refreshing && authHooks) {
+    refreshing = authHooks.refreshAccessToken().finally(() => {
+      refreshing = null;
+    });
   }
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, item]) => [
-        key,
-        SECRET_KEY.test(key) && typeof item === 'string'
-          ? `<${item.length} chars>`
-          : redact(item),
-      ]),
+  return refreshing ?? Promise.resolve(null);
+};
+
+// ------------------------------------------------------------- helpers
+
+const buildUrl = (path: string, query?: QueryParams) => {
+  const url = `${ENV.api.baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+  const params = Object.entries(query ?? {})
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
     );
-  }
-  return value;
+  return params.length ? `${url}?${params.join('&')}` : url;
 };
 
-/**
- * Server message if the body has one. Admetrics sends
- * `{error: {code, message, fields: [{path, message}]}}`; a field message is
- * the most specific, so it wins.
- */
-const messageFrom = (body: unknown): string | undefined => {
-  if (!body || typeof body !== 'object') {
-    return undefined;
-  }
-  const record = body as Record<string, unknown>;
-  const nested = record.error;
-  if (nested && typeof nested === 'object') {
-    const error = nested as Record<string, unknown>;
-    const fields = Array.isArray(error.fields) ? error.fields : [];
-    const field = fields[0] as { message?: unknown } | undefined;
-    if (typeof field?.message === 'string') {
-      return field.message;
-    }
-    if (typeof error.message === 'string') {
-      return error.message;
-    }
-  }
-  const candidate = record.message ?? record.error ?? record.detail;
-  if (typeof candidate === 'string') {
-    return candidate;
-  }
-  if (Array.isArray(candidate) && typeof candidate[0] === 'string') {
-    return candidate[0];
-  }
-  return undefined;
-};
+const isFormData = (body: unknown): body is FormData =>
+  typeof FormData !== 'undefined' && body instanceof FormData;
 
-/**
- * JSON request to the Admetrics API (`auth: true` for signed-in calls).
- * Resolves with the parsed body (or null
- * for an empty one); throws ApiError on HTTP errors, timeouts and network
- * failures. In development the redacted response is logged so its shape can
- * be checked against the screens.
- */
-export const apiRequest = async <T = unknown>(
-  path: string,
-  options: Options = {},
-): Promise<T> => {
-  if (!options.auth) {
-    return send<T>(path, options);
-  }
-  if (!authHooks) {
-    throw new ApiError(401, 'not signed in');
-  }
-  const token = await authHooks.getAccessToken();
-  if (!token) {
-    authHooks.onSessionExpired();
-    throw new ApiError(401, 'not signed in');
+const parseBody = (text: string): unknown => {
+  if (!text) {
+    return null;
   }
   try {
-    return await send<T>(path, { ...options, token });
-  } catch (error) {
-    if (!(error instanceof ApiError) || error.status !== 401) {
-      throw error;
-    }
-    // Token rejected (revoked / clock skew): refresh once and retry.
-    const fresh = await authHooks.refreshAccessToken();
-    if (!fresh) {
-      authHooks.onSessionExpired();
-      throw error;
-    }
-    return send<T>(path, { ...options, token: fresh });
+    return JSON.parse(text);
+  } catch {
+    return text;
   }
 };
 
-/** One HTTP round trip (no auth handling). */
+// ---------------------------------------------------------------- core
+
+/** One HTTP round trip: timeout, cancel, parse, log, error mapping. */
 const send = async <T>(
+  method: HttpMethod,
   path: string,
-  { method = 'POST', body, token }: Options,
+  {
+    body,
+    query,
+    token,
+    headers,
+    signal,
+    timeoutMs = ENV.api.timeoutMs,
+  }: RequestOptions,
 ): Promise<T> => {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ENV.api.timeoutMs);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onCallerAbort = () => controller.abort();
+  signal?.addEventListener('abort', onCallerAbort);
+  const started = Date.now();
 
+  const form = isFormData(body);
   let response: Response;
   try {
-    response = await fetch(`${ENV.api.baseUrl}${path}`, {
+    response = await fetch(buildUrl(path, query), {
       method,
       headers: {
-        Accept: 'application/json',
-        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        [HEADER.ACCEPT]: CONTENT_TYPE.JSON,
+        // FormData sets its own multipart boundary header.
+        ...(body !== undefined && !form
+          ? { [HEADER.CONTENT_TYPE]: CONTENT_TYPE.JSON }
+          : {}),
+        ...(token ? { [HEADER.AUTHORIZATION]: `Bearer ${token}` } : {}),
+        ...headers,
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body:
+        body === undefined
+          ? undefined
+          : form
+          ? (body as FormData)
+          : JSON.stringify(body),
       signal: controller.signal,
     });
   } catch (error) {
-    const timedOut = (error as Error)?.name === 'AbortError';
-    throw new ApiError(0, timedOut ? 'timeout' : 'network');
+    const aborted = (error as Error)?.name === 'AbortError';
+    const reason =
+      aborted && signal?.aborted
+        ? 'cancelled'
+        : aborted
+        ? 'timeout'
+        : 'network';
+    logResponse(method, path, NO_RESPONSE, Date.now() - started, reason);
+    throw new ApiError(NO_RESPONSE, reason);
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', onCallerAbort);
   }
 
-  const text = await response.text();
-  let parsed: unknown = null;
-  if (text) {
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      parsed = text;
-    }
-  }
-
-  if (__DEV__) {
-    console.log(
-      `[api] ${method} ${path} → ${response.status}`,
-      JSON.stringify(redact(parsed)),
-    );
-  }
+  const parsed = parseBody(await response.text());
+  logResponse(method, path, response.status, Date.now() - started, parsed);
 
   if (!response.ok) {
     throw new ApiError(
       response.status,
-      messageFrom(parsed) ?? `HTTP ${response.status}`,
+      messageFromBody(parsed) ?? `HTTP ${response.status}`,
       parsed,
+      response.headers?.get?.(HEADER.REQUEST_ID) ?? undefined,
     );
   }
   return parsed as T;
 };
+
+/** Signed-in round trip: token, single shared refresh on 401, one retry. */
+const sendAuthed = async <T>(
+  method: HttpMethod,
+  path: string,
+  options: RequestOptions,
+): Promise<T> => {
+  if (!authHooks) {
+    throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'not signed in');
+  }
+  const token = await authHooks.getAccessToken();
+  if (!token) {
+    authHooks.onSessionExpired();
+    throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'not signed in');
+  }
+  try {
+    return await send<T>(method, path, { ...options, token });
+  } catch (error) {
+    if (!(error instanceof ApiError) || !error.isUnauthorized) {
+      throw error;
+    }
+    // Token rejected (revoked / clock skew): refresh once and retry.
+    const fresh = await refreshOnce();
+    if (!fresh) {
+      authHooks.onSessionExpired();
+      throw error;
+    }
+    return send<T>(method, path, { ...options, token: fresh });
+  }
+};
+
+const request = <T>(
+  method: HttpMethod,
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> =>
+  options.auth
+    ? sendAuthed<T>(method, path, options)
+    : send<T>(method, path, options);
+
+/**
+ * The Admetrics API client. Paths come from ENDPOINTS; bodies are JSON
+ * unless FormData. Resolves with the parsed body (null when empty) and
+ * throws ApiError on HTTP errors, timeouts and network failures.
+ *
+ *   http.get<Clinic[]>(ENDPOINTS.clinics.list, { auth: true, query: { take: 20 } })
+ *   http.post(ENDPOINTS.auth.login, { body: { email, password } })
+ */
+export const http = {
+  get: <T = unknown>(path: string, options?: Omit<RequestOptions, 'body'>) =>
+    request<T>(HTTP_METHOD.GET, path, options),
+  post: <T = unknown>(path: string, options?: RequestOptions) =>
+    request<T>(HTTP_METHOD.POST, path, options),
+  put: <T = unknown>(path: string, options?: RequestOptions) =>
+    request<T>(HTTP_METHOD.PUT, path, options),
+  patch: <T = unknown>(path: string, options?: RequestOptions) =>
+    request<T>(HTTP_METHOD.PATCH, path, options),
+  delete: <T = unknown>(path: string, options?: RequestOptions) =>
+    request<T>(HTTP_METHOD.DELETE, path, options),
+  /** Multipart upload (photos, documents) with a longer timeout. */
+  upload: <T = unknown>(
+    path: string,
+    form: FormData,
+    options?: Omit<RequestOptions, 'body'>,
+  ) =>
+    request<T>(HTTP_METHOD.POST, path, {
+      timeoutMs: ENV.api.timeoutMs * 4,
+      ...options,
+      body: form,
+    }),
+};
+
+/** @deprecated Use `http.post` / `http.get`. Kept for older call sites. */
+export const apiRequest = <T = unknown>(
+  path: string,
+  {
+    method = HTTP_METHOD.POST,
+    ...options
+  }: RequestOptions & {
+    method?: HttpMethod;
+  } = {},
+) => request<T>(method, path, options);

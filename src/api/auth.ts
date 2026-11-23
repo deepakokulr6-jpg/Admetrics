@@ -1,5 +1,8 @@
-import { apiRequest } from './client';
+import { http } from './client';
 import { ENDPOINTS } from './endpoints';
+import type { AuthTokens } from './types';
+
+export type { AuthTokens } from './types';
 
 /**
  * Admetrics auth API (see the backend Postman collection):
@@ -12,7 +15,11 @@ import { ENDPOINTS } from './endpoints';
  *  (1st)    POST /auth/mfa/confirm        {challengeToken, code} → tokens
  *  (later)  POST /auth/mfa/verify         {challengeToken, code} → tokens
  *  session  POST /auth/refresh            {refreshToken} → tokens
- *           POST /auth/logout             (Bearer) {refreshToken}
+ *           POST /auth/logout             (Bearer)
+ *  reset    POST /auth/forgot-password    {email}
+ *           POST /auth/forgot-password/verify-otp {email, otp} → token
+ *           POST /auth/reset-password     {token, password}
+ *  change   POST /auth/change-password    (Bearer) {currentPassword, newPassword}
  *
  * Response field names aren't documented yet, so each reader accepts the
  * usual spellings; `[api]` dev logs show the real shape.
@@ -50,8 +57,6 @@ const pickFlag = (body: unknown, paths: string[]): boolean | undefined => {
   return undefined;
 };
 
-export type AuthTokens = { accessToken: string; refreshToken?: string };
-
 const readTokens = (body: unknown): AuthTokens | null => {
   const accessToken = pick(body, [
     'accessToken',
@@ -85,7 +90,7 @@ export type OtpRequest = {
 
 export const requestSignupOtp = async (email: string): Promise<OtpRequest> => {
   const body = asRecord(
-    await apiRequest(ENDPOINTS.auth.signupRequestOtp, { body: { email } }),
+    await http.post(ENDPOINTS.auth.signupRequestOtp, { body: { email } }),
   );
   return {
     expiresIn: Number(body.otpExpiresIn) || 600,
@@ -98,7 +103,7 @@ export const verifySignupOtp = async (
   email: string,
   otp: string,
 ): Promise<string> => {
-  const body = await apiRequest(ENDPOINTS.auth.signupVerifyOtp, {
+  const body = await http.post(ENDPOINTS.auth.signupVerifyOtp, {
     body: { email, otp },
   });
   const token = pick(body, [
@@ -116,7 +121,7 @@ export const registerPassword = async (
   verificationToken: string,
   password: string,
 ): Promise<void> => {
-  await apiRequest(ENDPOINTS.auth.register, {
+  await http.post(ENDPOINTS.auth.register, {
     body: { verificationToken, password },
   });
 };
@@ -132,7 +137,7 @@ export const login = async (
   email: string,
   password: string,
 ): Promise<LoginResult> => {
-  const body = await apiRequest(ENDPOINTS.auth.login, {
+  const body = await http.post(ENDPOINTS.auth.login, {
     body: { email, password },
   });
 
@@ -188,7 +193,7 @@ export type MfaSetup = {
 export const startMfaSetup = async (
   challengeToken: string,
 ): Promise<MfaSetup> => {
-  const body = await apiRequest(ENDPOINTS.auth.mfa.setup, {
+  const body = await http.post(ENDPOINTS.auth.mfa.setup, {
     body: { challengeToken },
   });
   const otpauthUri =
@@ -225,7 +230,7 @@ const finishMfa = async (
   challengeToken: string,
   code: string,
 ): Promise<AuthTokens> => {
-  const body = await apiRequest(path, { body: { challengeToken, code } });
+  const body = await http.post(path, { body: { challengeToken, code } });
   const tokens = readTokens(body);
   if (!tokens) {
     throw new Error(`${path}: no accessToken in response`);
@@ -247,7 +252,7 @@ export const verifyMfa = (challengeToken: string, code: string) =>
 export const refreshTokens = async (
   refreshToken: string,
 ): Promise<AuthTokens> => {
-  const body = await apiRequest(ENDPOINTS.auth.refresh, {
+  const body = await http.post(ENDPOINTS.auth.refresh, {
     body: { refreshToken },
   });
   const tokens = readTokens(body);
@@ -260,8 +265,52 @@ export const refreshTokens = async (
 
 /** Ends the session on the server (the app clears its copy regardless). */
 export const logoutRemote = async (tokens: AuthTokens): Promise<void> => {
-  await apiRequest(ENDPOINTS.auth.logout, {
-    token: tokens.accessToken,
-    body: tokens.refreshToken ? { refreshToken: tokens.refreshToken } : {},
+  await http.post(ENDPOINTS.auth.logout, { token: tokens.accessToken });
+};
+
+// --------------------------------------------------------------- password
+
+/** Emails a reset code (same neutral answer for unknown emails). */
+export const requestPasswordReset = async (email: string): Promise<void> => {
+  await http.post(ENDPOINTS.auth.forgotPassword, { body: { email } });
+};
+
+/** Checks the reset code; returns the token that allows a new password. */
+export const verifyPasswordResetOtp = async (
+  email: string,
+  otp: string,
+): Promise<string> => {
+  const body = await http.post(ENDPOINTS.auth.forgotPasswordVerifyOtp, {
+    body: { email, otp },
+  });
+  const token = pick(body, [
+    'token',
+    'resetToken',
+    'verificationToken',
+    'data.token',
+  ]);
+  if (!token) {
+    throw new Error('forgot-password/verify-otp: no token in response');
+  }
+  return token;
+};
+
+export const resetPassword = async (
+  token: string,
+  password: string,
+): Promise<void> => {
+  await http.post(ENDPOINTS.auth.resetPassword, {
+    body: { token, password },
+  });
+};
+
+/** Signed in: replace the password (current one required). */
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  await http.post(ENDPOINTS.auth.changePassword, {
+    auth: true,
+    body: { currentPassword, newPassword },
   });
 };

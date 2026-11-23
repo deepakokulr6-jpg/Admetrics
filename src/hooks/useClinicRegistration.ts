@@ -44,8 +44,9 @@ export const useClinicRegistration = () => {
         dispatch(updateWorkingHour({ owner, index, patch })),
       setPhoto: (slot: keyof ClinicPhotos, uri: string | null) =>
         dispatch(setPhoto({ owner, slot, uri })),
-      setSignature: (signature: string | null) =>
-        dispatch(setSignature({ owner, signature })),
+      /** Drawn signature: SVG path (preview) + PNG (sent to the backend). */
+      setSignature: (signature: string | null, png?: string | null) =>
+        dispatch(setSignature({ owner, signature, png })),
       setSignedMou: (url: string | null) =>
         dispatch(setSignedMou({ owner, url })),
       resetDraft: () => dispatch(resetDraft({ owner })),
