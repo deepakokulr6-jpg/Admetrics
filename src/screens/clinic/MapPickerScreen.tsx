@@ -125,11 +125,12 @@ const MapPickerScreen: React.FC<AppScreenProps<'MapPicker'>> = ({
     if (lookup.status !== 'found') {
       return;
     }
-    navigation.popTo(
-      returnTo,
-      { pickedLocation: lookup.place },
-      { merge: true },
-    );
+    const params = { pickedLocation: lookup.place };
+    if (returnTo === 'RegisterClinic') {
+      navigation.popTo('RegisterClinic', params, { merge: true });
+    } else {
+      navigation.popTo('EditDetails', params, { merge: true });
+    }
   };
 
   return (

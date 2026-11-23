@@ -24,7 +24,7 @@ import { themedStyles } from '../../theme/themedStyles';
 import {
   DayScheduleItem,
   INITIAL_WORKING_HOURS,
-  WorkingHoursSection,
+  WorkingHoursSection as ClinicWorkingHoursSection,
 } from './ClinicInformationScreen';
 import { appAlert } from '../../components/shared/AppAlert';
 
@@ -84,7 +84,7 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
         }
       />
 
-      <WorkingHoursSection
+      <ClinicWorkingHoursSection
         value={workingHours}
         onChange={setWorkingHours}
       />

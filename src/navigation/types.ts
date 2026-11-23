@@ -46,7 +46,6 @@ export type MainTabParamList = {
 /** Signed-in app: the tab bar plus every screen pushed on top of it. */
 export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
-  RegisterClinic: undefined;
   ClinicInformation: undefined;
   RegisterClinic: { pickedLocation?: PickedLocation } | undefined;
   RegisterPersonal: undefined;
