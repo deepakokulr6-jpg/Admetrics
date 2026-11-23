@@ -21,15 +21,12 @@ import type { AppScreenProps } from '../../navigation/types';
 import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
-<<<<<<< HEAD
 import {
   DayScheduleItem,
   INITIAL_WORKING_HOURS,
   WorkingHoursSection,
 } from './ClinicInformationScreen';
-=======
 import { appAlert } from '../../components/shared/AppAlert';
->>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
 /** Step 1 of registration: clinic details, saved to the registration draft. */
 const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
@@ -39,13 +36,10 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
     useClinicRegistration();
   const keyboard = useKeyboardAutoScroll();
   const [errors, setErrors] = useState<ClinicErrors>({});
-<<<<<<< HEAD
   const [workingHours, setWorkingHours] = useState<DayScheduleItem[]>(
     INITIAL_WORKING_HOURS,
   );
-=======
   const [hoursErrorIndex, setHoursErrorIndex] = useState<number | null>(null);
->>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
   const handleChange = (key: keyof ClinicInfo, value: string) => {
     updateClinicInfo({ [key]: value });
@@ -90,12 +84,10 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
         }
       />
 
-<<<<<<< HEAD
       <WorkingHoursSection
         value={workingHours}
         onChange={setWorkingHours}
       />
-=======
       <View style={styles.hours}>
         <WorkingHoursSection
           hours={draft.workingHours}
@@ -108,7 +100,6 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
           }}
         />
       </View>
->>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
       <View style={styles.button}>
         <GradientButton title={strings.common.next} onPress={handleNext} />

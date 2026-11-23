@@ -9,11 +9,8 @@ import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
-<<<<<<< HEAD
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-=======
 import { appAlert } from '../../components/shared/AppAlert';
->>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
 type DocusealMessage =
   | { type: 'completed'; detail: Record<string, unknown> }
