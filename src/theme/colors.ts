@@ -16,6 +16,8 @@ const lightColors = {
   gradientEnd: '#B43AFC',
   /** Solid blue for buttons and text links (Figma "Sign In"). */
   buttonPrimary: '#1D5FFB',
+  /** Soft blue behind a selected / highlighted picker value. */
+  accentTint: '#E8EFFF',
   /** Step badges along the brand gradient (Clinic → Contact → Photos). */
   stepBlue: '#1D5FFB',
   stepViolet: '#644EFB',
@@ -101,6 +103,7 @@ export const darkOverrides: Partial<Palette> = {
   disabledButton: '#3B3940',
   switchTrack: '#3B3940',
 
+  accentTint: '#1F2A4A',
   border: '#4A4751',
   borderLight: '#302E35',
   divider: '#2A282F',

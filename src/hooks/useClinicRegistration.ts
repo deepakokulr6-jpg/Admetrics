@@ -31,6 +31,7 @@ export const useClinicRegistration = () => {
       updateWorkingHour,
       setPhoto,
       setSignature,
+      setSignedMou,
       resetDraft,
     } = clinicDraftActions;
 
@@ -45,6 +46,8 @@ export const useClinicRegistration = () => {
         dispatch(setPhoto({ owner, slot, uri })),
       setSignature: (signature: string | null) =>
         dispatch(setSignature({ owner, signature })),
+      setSignedMou: (url: string | null) =>
+        dispatch(setSignedMou({ owner, url })),
       resetDraft: () => dispatch(resetDraft({ owner })),
     };
   }, [dispatch, owner]);

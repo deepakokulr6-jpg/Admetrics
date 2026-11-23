@@ -8,6 +8,7 @@ import VerifyOtpScreen, {
   ForgotPasswordScreen,
 } from '../screens/auth/VerifyOtpScreen';
 import ConfirmPasswordScreen from '../screens/auth/ConfirmPasswordScreen';
+import MfaScreen from '../screens/auth/MfaScreen';
 import AccountCreatedScreen from '../screens/account/AccountCreatedScreen';
 
 import type { AuthStackParamList } from './types';
@@ -43,6 +44,7 @@ const AuthNavigator = () => {
       <Stack.Screen name="VerifyOtp" component={VerifyOtpScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="ConfirmPassword" component={ConfirmPasswordScreen} />
+      <Stack.Screen name="Mfa" component={MfaScreen} />
       <Stack.Screen
         name="AccountCreated"
         component={AccountCreatedScreen}

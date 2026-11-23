@@ -2,6 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
 import { disableBiometric } from './biometricService';
 import strings from '../constants/strings';
+import { DeviceEventEmitter } from 'react-native';
+import { configureAuth } from '../api/client';
+import { type AuthTokens, logoutRemote, refreshTokens } from '../api/auth';
+
+/** Emitted when the server session can't be renewed (App signs out). */
+export const SESSION_EXPIRED_EVENT = 'admetrics.sessionExpired';
 
 /**
  * TEMPORARY LOCAL AUTHENTICATION
@@ -156,10 +162,12 @@ const persistSession = async (session: StoredSession): Promise<void> => {
     );
   }
 
+  // Tokens are secrets: never written to AsyncStorage. Only the old
+  // development fallback entry is cleared.
   try {
-    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    await AsyncStorage.removeItem(SESSION_KEY);
   } catch (error) {
-    console.warn('[authService] Unable to persist fallback session', error);
+    console.warn('[authService] Unable to clear fallback session', error);
   }
 };
 
@@ -312,31 +320,134 @@ export const resetPassword = async (
 };
 
 /**
- * Validates local credentials and persists the session.
+ * Signed-in password change: checks the current password, then saves the
+ * new one. The session stays signed in.
  */
-export const login = async (
+export const changePassword = async (
   email: string,
-  password: string,
-): Promise<AuthUser> => {
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  const normalizedEmail = normalizeEmail(email);
   const accounts = await readAccounts();
-  const account = findAccount(accounts, email);
+  const index = accounts.findIndex(a => a.email === normalizedEmail);
 
-  if (!account) {
+  if (index === -1) {
     throw new AuthError(strings.authService.noAccountFoundForThis);
   }
-
-  if (account.passwordHash !== hashPassword(email, password)) {
-    throw new AuthError(strings.authService.incorrectPasswordPleaseTryAgain);
+  if (
+    accounts[index].passwordHash !==
+    hashPassword(normalizedEmail, currentPassword)
+  ) {
+    throw new AuthError(strings.changePassword.currentIncorrect);
   }
 
+  const updated = [...accounts];
+  updated[index] = {
+    ...updated[index],
+    passwordHash: hashPassword(normalizedEmail, newPassword),
+  };
+  await writeAccounts(updated);
+};
+
+/**
+ * Saves a signed-in session from the API: the tokens go to the Keychain
+ * only (never AsyncStorage). Returns the user for the auth slice.
+ */
+export const startSession = async (
+  email: string,
+  tokens: AuthTokens,
+): Promise<AuthUser> => {
+  const normalizedEmail = normalizeEmail(email);
   await persistSession({
-    email: account.email,
-    token: createToken(),
+    email: normalizedEmail,
+    token: JSON.stringify(tokens),
     createdAt: new Date().toISOString(),
   });
-
-  return toUser(account);
+  return { email: normalizedEmail, name: buildDisplayName(normalizedEmail) };
 };
+
+// Global in React Native (Hermes); not in the TS lib this project uses.
+declare const atob: (data: string) => string;
+
+/** `exp` (seconds) from a JWT, or null if it isn't a readable JWT. */
+const jwtExpiry = (jwt: string): number | null => {
+  try {
+    const payload = jwt.split('.')[1];
+    if (!payload) {
+      return null;
+    }
+    const json = JSON.parse(
+      atob(payload.replace(/-/g, '+').replace(/_/g, '/')),
+    ) as { exp?: number };
+    return typeof json.exp === 'number' ? json.exp : null;
+  } catch {
+    return null;
+  }
+};
+
+/** Saved tokens from the Keychain, or null. */
+const readTokens = async (): Promise<{
+  email: string;
+  tokens: AuthTokens;
+} | null> => {
+  try {
+    const credentials = await Keychain.getGenericPassword({
+      service: KEYCHAIN_SERVICE,
+    });
+    if (!credentials) {
+      return null;
+    }
+    const tokens = JSON.parse(credentials.password) as AuthTokens;
+    return tokens?.accessToken ? { email: credentials.username, tokens } : null;
+  } catch {
+    return null;
+  }
+};
+
+const isExpired = (jwt: string) => {
+  const exp = jwtExpiry(jwt);
+  // 30 s early, so a token doesn't expire mid-request.
+  return exp !== null && exp * 1000 - 30000 < Date.now();
+};
+
+/**
+ * Valid tokens for `email`'s saved session: the stored ones, or new ones
+ * from /auth/refresh when the access token has expired. Null = sign in.
+ */
+const freshTokens = async (
+  force = false,
+): Promise<{
+  email: string;
+  tokens: AuthTokens;
+} | null> => {
+  const saved = await readTokens();
+  if (!saved) {
+    return null;
+  }
+  if (!force && !isExpired(saved.tokens.accessToken)) {
+    return saved;
+  }
+  if (!saved.tokens.refreshToken) {
+    return null;
+  }
+  try {
+    const tokens = await refreshTokens(saved.tokens.refreshToken);
+    await persistSession({
+      email: saved.email,
+      token: JSON.stringify(tokens),
+      createdAt: new Date().toISOString(),
+    });
+    return { email: saved.email, tokens };
+  } catch (error) {
+    console.warn('[authService] Token refresh failed', error);
+    return null;
+  }
+};
+
+/** Access token for API calls, or null when signed out / expired. */
+export const getAccessToken = async (): Promise<string | null> =>
+  (await freshTokens())?.tokens.accessToken ?? null;
 
 /**
  * Restores a previously saved session. Returns null when no valid session
@@ -373,41 +484,30 @@ export const restoreSession = async (): Promise<AuthUser | null> => {
   }
 
   if (!email || !token) {
-    try {
-      const raw = await AsyncStorage.getItem(SESSION_KEY);
-
-      if (raw) {
-        const session = JSON.parse(raw) as StoredSession;
-        email = session.email ?? null;
-        token = session.token ?? null;
-      }
-    } catch (error) {
-      console.warn('[authService] Unable to read fallback session', error);
-    }
-  }
-
-  if (!email || !token) {
     return null;
   }
 
-  try {
-    const accounts = await readAccounts();
-    const account = findAccount(accounts, email);
-
-    if (!account) {
-      await clearSession();
-      return null;
-    }
-
-    return toUser(account);
-  } catch (error) {
-    console.warn('[authService] Unable to validate saved session', error);
+  // API session: refresh an expired access token; no luck → sign in.
+  const session = await freshTokens();
+  if (!session) {
+    await clearSession();
     return null;
   }
+
+  return { email, name: buildDisplayName(email) };
 };
 
 export const logout = async (): Promise<void> => {
   passwordResetTickets.clear();
+  // End the session on the server; offline / expired still logs out here.
+  const saved = await readTokens();
+  if (saved) {
+    try {
+      await logoutRemote(saved.tokens);
+    } catch (error) {
+      console.warn('[authService] Server logout failed', error);
+    }
+  }
   await clearSession();
   // The lock belongs to this account; the next user sets their own.
   await disableBiometric();
@@ -419,3 +519,12 @@ export const resetLocalAuthForTests = async (): Promise<void> => {
   await clearSession();
   await AsyncStorage.removeItem(LOGGED_OUT_KEY);
 };
+
+// Signed-in API calls (`apiRequest(path, { auth: true })`) get their token,
+// a one-time refresh on 401, and a sign-out when the session is gone.
+configureAuth({
+  getAccessToken,
+  refreshAccessToken: async () =>
+    (await freshTokens(true))?.tokens.accessToken ?? null,
+  onSessionExpired: () => DeviceEventEmitter.emit(SESSION_EXPIRED_EVENT),
+});

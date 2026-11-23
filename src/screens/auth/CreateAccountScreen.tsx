@@ -10,22 +10,22 @@ import GradientButton from '../../components/shared/GradientButton';
 import AuthFooter from '../../components/auth/AuthFooter';
 import InputStatusIcon from '../../components/auth/InputStatusIcon';
 import { useAuth } from '../../hooks/useAuth';
-import { DEVELOPMENT_OTP } from '../../services/authService';
+import { apiErrorMessage } from '../../utils/apiErrorMessage';
 import { isValidEmail } from '../../utils/validation';
 import type { AuthScreenProps } from '../../navigation/types';
 import { normalizeFont, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { LIMITS } from '../../constants/fieldLimits';
 import { themedStyles } from '../../theme/themedStyles';
 
-// No email service yet: the local auth flow accepts this fixed code.
-const TEST_OTP = DEVELOPMENT_OTP;
+const OTP_LENGTH = 6;
 
 const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
   navigation,
 }) => {
-  const { isEmailRegistered } = useAuth();
+  const { requestSignupOtp, verifySignupOtp } = useAuth();
 
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -37,14 +37,11 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
 
   const isEmailValid = isValidEmail(email);
 
-  const showOtpSent = (target: string) => {
-    setInfo(
-      strings.auth.otpSentTo(target) +
-        (__DEV__ ? strings.auth.testCode(TEST_OTP) : ''),
-    );
-  };
-
-  const handleGetOtp = async () => {
+  /**
+   * Ask the server to email a code. It answers the same way whether or not
+   * the email is invited (no account probing), so the message is neutral.
+   */
+  const sendOtp = async () => {
     const trimmedEmail = email.trim();
     setError(null);
     setInfo(null);
@@ -55,57 +52,50 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
     }
 
     setIsChecking(true);
-
     try {
-      const alreadyRegistered = await isEmailRegistered(trimmedEmail);
-
-      if (alreadyRegistered) {
-        setError(strings.createAccount.anAccountWithThisEmail);
-        return;
-      }
-
+      await requestSignupOtp(trimmedEmail);
       // Stay on this screen: unlock the OTP boxes and tell the user.
       setOtpSent(true);
       setOtpSentAt(Date.now());
       setOtp('');
-      showOtpSent(trimmedEmail);
-    } catch {
-      setError(strings.createAccount.unableToCheckThisEmail);
+      setInfo(strings.auth.otpSentTo(trimmedEmail));
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError, 'otp'));
     } finally {
       setIsChecking(false);
     }
   };
 
-  const handleVerify = () => {
+  const handleGetOtp = () => sendOtp();
+
+  const handleVerify = async () => {
     setError(null);
 
     if (!isEmailValid) {
       setError(strings.auth.pleaseEnterAValidEmail);
       return;
     }
-
-    if (otp.length !== 6) {
+    if (otp.length !== OTP_LENGTH) {
       setError(strings.auth.pleaseEnterAllSixOtp);
       return;
     }
 
-    if (otp !== TEST_OTP) {
-      setError(strings.createAccount.incorrectOtpPleaseCheckThe);
-      return;
+    setIsChecking(true);
+    try {
+      const verificationToken = await verifySignupOtp(email.trim(), otp);
+      navigation.navigate('ConfirmPassword', {
+        email: email.trim(),
+        mode: 'signup',
+        verificationToken,
+      });
+    } catch (verifyError) {
+      setError(apiErrorMessage(verifyError, 'otp'));
+    } finally {
+      setIsChecking(false);
     }
-
-    navigation.navigate('ConfirmPassword', {
-      email: email.trim(),
-      mode: 'signup',
-    });
   };
 
-  const handleResendOtp = () => {
-    setOtpSentAt(Date.now());
-    setOtp('');
-    setError(null);
-    showOtpSent(email.trim());
-  };
+  const handleResendOtp = () => sendOtp();
 
   return (
     <AuthScreenLayout
@@ -131,6 +121,15 @@ const CreateAccountScreen: React.FC<AuthScreenProps<'CreateAccount'>> = ({
         iconName="email"
         keyboardType="email-address"
         textContentType="emailAddress"
+        autoComplete="email"
+        maxLength={LIMITS.email.max}
+        returnKeyType="send"
+        submitBehavior="blurAndSubmit"
+        onSubmitEditing={() => {
+          if (!otpSent) {
+            handleGetOtp();
+          }
+        }}
         rightElement={
           isChecking ? (
             <InputStatusIcon status={'loading'} />

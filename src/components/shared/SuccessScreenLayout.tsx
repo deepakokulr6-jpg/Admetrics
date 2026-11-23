@@ -115,7 +115,7 @@ const SuccessScreenLayout: React.FC<SuccessScreenLayoutProps> = ({
         style={[styles.sheet, { transform: [{ translateY: sheetOffset }] }]}
       >
         <Animated.Image
-          source={require('../../../assets/images/figma/success_check.png')}
+          source={require('../../../assets/images/figma/success_check.gif')}
           style={[
             styles.check,
             { opacity: checkOpacity, transform: [{ scale: checkScale }] },

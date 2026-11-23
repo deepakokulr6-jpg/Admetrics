@@ -3,15 +3,16 @@ import * as Keychain from 'react-native-keychain';
 
 import {
   AuthError,
+  changePassword,
   DEVELOPMENT_OTP,
   isEmailRegistered,
-  login,
   logout,
   registerAccount,
   requestPasswordReset,
   resetLocalAuthForTests,
   resetPassword,
   restoreSession,
+  startSession,
   verifyPasswordResetOtp,
 } from '../src/services/authService';
 
@@ -40,11 +41,21 @@ test('prevents duplicate email registrations', async () => {
   ).rejects.toThrow(AuthError);
 });
 
-test('logs in, restores the session, and logs out', async () => {
-  await registerAccount('owner@example.com', 'password123');
+/** Unsigned JWT with the given `exp` (seconds) — enough for expiry checks. */
+const jwt = (exp: number) =>
+  `h.${btoa(JSON.stringify({ exp }))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/[=]+$/, '')}.s`;
+declare const btoa: (data: string) => string;
+const future = () => Math.floor(Date.now() / 1000) + 3600;
 
-  const user = await login('owner@example.com', 'password123');
-  expect(user.name).toBe('Owner');
+test('starts an API session, restores it, and logs out', async () => {
+  const user = await startSession('Owner@Example.com', {
+    accessToken: jwt(future()),
+    refreshToken: 'refresh',
+  });
+  expect(user).toEqual({ email: 'owner@example.com', name: 'Owner' });
 
   expect(await restoreSession()).toEqual(user);
 
@@ -52,26 +63,74 @@ test('logs in, restores the session, and logs out', async () => {
   expect(await restoreSession()).toBeNull();
 });
 
-test('rejects an incorrect password', async () => {
-  await registerAccount('owner@example.com', 'password123');
+test('keeps tokens out of AsyncStorage', async () => {
+  const accessToken = jwt(future());
+  await startSession('owner@example.com', { accessToken });
 
-  await expect(login('owner@example.com', 'wrongpass')).rejects.toThrow(
-    'Incorrect password. Please try again.',
+  const keys = await AsyncStorage.getAllKeys();
+  const values = await Promise.all(keys.map(key => AsyncStorage.getItem(key)));
+  expect(JSON.stringify(values)).not.toContain(accessToken);
+});
+
+test('treats an expired access token as signed out', async () => {
+  await startSession('owner@example.com', {
+    accessToken: jwt(Math.floor(Date.now() / 1000) - 60),
+  });
+  expect(await restoreSession()).toBeNull();
+});
+
+test('refreshes an expired access token on launch', async () => {
+  const fresh = jwt(future());
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    text: () => Promise.resolve(JSON.stringify({ accessToken: fresh })),
+  }) as unknown as typeof fetch;
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+
+  await startSession('owner@example.com', {
+    accessToken: jwt(Math.floor(Date.now() / 1000) - 60),
+    refreshToken: 'r'.repeat(40),
+  });
+
+  expect(await restoreSession()).toEqual({
+    email: 'owner@example.com',
+    name: 'Owner',
+  });
+  expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect.stringContaining('/auth/refresh'),
+    expect.objectContaining({ method: 'POST' }),
   );
 });
 
-test('rejects unknown accounts', async () => {
-  await expect(login('missing@example.com', 'password123')).rejects.toThrow(
-    'No account found for this email. Please create an account first.',
+test('logout tells the server, then clears the session', async () => {
+  globalThis.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    status: 204,
+    text: () => Promise.resolve(''),
+  }) as unknown as typeof fetch;
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  const accessToken = jwt(future());
+  await startSession('owner@example.com', { accessToken });
+
+  await logout();
+
+  expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect.stringContaining('/auth/logout'),
+    expect.objectContaining({
+      headers: expect.objectContaining({
+        Authorization: `Bearer ${accessToken}`,
+      }),
+    }),
   );
+  expect(await restoreSession()).toBeNull();
 });
 
 test('stays logged out even when the keychain cannot be cleared', async () => {
   const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
   try {
-    await registerAccount('owner@example.com', 'password123');
-    await login('owner@example.com', 'password123');
+    await startSession('owner@example.com', { accessToken: jwt(future()) });
 
     (Keychain.resetGenericPassword as jest.Mock).mockRejectedValueOnce(
       new Error('keychain unavailable'),
@@ -96,12 +155,11 @@ test('resets an existing password only after OTP verification', async () => {
 
   await resetPassword('reset@example.com', resetToken, 'newpassword');
 
-  await expect(login('reset@example.com', 'oldpassword')).rejects.toThrow(
-    'Incorrect password. Please try again.',
-  );
-
-  const user = await login('reset@example.com', 'newpassword');
-  expect(user.email).toBe('reset@example.com');
+  // The new password is now the current one.
+  await expect(
+    changePassword('reset@example.com', 'oldpassword', 'x'.repeat(8)),
+  ).rejects.toBeInstanceOf(AuthError);
+  await changePassword('reset@example.com', 'newpassword', 'another123');
 });
 
 test('rejects password reset without a valid verification token', async () => {
@@ -120,4 +178,19 @@ test('does not create an account during password reset', async () => {
   );
 
   expect(await isEmailRegistered('missing@example.com')).toBe(false);
+});
+
+test('changes the password only when the current one is correct', async () => {
+  await registerAccount('doc@clinic.com', 'oldpass123');
+
+  await expect(
+    changePassword('doc@clinic.com', 'wrongpass', 'newpass123'),
+  ).rejects.toBeInstanceOf(AuthError);
+
+  await changePassword('Doc@Clinic.com', 'oldpass123', 'newpass123');
+
+  await expect(
+    changePassword('doc@clinic.com', 'oldpass123', 'other1234'),
+  ).rejects.toBeInstanceOf(AuthError);
+  await changePassword('doc@clinic.com', 'newpass123', 'other1234');
 });

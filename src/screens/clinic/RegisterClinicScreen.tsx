@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import FormScreenLayout from '../../components/shared/FormScreenLayout';
 import GradientButton from '../../components/shared/GradientButton';
 import ClinicInfoForm, {
   CLINIC_BOTTOM_FIELDS,
 } from '../../components/clinic/ClinicInfoForm';
+import WorkingHoursSection from '../../components/clinic/WorkingHoursSection';
 import { useClinicRegistration } from '../../hooks/useClinicRegistration';
+import { validateWorkingHours } from '../../utils/workingHours';
 import type { ClinicInfo } from '../../types/clinic';
 import {
   type ClinicErrors,
@@ -19,22 +21,31 @@ import type { AppScreenProps } from '../../navigation/types';
 import { verticalScale } from '../../utils/responsive';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+<<<<<<< HEAD
 import {
   DayScheduleItem,
   INITIAL_WORKING_HOURS,
   WorkingHoursSection,
 } from './ClinicInformationScreen';
+=======
+import { appAlert } from '../../components/shared/AppAlert';
+>>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
 /** Step 1 of registration: clinic details, saved to the registration draft. */
 const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
   navigation,
 }) => {
-  const { draft, updateClinicInfo } = useClinicRegistration();
+  const { draft, updateClinicInfo, updateWorkingHour } =
+    useClinicRegistration();
   const keyboard = useKeyboardAutoScroll();
   const [errors, setErrors] = useState<ClinicErrors>({});
+<<<<<<< HEAD
   const [workingHours, setWorkingHours] = useState<DayScheduleItem[]>(
     INITIAL_WORKING_HOURS,
   );
+=======
+  const [hoursErrorIndex, setHoursErrorIndex] = useState<number | null>(null);
+>>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
   const handleChange = (key: keyof ClinicInfo, value: string) => {
     updateClinicInfo({ [key]: value });
@@ -46,10 +57,17 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
     setErrors(nextErrors);
 
     if (hasErrors(nextErrors)) {
-      Alert.alert(
+      appAlert(
         strings.clinicForm.checkClinicDetails,
         strings.clinicForm.pleaseCompleteTheRequiredClinic,
       );
+      return;
+    }
+
+    const hoursProblem = validateWorkingHours(draft.workingHours);
+    setHoursErrorIndex(hoursProblem?.index ?? null);
+    if (hoursProblem) {
+      appAlert(strings.workingHours.checkHours, hoursProblem.message);
       return;
     }
 
@@ -72,10 +90,25 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
         }
       />
 
+<<<<<<< HEAD
       <WorkingHoursSection
         value={workingHours}
         onChange={setWorkingHours}
       />
+=======
+      <View style={styles.hours}>
+        <WorkingHoursSection
+          hours={draft.workingHours}
+          errorIndex={hoursErrorIndex}
+          onChange={(index, patch) => {
+            updateWorkingHour(index, patch);
+            if (index === hoursErrorIndex) {
+              setHoursErrorIndex(null);
+            }
+          }}
+        />
+      </View>
+>>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
       <View style={styles.button}>
         <GradientButton title={strings.common.next} onPress={handleNext} />
@@ -86,8 +119,11 @@ const RegisterClinicScreen: React.FC<AppScreenProps<'RegisterClinic'>> = ({
 
 const styles = themedStyles(() =>
   StyleSheet.create({
+    hours: {
+      marginTop: verticalScale(28),
+    },
     button: {
-      marginTop: verticalScale(48),
+      marginTop: verticalScale(32),
     },
   }),
 );

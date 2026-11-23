@@ -78,3 +78,10 @@ yarn-error.log
 .env
 .env.*
 !.env.example
+
+# DocuSeal API key (dev only)
+
+# Expo
+.expo
+dist/
+web-build/

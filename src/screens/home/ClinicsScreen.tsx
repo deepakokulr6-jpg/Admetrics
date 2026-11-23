@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DashboardHeader from '../../components/home/DashboardHeader';
 import ClinicCard from '../../components/clinic/ClinicCard';
 import RegisterClinicButton from '../../components/clinic/RegisterClinicButton';
+import AddClinicFab from '../../components/clinic/AddClinicFab';
 import AppText from '../../components/shared/AppText';
 import ClinicIllustration from '../../components/clinic/ClinicIllustration';
 
@@ -74,6 +75,8 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
           contentContainerStyle={[
             styles.content,
             { paddingHorizontal: scale(16) },
+            // Room so the last card isn't hidden under the Add Clinic pill.
+            hasClinics && styles.contentWithFab,
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -105,12 +108,6 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
                   />
                 ))}
               </View>
-
-              <View style={styles.registerContainer}>
-                <RegisterClinicButton
-                  onPress={() => navigation.navigate('RegisterClinic')}
-                />
-              </View>
             </>
           ) : !isLoading ? (
             // Empty state (design "Option 5"): artwork, title, message and
@@ -131,6 +128,10 @@ const ClinicsScreen: React.FC<TabScreenProps<'Clinics'>> = ({ navigation }) => {
             </View>
           ) : null}
         </ScrollView>
+
+        {hasClinics ? (
+          <AddClinicFab onPress={() => navigation.navigate('RegisterClinic')} />
+        ) : null}
       </View>
     </SafeAreaView>
   );
@@ -179,9 +180,8 @@ const styles = themedStyles(() =>
       gap: verticalScale(16),
     },
     // Figma: the register button sits 80px under the last card.
-    registerContainer: {
-      marginTop: verticalScale(80),
-      alignItems: 'center',
+    contentWithFab: {
+      paddingBottom: verticalScale(96),
     },
   }),
 );

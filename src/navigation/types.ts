@@ -5,6 +5,8 @@ import type {
 } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import type { PickedLocation } from '../services/locationService';
+
 export type RootStackParamList = {
   Splash: undefined;
   Auth: undefined;
@@ -20,6 +22,15 @@ export type AuthStackParamList = {
     email: string;
     mode?: 'signup' | 'reset';
     resetToken?: string;
+    /** From the signup email code; lets the server set the password. */
+    verificationToken?: string;
+  };
+  /** Authenticator step after the password: first-time setup or a code. */
+  Mfa: {
+    email: string;
+    challengeToken: string;
+    /** true: show the QR + key first; undefined: try setup, else verify. */
+    setupRequired?: boolean;
   };
   AccountCreated: undefined;
 };
@@ -35,8 +46,12 @@ export type MainTabParamList = {
 /** Signed-in app: the tab bar plus every screen pushed on top of it. */
 export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList> | undefined;
+<<<<<<< HEAD
   RegisterClinic: undefined;
   ClinicInformation: undefined;
+=======
+  RegisterClinic: { pickedLocation?: PickedLocation } | undefined;
+>>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
   RegisterPersonal: undefined;
   RegisterTimings: undefined;
   RegisterPhotos: undefined;
@@ -44,16 +59,26 @@ export type AppStackParamList = {
   MouESign: undefined;
   ClinicPreview: undefined;
   MouAgreement: undefined;
+  /** Signed MOU PDF from DocuSeal. */
+  SignedMou: { url: string };
   Settings: undefined;
   AddDevice: undefined;
   PrivacySecurity: undefined;
+  ChangePassword: undefined;
   BankAccount: undefined;
   ScanQr: undefined;
   /** serial: TV serial number from the QR code or pairing code. */
   DeviceDetails: { serial: string };
-  DevicePairing: { serial: string; name: string };
   ClinicRegistered: undefined;
-  EditDetails: undefined;
+  EditDetails: { pickedLocation?: PickedLocation } | undefined;
+  /** Full-screen map to pick the clinic's spot; returns to `returnTo`. */
+  MapPicker: {
+    returnTo: 'RegisterClinic' | 'EditDetails';
+    latitude?: number;
+    longitude?: number;
+    /** Address text to centre on when there are no coordinates yet. */
+    query?: string;
+  };
   /** approved = false hides Displays (a pending clinic has none yet). */
   RegisteredDetails: { approved?: boolean } | undefined;
   PaymentDetails: { month: string; paid: boolean; paidOn?: string } | undefined;

@@ -1,8 +1,11 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 
 import {
   type AuthUser,
-  login,
   logout,
   restoreSession,
 } from '../../services/authService';
@@ -32,26 +35,22 @@ export const bootstrapAuth = createAsyncThunk('auth/bootstrap', async () => {
   }
 });
 
-export const signIn = createAsyncThunk(
-  'auth/signIn',
-  ({ email, password }: { email: string; password: string }) =>
-    login(email, password),
-);
-
 export const signOut = createAsyncThunk('auth/signOut', () => logout());
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    /** Login (password + authenticator code) finished; session saved. */
+    sessionStarted(state, action: PayloadAction<AuthUser>) {
+      state.user = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(bootstrapAuth.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isBootstrapping = false;
-      })
-      .addCase(signIn.fulfilled, (state, action) => {
-        state.user = action.payload;
       })
       .addCase(signOut.fulfilled, state => {
         state.user = null;
@@ -59,4 +58,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { sessionStarted } = authSlice.actions;
 export default authSlice.reducer;

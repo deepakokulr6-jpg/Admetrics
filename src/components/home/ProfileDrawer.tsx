@@ -16,6 +16,7 @@ import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
 import colors from '../../theme/colors';
 import { fonts } from '../../theme/typography';
 import strings from '../../constants/strings';
+import { APP_VERSION, COMPANY_NAME } from '../../config/app';
 import { themedStyles } from '../../theme/themedStyles';
 
 type Props = {
@@ -26,6 +27,10 @@ type Props = {
   onMouAgreement?: () => void;
   onNotification?: () => void;
   onSettings?: () => void;
+  onAddDevice?: () => void;
+  onBankAccount?: () => void;
+  /** Shows the green "Added" label on Bank Account. */
+  bankAccountAdded?: boolean;
 };
 
 // Figma side menu: 280px wide on the 360px frame.
@@ -37,6 +42,11 @@ const ICONS = {
     'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z',
   settings:
     'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1112 8.4a3.6 3.6 0 010 7.2z',
+  // Filled TV with a stand dot (Figma "Add Device").
+  addDevice:
+    'M3.5 4.5h17a1.5 1.5 0 011.5 1.5v11a1.5 1.5 0 01-1.5 1.5h-6.2a2.4 2.4 0 00-4.6 0H3.5A1.5 1.5 0 012 17V6a1.5 1.5 0 011.5-1.5zM12 17.5a1.3 1.3 0 110 2.6 1.3 1.3 0 010-2.6z',
+  // Filled bank: roof, four pillars, base.
+  bank: 'M12 2.5l10 5v2H2v-2l10-5zM4 10.5h3v7H4v-7zm4.75 0h3v7h-3v-7zm4.5 0h3v7h-3v-7zM18 10.5h3v7h-3v-7zM2 19h20v2.5H2V19z',
   logoutDoor:
     'M3 5.2C3 4.1 3.8 3.2 4.9 3l7-1.2c.6-.1 1.1.4 1.1 1v18.4c0 .6-.5 1.1-1.1 1L4.9 21c-1.1-.2-1.9-1.1-1.9-2.2V5.2z',
   logoutArrow: 'M15 12h7m-2.5-2.75L22 12l-2.5 2.75M15 4.5h1.5v3M15 19.5h1.5v-3',
@@ -45,11 +55,19 @@ const ICONS = {
 type ItemProps = {
   label: string;
   danger?: boolean;
+  /** Optional pill on the right (e.g. "Added"). */
+  badge?: string;
   onPress: () => void;
   icon: React.ReactNode;
 };
 
-const DrawerItem: React.FC<ItemProps> = ({ label, danger, onPress, icon }) => (
+const DrawerItem: React.FC<ItemProps> = ({
+  label,
+  danger,
+  badge,
+  onPress,
+  icon,
+}) => (
   <Pressable
     onPress={onPress}
     accessibilityRole="button"
@@ -59,6 +77,11 @@ const DrawerItem: React.FC<ItemProps> = ({ label, danger, onPress, icon }) => (
     <Text style={[styles.itemLabel, danger && styles.itemLabelDanger]}>
       {label}
     </Text>
+    {badge ? (
+      <View style={styles.badge}>
+        <Text style={styles.badgeText}>{badge}</Text>
+      </View>
+    ) : null}
   </Pressable>
 );
 
@@ -75,6 +98,9 @@ const ProfileDrawer: React.FC<Props> = ({
   onMouAgreement,
   onNotification,
   onSettings,
+  onAddDevice,
+  onBankAccount,
+  bankAccountAdded,
 }) => {
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(visible);
@@ -178,6 +204,17 @@ const ProfileDrawer: React.FC<Props> = ({
             onPress={select(onNotification)}
           />
           <DrawerItem
+            label={strings.profileDrawer.addDevice}
+            icon={icon(ICONS.addDevice, colors.bodyText)}
+            onPress={select(onAddDevice)}
+          />
+          <DrawerItem
+            label={strings.profileDrawer.bankAccount}
+            badge={bankAccountAdded ? strings.profileDrawer.added : undefined}
+            icon={icon(ICONS.bank, colors.bodyText)}
+            onPress={select(onBankAccount)}
+          />
+          <DrawerItem
             label={strings.profileDrawer.settings}
             icon={icon(ICONS.settings, colors.bodyText)}
             onPress={select(onSettings)}
@@ -200,6 +237,23 @@ const ProfileDrawer: React.FC<Props> = ({
             }
             onPress={select(onLogout)}
           />
+        </View>
+
+        <View
+          style={[
+            styles.footer,
+            { paddingBottom: insets.bottom + verticalScale(24) },
+          ]}
+        >
+          <Text style={styles.footerText}>
+            {strings.profileDrawer.version(APP_VERSION)}
+          </Text>
+          <Text style={styles.footerText}>
+            {strings.profileDrawer.copyright(
+              new Date().getFullYear(),
+              COMPANY_NAME,
+            )}
+          </Text>
         </View>
       </Animated.View>
     </Modal>
@@ -265,6 +319,29 @@ const styles = themedStyles(() =>
       marginLeft: scale(14),
       fontSize: normalizeFont(14),
       fontFamily: fonts.medium,
+      color: colors.bodyText,
+    },
+    badge: {
+      marginLeft: 'auto',
+      paddingHorizontal: scale(10),
+      paddingVertical: verticalScale(4),
+      borderRadius: scale(14),
+      backgroundColor: colors.successBackground,
+    },
+    badgeText: {
+      fontSize: normalizeFont(12),
+      fontFamily: fonts.semibold,
+      color: colors.success,
+    },
+    // Version + copyright pinned to the bottom of the menu.
+    footer: {
+      marginTop: 'auto',
+      paddingHorizontal: scale(24),
+      gap: verticalScale(6),
+    },
+    footerText: {
+      fontSize: normalizeFont(10),
+      fontFamily: fonts.regular,
       color: colors.bodyText,
     },
     itemLabelDanger: {

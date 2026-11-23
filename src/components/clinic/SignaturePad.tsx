@@ -10,6 +10,8 @@ type Props = {
   onChange: (path: string) => void;
   /** Bump to clear the pad. */
   clearKey?: number;
+  /** Called when the finger first touches the pad (each stroke). */
+  onBegin?: () => void;
   strokeColor?: string;
 };
 
@@ -23,6 +25,7 @@ const round = (n: number) => Math.round(n * 10) / 10;
 const SignaturePad: React.FC<Props> = ({
   onChange,
   clearKey = 0,
+  onBegin,
   strokeColor = colors.onAccent,
 }) => {
   const [strokes, setStrokes] = useState<string[]>([]);
@@ -31,6 +34,8 @@ const SignaturePad: React.FC<Props> = ({
   const strokesRef = useRef<string[]>([]);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const onBeginRef = useRef(onBegin);
+  onBeginRef.current = onBegin;
 
   // Reset when the parent asks to clear.
   useEffect(() => {
@@ -49,6 +54,7 @@ const SignaturePad: React.FC<Props> = ({
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: event => {
+          onBeginRef.current?.();
           const { locationX, locationY } = event.nativeEvent;
           // A dot, so a single tap still leaves a mark.
           currentRef.current = `M${round(locationX)} ${round(

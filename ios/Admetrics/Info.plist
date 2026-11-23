@@ -28,16 +28,28 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Admetrics uses the camera to scan the QR code on your TV to connect it.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Admetrics uses Face ID to unlock the app securely.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/Inter-Regular.ttf</string>
+		<string>Fonts/Inter-Medium.ttf</string>
+		<string>Fonts/Inter-SemiBold.ttf</string>
+		<string>Fonts/Inter-Bold.ttf</string>
+		<string>Feather.ttf</string>
+		<string>Ionicons.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -61,22 +73,11 @@
 	<array>
 		<string>arm64</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fonts/Inter-Regular.ttf</string>
-		<string>Fonts/Inter-Medium.ttf</string>
-		<string>Fonts/Inter-SemiBold.ttf</string>
-		<string>Fonts/Inter-Bold.ttf</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Admetrics uses the camera to scan the QR code on your TV to connect it.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Admetrics uses Face ID to unlock the app securely.</string>
 </dict>
 </plist>

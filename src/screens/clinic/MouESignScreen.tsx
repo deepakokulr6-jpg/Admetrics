@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ScreenHeader from '../../components/shared/ScreenHeader';
@@ -9,7 +9,11 @@ import type { AppScreenProps } from '../../navigation/types';
 import colors from '../../theme/colors';
 import strings from '../../constants/strings';
 import { themedStyles } from '../../theme/themedStyles';
+<<<<<<< HEAD
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
+=======
+import { appAlert } from '../../components/shared/AppAlert';
+>>>>>>> c5429d89d4d02e961cc9305fa68089a6dc040be7
 
 type DocusealMessage =
   | { type: 'completed'; detail: Record<string, unknown> }
@@ -94,7 +98,7 @@ const MouESignScreen: React.FC<AppScreenProps<'MouESign'>> = ({
           onMessage={handleMessage}
           onLoadEnd={() => setLoading(false)}
           onError={() =>
-            Alert.alert(
+            appAlert(
               strings.mou.signingUnavailable,
               strings.mou.checkConnection,
             )

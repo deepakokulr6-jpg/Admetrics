@@ -2,13 +2,16 @@ import React, { ReactNode, useState } from 'react';
 import {
   View,
   Text,
+  DeviceEventEmitter,
   TextInput,
   StyleSheet,
   ViewStyle,
   KeyboardTypeOptions,
   TextInputProps,
+  Pressable,
 } from 'react-native';
 
+import { INPUT_FOCUSED_EVENT } from '../../utils/useKeyboardAutoScroll';
 import EmailIcon from '../../../assets/images/figma/mail.svg';
 import PasswordIcon from '../../../assets/images/figma/lock.svg';
 import { normalizeFont, scale, verticalScale } from '../../utils/responsive';
@@ -38,6 +41,14 @@ type InputFieldProps = {
   numberOfLines?: number;
   onFocus?: TextInputProps['onFocus'];
   onBlur?: TextInputProps['onBlur'];
+  /** Opens a picker on tap instead of the keyboard (looks like a normal field). */
+  onPress?: () => void;
+  /** For moving focus here from the previous field's "Next" key. */
+  inputRef?: React.Ref<React.ComponentRef<typeof TextInput>>;
+  returnKeyType?: TextInputProps['returnKeyType'];
+  onSubmitEditing?: TextInputProps['onSubmitEditing'];
+  /** "submit" keeps the keyboard up while focus moves to the next field. */
+  submitBehavior?: TextInputProps['submitBehavior'];
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -61,6 +72,11 @@ const InputField: React.FC<InputFieldProps> = ({
   numberOfLines,
   onFocus,
   onBlur,
+  onPress,
+  inputRef,
+  returnKeyType,
+  onSubmitEditing,
+  submitBehavior,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -72,6 +88,7 @@ const InputField: React.FC<InputFieldProps> = ({
       : null;
 
   const handleFocus: TextInputProps['onFocus'] = event => {
+    DeviceEventEmitter.emit(INPUT_FOCUSED_EVENT);
     setIsFocused(true);
     onFocus?.(event);
   };
@@ -92,13 +109,17 @@ const InputField: React.FC<InputFieldProps> = ({
         </Text>
       ) : null}
 
-      <View
+      <Pressable
+        onPress={onPress}
+        disabled={!onPress}
+        accessibilityRole={onPress ? 'button' : undefined}
+        accessibilityLabel={onPress ? label : undefined}
         style={[
           styles.inputBox,
           multiline && styles.multilineBox,
           isFocused ? styles.inputBoxFocused : null,
           error ? styles.inputBoxError : null,
-          !editable && styles.inputBoxDisabled,
+          !editable && !onPress && styles.inputBoxDisabled,
         ]}
       >
         {InputIcon ? (
@@ -112,6 +133,10 @@ const InputField: React.FC<InputFieldProps> = ({
         ) : null}
 
         <TextInput
+          ref={inputRef}
+          returnKeyType={returnKeyType}
+          onSubmitEditing={onSubmitEditing}
+          submitBehavior={submitBehavior}
           style={[
             styles.input,
             InputIcon ? styles.inputWithIcon : null,
@@ -130,7 +155,8 @@ const InputField: React.FC<InputFieldProps> = ({
           textContentType={textContentType}
           autoComplete={autoComplete}
           maxLength={maxLength}
-          editable={editable}
+          editable={editable && !onPress}
+          pointerEvents={onPress ? 'none' : undefined}
           multiline={multiline}
           numberOfLines={numberOfLines}
           onFocus={handleFocus}
@@ -140,7 +166,7 @@ const InputField: React.FC<InputFieldProps> = ({
         {rightElement ? (
           <View style={styles.rightElement}>{rightElement}</View>
         ) : null}
-      </View>
+      </Pressable>
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
